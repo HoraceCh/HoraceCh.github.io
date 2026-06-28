@@ -1,0 +1,89 @@
+title: Horace Chan
+subtitle: Personal Website
+description: >-
+  Personal website of Horace Chan, a mechanical engineering undergraduate
+  student exploring AI-assisted workflows, VLA, embodied AI, robotics, and robot
+  control.
+keywords: >-
+  Horace Chan, mechanical engineering, AI-assisted workflows, VLA, Embodied AI,
+  robotics, robot control, personal website
+author: Horace Chan
+language: en
+timezone: Asia/Shanghai
+url: https://your-github-username.github.io/Horace-Blog-Website
+root: /Horace-Blog-Website/
+permalink: posts/:year/:month/:day/:title/
+permalink_defaults: null
+pretty_urls:
+  trailing_index: true
+  trailing_html: true
+source_dir: source
+public_dir: public
+tag_dir: tags
+archive_dir: archives
+category_dir: categories
+code_dir: downloads/code
+i18n_dir: ':lang'
+skip_render: null
+new_post_name: ':title.md'
+default_layout: post
+titlecase: false
+external_link:
+  enable: true
+  field: site
+  exclude: ''
+filename_case: 0
+render_drafts: false
+post_asset_folder: false
+marked:
+  prependRoot: true
+  postAsset: false
+default_category: uncategorized
+category_map: null
+tag_map: null
+date_format: YYYY-MM-DD
+time_format: HH:mm:ss
+updated_option: mtime
+per_page: 8
+pagination_dir: page
+theme: horace-minimal
+profile:
+  greeting: Hi, I'm Horace Chan.
+  pronunciation: ''
+  roles:
+    - Mechanical Engineering Undergraduate Student
+    - AI-assisted Workflows
+    - VLA / Embodied AI / Robotics
+  headline: >-
+    I study mechanical engineering while building a long-term learning path
+    around intelligent agents, robot control, and research workflows.
+  intro: >-
+    I am a mechanical engineering undergraduate student interested in how
+    intelligent agents and robot systems are built. My current focus connects
+    AI-assisted workflows, Vision-Language-Action models, embodied AI, robotics,
+    and robot control with hands-on engineering practice.
+  status_cards:
+    - label: Background
+      value: Mechanical Engineering
+    - label: Focus
+      value: VLA / Embodied AI
+    - label: Tools
+      value: CAD / Python / C / C++
+  links:
+    - label: About
+      url: /about/
+    - label: Projects
+      url: /projects/
+    - label: Notes
+      url: /archives/
+    - label: Contact
+      url: /contact/
+menu:
+  Home: /
+  About: /about/
+  Projects: /projects/
+  Notes: /archives/
+  Resume: /resume/
+  Contact: /contact/
+deploy:
+  type: ''

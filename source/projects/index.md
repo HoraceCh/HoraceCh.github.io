@@ -3,53 +3,76 @@ title: Projects
 description: Selected and ongoing projects in AI-assisted workflows, VLA learning, mechanical design, and coursework.
 ---
 
-This page is for selected projects, learning systems, and engineering work. Some entries may start as notes or prototypes before becoming complete public repositories.
+This page collects selected public projects, ongoing learning systems, and engineering work. Some entries are complete repositories, while others are documented as ongoing, planned, or coursework-oriented projects.
+
+## AI_RETRIEVAL_X / Information-Retrieval-Tool
+
+**Purpose:** Turn natural-language research needs into optimized Boolean search queries for academic databases such as CNKI, Web of Science, PubMed, and Ei Compendex.
+
+**Current status:** Featured public project.
+
+**Tools / skills:** TypeScript, Vite, multi-model API support, academic information retrieval, LLM-assisted workflow design.
+
+**Next steps:** Continue documenting retrieval workflows, model behavior, and practical search examples as the project evolves.
+
+Repository: [HoraceCh/Information-Retrieval-Tool](https://github.com/HoraceCh/Information-Retrieval-Tool)
 
 ## AI-Assisted Learning Workflows
 
-Projects in this category explore how AI tools can support technical learning, paper reading, knowledge organization, and long-term research workflows.
+**Purpose:** Explore how AI tools can support technical learning, paper reading, knowledge organization, and long-term research workflows.
 
-Planned project structure:
+**Current status:** Ongoing learning and workflow project.
 
-- Problem or learning bottleneck
-- Workflow design
-- Tools and implementation details
-- What improved, what failed, and what should be revised
+**Tools / skills:** AI-assisted research workflows, Markdown, GitHub, academic information retrieval, structured technical notes.
 
-## VLA Learning Projects
+**Next steps:** Document concrete workflow cases, including the learning bottleneck, prompt or tool setup, output quality, and revisions after use.
 
-This category tracks my learning path around **Vision-Language-Action Models**, embodied AI papers, datasets, benchmarks, and open-source implementations.
+## VLA / Embodied AI Learning System
 
-Possible project types:
+**Purpose:** Build a structured learning path around Vision-Language-Action models, embodied AI, robot learning, datasets, benchmarks, and open-source implementations.
 
-- Paper reading systems for VLA and embodied AI
-- Reproduction notes for open-source models or demos
-- Concept maps connecting perception, language, and robot actions
-- Small experiments that clarify model architecture or policy learning ideas
+**Current status:** Ongoing study project.
 
-## Mechanical Design Projects
+**Tools / skills:** Paper reading, concept mapping, machine learning basics, deep learning basics, robotics, robot control.
 
-This category is for mechanical engineering and CAD-based work, including designs created with SolidWorks or similar tools.
+**Next steps:** Add reading notes, reproduction notes, and small experiments that clarify how perception, language, and robot actions connect.
 
-Each project should eventually include:
+## Mechanical Design / CAD Projects
 
-- Design goal and constraints
-- CAD model overview
-- Mechanical structure decisions
-- Materials, manufacturing, or assembly considerations when relevant
-- Images, drawings, or repository links if available
+**Purpose:** Document mechanical engineering and CAD-based work, especially mechanical structure design using SolidWorks and related tools.
+
+**Current status:** Ongoing engineering documentation area.
+
+**Tools / skills:** SolidWorks, 3D CAD modeling, mechanical structure design, engineering design reflection.
+
+**Next steps:** Add selected models or design cases with goals, constraints, structure decisions, and images or drawings when available.
+
+## Robomaster Engineering Robot
+
+**Purpose:** Track engineering learning related to robotic mechanical systems and practical robot design.
+
+**Current status:** Learning and engineering project, to be documented cautiously as materials become ready for public presentation.
+
+**Tools / skills:** Mechanical design, CAD modeling, robot systems, engineering documentation.
+
+**Next steps:** Clarify project scope, collect shareable design notes, and separate public documentation from private or team-restricted materials.
 
 ## Course Projects
 
-This category is for coursework-related projects in mechanical engineering, programming, control, machine learning, and robotics.
+**Purpose:** Organize coursework-related projects in mechanical engineering, programming, control, machine learning, and robotics.
 
-Typical entries may include:
+**Current status:** Coursework-oriented project area.
 
-- Course context and assignment goal
-- Methods and tools used
-- Results or deliverables
-- Reflection on what I learned and what I would improve
+**Tools / skills:** Python, C, C++, mechanical engineering fundamentals, control basics, machine learning basics.
 
-## Current Status
+**Next steps:** Add entries when a course project has a clear public summary, methods, deliverables, and reflection.
 
-The project page is intentionally simple for now. I will add concrete entries as projects become organized enough to share.
+## Personal Knowledge System
+
+**Purpose:** Maintain a long-term public and private knowledge organization system for notes, project records, paper reading, and learning methods.
+
+**Current status:** Ongoing personal workflow.
+
+**Tools / skills:** Markdown, structured notes, Hexo, GitHub, AI-assisted learning workflows.
+
+**Next steps:** Publish selected notes and summaries when they are accurate, useful, and ready for public reading.

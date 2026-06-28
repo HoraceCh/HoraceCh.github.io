@@ -9,7 +9,7 @@ I am open to academic and engineering conversations related to AI-assisted workf
 
 - **Personal site:** [HoraceCh.github.io](https://HoraceCh.github.io)
 - **GitHub:** [HoraceCh](https://github.com/HoraceCh)
-- **LinkedIn:** [horacech](https://www.linkedin.com/in/horacech)
+- **LinkedIn:** [Horace Chen](https://www.linkedin.com/in/horacech)
 - **Email:** [horacebuddle@gmail.com](mailto:horacebuddle@gmail.com)
 
 ## Notes

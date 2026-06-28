@@ -1,0 +1,56 @@
+<% const profile = config.profile || {}; %>
+<section class="hero">
+  <div class="hero-kicker">Personal Website</div>
+  <h1><%= profile.greeting || config.title %></h1>
+  <% if (profile.pronunciation) { %>
+    <p class="pronunciation"><%= profile.pronunciation %></p>
+  <% } %>
+  <div class="role-line">
+    <% (profile.roles || []).forEach(function(role, index) { %>
+      <span><%= role %></span><% if (index < profile.roles.length - 1) { %><i>/</i><% } %>
+    <% }) %>
+  </div>
+  <p class="hero-headline"><%= profile.headline || config.description %></p>
+  <div class="hero-actions">
+    <% (profile.links || []).forEach(function(link) { %>
+      <a class="button" href="<%- link.url %>"><%= link.label %></a>
+    <% }) %>
+  </div>
+</section>
+
+<section class="about-panel">
+  <div>
+    <p class="section-label">About</p>
+    <h2>Mechanical engineering, intelligent agents, and robot systems.</h2>
+  </div>
+  <p><%= profile.intro || '' %></p>
+</section>
+
+<section class="stat-grid">
+  <% (profile.status_cards || []).forEach(function(card) { %>
+    <article class="stat-card">
+      <span><%= card.label %></span>
+      <strong><%= card.value %></strong>
+    </article>
+  <% }) %>
+</section>
+
+<section class="content-grid">
+  <div class="section-heading">
+    <p class="section-label">Latest Writing</p>
+    <h2>Notes and updates</h2>
+  </div>
+  <div class="post-list">
+    <% site.posts.sort('date', -1).limit(5).forEach(function(post) { %>
+      <article class="post-card">
+        <a href="<%- url_for(post.path) %>">
+          <time><%= date(post.date, 'YYYY-MM-DD') %></time>
+          <h3><%= post.title %></h3>
+          <% if (post.excerpt) { %>
+            <p><%- strip_html(post.excerpt).substring(0, 120) %></p>
+          <% } %>
+        </a>
+      </article>
+    <% }) %>
+  </div>
+</section>

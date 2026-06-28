@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="<%= config.language || 'zh-CN' %>">
+  <%- partial('partial/head') %>
+  <body>
+    <div class="site-shell">
+      <%- partial('partial/header') %>
+      <main class="site-main">
+        <%- body %>
+      </main>
+      <%- partial('partial/footer') %>
+    </div>
+    <script src="<%- url_for('/js/main.js') %>"></script>
+  </body>
+</html>

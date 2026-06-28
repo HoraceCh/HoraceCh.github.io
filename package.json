@@ -1,0 +1,28 @@
+{
+  "name": "horace-personal-website",
+  "version": "0.1.0",
+  "private": true,
+  "hexo": {
+    "version": "7.3.0"
+  },
+  "description": "A Sukka-inspired minimal personal website and blog built with Hexo.",
+  "scripts": {
+    "server": "hexo server",
+    "dev": "hexo server",
+    "build": "hexo clean && hexo generate",
+    "build:pages": "node tools/build-pages.mjs",
+    "clean": "hexo clean",
+    "new": "hexo new"
+  },
+  "dependencies": {
+    "hexo": "^7.3.0",
+    "hexo-generator-archive": "^2.0.0",
+    "hexo-generator-category": "^2.0.0",
+    "hexo-generator-index": "^4.0.0",
+    "hexo-generator-tag": "^2.0.0",
+    "hexo-renderer-ejs": "^2.0.0",
+    "hexo-renderer-marked": "^7.0.0",
+    "hexo-server": "^3.0.0"
+  },
+  "devDependencies": {}
+}

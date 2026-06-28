@@ -1,0 +1,10 @@
+node_modules/
+public/
+db.json
+.serena/
+.deploy_git/
+.DS_Store
+Thumbs.db
+.env
+.hexo-pages.yml
+_multiconfig.yml

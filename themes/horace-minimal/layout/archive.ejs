@@ -1,0 +1,17 @@
+<section class="archive">
+  <div class="section-heading">
+    <p class="section-label">Archive</p>
+    <h1>全部文章</h1>
+  </div>
+  <div class="post-list">
+    <% page.posts.sort('date', -1).forEach(function(post) { %>
+      <article class="post-card">
+        <a href="<%- url_for(post.path) %>">
+          <time><%= date(post.date, 'YYYY-MM-DD') %></time>
+          <h3><%= post.title %></h3>
+          <% if (post.excerpt) { %><p><%- strip_html(post.excerpt).substring(0, 140) %></p><% } %>
+        </a>
+      </article>
+    <% }) %>
+  </div>
+</section>

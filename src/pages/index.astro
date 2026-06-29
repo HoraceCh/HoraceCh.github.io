@@ -2,106 +2,186 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import LinkButton from '../components/LinkButton.astro';
-import NoteCard from '../components/NoteCard.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import SectionHeading from '../components/SectionHeading.astro';
 
 const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
-const projects = (await getCollection('projects'))
+const projects = await getCollection('projects');
+const publicNotes = await getCollection('notes', ({ data }) => !data.draft);
+const featuredProject = projects
   .filter((project) => project.data.featured)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 4);
-const notes = (await getCollection('notes', ({ data }) => !data.draft && data.featured))
+  .at(0);
+const latestNote = publicNotes
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 4);
+  .at(0);
+
+const hubLinks = [
+  {
+    href: '/projects/',
+    label: 'Projects',
+    description: 'Scan active work in robotics, VLA learning, mechanical design, and AI-assisted tooling.',
+  },
+  {
+    href: '/notes/',
+    label: 'Notes',
+    description: 'Read the research notes, learning paths, paper templates, and project logs behind the work.',
+  },
+  {
+    href: '/resume/',
+    label: 'Resume',
+    description: 'See the recruiter-facing academic and engineering summary.',
+  },
+  {
+    href: 'https://github.com/HoraceCh',
+    label: 'GitHub',
+    description: 'Follow repositories, experiments, documentation, and public code.',
+    external: true,
+  },
+  {
+    href: '/contact/',
+    label: 'Contact',
+    description: 'Start a project discussion, research-learning exchange, or collaboration thread.',
+  },
+];
+
+const focusAreas = [
+  'Robotics',
+  'Embodied AI',
+  'Vision-Language-Action models',
+  'Mechanical design',
+  'Control systems',
+  'AI-assisted workflows',
+];
 ---
 
 <Layout
   title="Horace Chan"
   description="Mechanical Engineering student exploring Robotics, Embodied AI, and AI-assisted workflows."
 >
-  <section class="hero">
-    <p class="eyebrow">Personal research portfolio</p>
-    <h1>Horace Chan</h1>
-    <p class="lead">Mechanical Engineering student exploring Robotics, Embodied AI, and AI-assisted workflows.</p>
-    <p>
-      I document my learning, projects, and experiments across robot systems, VLA models, mechanical design, and
-      AI-assisted engineering workflows.
-    </p>
-    <div class="link-row">
-      <LinkButton href="/projects/" label="Projects" />
-      <LinkButton href="/notes/" label="Notes" />
-      <LinkButton href="/resume/" label="Resume" />
-      <LinkButton href="https://github.com/HoraceCh" label="GitHub" external />
-    </div>
-  </section>
+  <div class="home-page">
+    <section class="home-entry" aria-labelledby="home-title">
+      <div class="home-intro">
+        <p class="home-kicker">Personal research portfolio</p>
+        <div class="name-lockup">
+          <div class="name-copy">
+            <h1 id="home-title">
+              <span>Horace</span>
+              <span>Chan</span>
+            </h1>
+          </div>
+          <div class="name-portrait" aria-hidden="true">
+            <img class="portrait-mark" src="/assets/profile-mark.png" alt="" loading="eager" />
+          </div>
+        </div>
+        <p class="home-thesis">
+          Mechanical Engineering student exploring Robotics, Embodied AI, and AI-assisted workflows.
+        </p>
+        <p class="home-summary">
+          I focus on the intersection of mechanical systems, robot control, and emerging AI models for embodied
+          intelligence.
+        </p>
+        <nav class="link-row home-primary-links" aria-label="Primary homepage links">
+          <LinkButton href="/projects/" label="View Projects" />
+          <LinkButton href="/notes/" label="Read Notes" />
+          <LinkButton href="/resume/" label="Resume" />
+          <LinkButton href="https://github.com/HoraceCh" label="GitHub" external />
+        </nav>
+      </div>
 
-  <section class="section">
-    <SectionHeading eyebrow="Focus" title="Current Areas" />
-    <div class="card-grid">
-      <article class="card">
-        <h3>Mechanical Engineering</h3>
-        <p>Building a foundation in mechanical design, systems thinking, CAD work, and engineering documentation.</p>
-      </article>
-      <article class="card">
-        <h3>Robotics & Control</h3>
-        <p>Studying robot systems, control fundamentals, and the bridge between hardware and behavior.</p>
-      </article>
-      <article class="card">
-        <h3>Embodied AI / VLA</h3>
-        <p>Following early learning around perception, language, action, and robot learning research.</p>
-      </article>
-      <article class="card">
-        <h3>AI-assisted Workflows</h3>
-        <p>Testing practical workflows for research, paper reading, project logs, and technical learning.</p>
-      </article>
-    </div>
-  </section>
+      <aside class="identity-plate" aria-label="Profile snapshot">
+        <p class="plate-label">Profile snapshot</p>
+        <dl>
+          <div>
+            <dt>Base</dt>
+            <dd>Mechanical Engineering</dd>
+          </div>
+          <div>
+            <dt>Direction</dt>
+            <dd>Robotics + Embodied AI</dd>
+          </div>
+          <div>
+            <dt>Method</dt>
+            <dd>Projects, notes, reproducible workflows</dd>
+          </div>
+        </dl>
+        <p class="plate-note">Early-stage, public, and deliberately documented.</p>
+      </aside>
+    </section>
 
-  <section class="section">
-    <SectionHeading
-      eyebrow="Projects"
-      title="Selected Projects"
-      description="A short preview of active project areas and documentation spaces."
-    />
-    <div class="card-grid">
-      {
-        projects.map((project) => (
-          <ProjectCard
-            title={project.data.title}
-            description={project.data.description}
-            status={project.data.status}
-            category={project.data.category}
-            tags={project.data.tags}
-            href={`/projects/${toSlug(project.id)}/`}
-            links={project.data.links}
-          />
-        ))
-      }
-    </div>
-  </section>
+    <section class="home-section" aria-labelledby="home-focus">
+      <div class="home-section-head">
+        <p class="eyebrow">Focus</p>
+        <h2 id="home-focus">What I work on</h2>
+      </div>
+      <ul class="focus-strip" aria-label="Current focus areas">
+        {focusAreas.map((area) => <li>{area}</li>)}
+      </ul>
+    </section>
 
-  <section class="section">
-    <SectionHeading
-      eyebrow="Notes"
-      title="Latest / Featured Notes"
-      description="Early entries for the research notes and learning system."
-    />
-    <div class="card-grid">
-      {
-        notes.map((note) => (
-          <NoteCard
-            title={note.data.title}
-            description={note.data.description}
-            date={note.data.date}
-            category={note.data.category}
-            status={note.data.status}
-            type={note.data.type}
-            tags={note.data.tags}
-            href={`/notes/${toSlug(note.id)}/`}
-          />
-        ))
-      }
-    </div>
-  </section>
+    <section class="home-section" aria-labelledby="home-credibility">
+      <div class="home-section-head">
+        <p class="eyebrow">Credibility</p>
+        <h2 id="home-credibility">Why this direction is grounded</h2>
+      </div>
+      <div class="credibility-grid">
+        <article>
+          <p class="proof-mark">ME</p>
+          <h3>Engineering foundation</h3>
+          <p>Mechanical design, systems thinking, control fundamentals, and documentation are the base layer.</p>
+        </article>
+        <article>
+          <p class="proof-mark">AI</p>
+          <h3>Research direction</h3>
+          <p>Embodied AI and VLA models are explored through reading notes, templates, and small applied projects.</p>
+        </article>
+        <article>
+          <p class="proof-mark">LOG</p>
+          <h3>Public work trail</h3>
+          <p>Projects and notes are kept visible so the learning path can be inspected instead of merely claimed.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="home-section home-hub" aria-labelledby="home-explore">
+      <div class="home-section-head">
+        <p class="eyebrow">Explore</p>
+        <h2 id="home-explore">Where to go next</h2>
+      </div>
+      <div class="hub-grid">
+        {hubLinks.map((link) => (
+          <a
+            class="hub-link"
+            href={link.href}
+            target={link.external ? '_blank' : undefined}
+            rel={link.external ? 'noopener noreferrer' : undefined}
+          >
+            <span>{link.label}</span>
+            <small>{link.description}</small>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    {(featuredProject || latestNote) && (
+      <section class="home-section home-trail" aria-labelledby="home-trail">
+        <div class="home-section-head">
+          <p class="eyebrow">Evidence trail</p>
+          <h2 id="home-trail">Recent public work</h2>
+        </div>
+        <div class="trail-list">
+          {featuredProject && (
+            <a href={`/projects/${toSlug(featuredProject.id)}/`}>
+              <strong>Featured project</strong>
+              <span>{featuredProject.data.title}</span>
+            </a>
+          )}
+          {latestNote && (
+            <a href={`/notes/${toSlug(latestNote.id)}/`}>
+              <strong>Latest note</strong>
+              <span>{latestNote.data.title}</span>
+            </a>
+          )}
+        </div>
+      </section>
+    )}
+  </div>
 </Layout>

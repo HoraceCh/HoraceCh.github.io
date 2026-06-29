@@ -1,0 +1,47 @@
+---
+import NoteCard from './NoteCard.astro';
+
+interface NoteData {
+  title: string;
+  description: string;
+  date: Date;
+  category: string;
+  status: string;
+  type: string;
+  tags: string[];
+}
+
+interface NoteItem {
+  id: string;
+  data: NoteData;
+}
+
+interface Props {
+  notes: NoteItem[];
+  emptyMessage?: string;
+}
+
+const { notes, emptyMessage = 'No public notes here yet.' } = Astro.props;
+const noteSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
+---
+
+{
+  notes.length > 0 ? (
+    <div class="card-grid all-notes-grid" aria-label="Notes">
+      {notes.map((note) => (
+        <NoteCard
+          title={note.data.title}
+          description={note.data.description}
+          date={note.data.date}
+          category={note.data.category}
+          status={note.data.status}
+          type={note.data.type}
+          tags={note.data.tags}
+          href={`/notes/${noteSlug(note.id)}/`}
+        />
+      ))}
+    </div>
+  ) : (
+    <p class="empty-state">{emptyMessage}</p>
+  )
+}

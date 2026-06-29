@@ -1,5 +1,6 @@
 ---
 import SectionHeading from './SectionHeading.astro';
+import { slugify } from '../utils/slugify';
 
 interface Category {
   name: string;
@@ -12,7 +13,6 @@ interface Props {
 }
 
 const { categories } = Astro.props;
-const anchorFor = (name: string) => `category-${name.toLowerCase().replaceAll(' ', '-').replaceAll('&', 'and')}`;
 ---
 
 <section class="section" aria-labelledby="note-categories-title">
@@ -25,11 +25,11 @@ const anchorFor = (name: string) => `category-${name.toLowerCase().replaceAll(' 
   <div class="category-grid">
     {
       categories.map((category) => (
-        <article class="category-item" id={anchorFor(category.name)}>
+        <article class="category-item" id={`category-${slugify(category.name)}`}>
           <h3>{category.name}</h3>
           <p>{category.description}</p>
           <p class="meta">{category.count} public note{category.count === 1 ? '' : 's'}</p>
-          <a href="#all-notes">View related notes</a>
+          <a href={`/notes/categories/${slugify(category.name)}/`}>Browse category</a>
         </article>
       ))
     }

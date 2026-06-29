@@ -319,6 +319,10 @@ li {
   background: var(--surface);
 }
 
+.path-card h3 a {
+  text-decoration-color: var(--accent);
+}
+
 .path-steps {
   display: grid;
   gap: 6px;
@@ -329,6 +333,11 @@ li {
 .path-steps li {
   color: var(--text);
   line-height: 1.5;
+}
+
+.path-steps-wide {
+  max-width: 760px;
+  margin-bottom: 0;
 }
 
 .path-notes {
@@ -414,6 +423,60 @@ li {
   font-size: 1rem;
 }
 
+.browse-section {
+  border-top-color: var(--line);
+}
+
+.browse-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.browse-group {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+  background: var(--surface);
+}
+
+.browse-group h3 {
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.browse-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.browse-pills a,
+.browse-pills > li > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.browse-pills small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.filter-hero {
+  padding: 36px 0 18px;
+}
+
 .compact-note-list {
   display: grid;
   gap: 10px;
@@ -493,6 +556,13 @@ li {
   padding-left: 1.1rem;
 }
 
+.empty-state {
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  padding: 18px;
+  background: var(--surface);
+}
+
 .tag-row {
   display: flex;
   flex-wrap: wrap;
@@ -523,6 +593,15 @@ li {
   color: var(--accent);
   font-size: 0.85rem;
   line-height: 1.4;
+}
+
+.tag-list a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.tag-list a:hover {
+  color: var(--text);
 }
 
 .tag-list-large {
@@ -561,6 +640,7 @@ li {
   .knowledge-flow,
   .knowledge-map,
   .path-grid,
+  .browse-grid,
   .metadata-list {
     grid-template-columns: 1fr;
   }

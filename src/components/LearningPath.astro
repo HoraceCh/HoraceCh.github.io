@@ -15,6 +15,7 @@ interface PathItem {
   purpose: string;
   steps: string[];
   notes: PathNote[];
+  href?: string;
 }
 
 interface Props {
@@ -35,7 +36,7 @@ const { paths } = Astro.props;
     {
       paths.map((path) => (
         <article class="path-card">
-          <h3>{path.title}</h3>
+          <h3>{path.href ? <a href={path.href}>{path.title}</a> : path.title}</h3>
           <p>{path.purpose}</p>
           <ol class="path-steps">
             {path.steps.map((step) => (

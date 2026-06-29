@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import TagList from '../../components/TagList.astro';
+import { slugify } from '../../utils/slugify';
 
 const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
 const noteHref = (id: string) => `/notes/${toSlug(id)}/`;
@@ -51,7 +52,7 @@ const prerequisiteItems = note.data.prerequisites.map((item: string) => ({
         <dl class="metadata-list">
           <div>
             <dt>Category</dt>
-            <dd>{note.data.category}</dd>
+            <dd><a href={`/notes/categories/${slugify(note.data.category)}/`}>{note.data.category}</a></dd>
           </div>
           {note.data.subcategory && (
             <div>
@@ -62,7 +63,10 @@ const prerequisiteItems = note.data.prerequisites.map((item: string) => ({
           {note.data.path && (
             <div>
               <dt>Learning path</dt>
-              <dd>{note.data.path}{note.data.order ? ` / step ${note.data.order}` : ''}</dd>
+              <dd>
+                <a href={`/notes/paths/${slugify(note.data.path)}/`}>{note.data.path}</a>
+                {note.data.order ? ` / step ${note.data.order}` : ''}
+              </dd>
             </div>
           )}
           {note.data.level && (
@@ -109,7 +113,7 @@ const prerequisiteItems = note.data.prerequisites.map((item: string) => ({
 
       <div>
         <h3>Tags</h3>
-        <TagList tags={note.data.tags} />
+        <TagList tags={note.data.tags} linkBase="/notes/tags" />
       </div>
     </aside>
 

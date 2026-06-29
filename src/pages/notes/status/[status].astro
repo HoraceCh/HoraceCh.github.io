@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import BrowsePills from '../../../components/BrowsePills.astro';
+import Layout from '../../../layouts/Layout.astro';
+import NoteList from '../../../components/NoteList.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import { statusDescriptions } from '../../../utils/notes';
+import { slugify } from '../../../utils/slugify';
+
+export async function getStaticPaths() {
+  return Object.entries(statusDescriptions).map(([status, description]) => ({
+    params: { status: slugify(status) },
+    props: { status, description },
+  }));
+}
+
+const { status, description } = Astro.props;
+const notes = (await getCollection('notes', ({ data }) => !data.draft))
+  .filter((note) => note.data.status === status)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const relatedCategories = [...new Set(notes.map((note) => note.data.category))]
+  .sort((a, b) => a.localeCompare(b))
+  .map((category) => ({
+    label: category,
+    href: `/notes/categories/${slugify(category)}/`,
+    count: notes.filter((note) => note.data.category === category).length,
+  }));
+const relatedPaths = [...new Set(notes.map((note) => note.data.path).filter(Boolean))]
+  .sort((a, b) => a.localeCompare(b))
+  .map((path) => ({
+    label: path,
+    href: `/notes/paths/${slugify(path)}/`,
+    count: notes.filter((note) => note.data.path === path).length,
+  }));
+---
+
+<Layout title={`${status} Notes`} description={description}>
+  <section class="article filter-hero">
+    <p class="eyebrow">Notes / Status</p>
+    <h1>{status}</h1>
+    <p class="lead">{description}</p>
+    <p>{notes.length} public note{notes.length === 1 ? '' : 's'} currently have this status.</p>
+  </section>
+
+  <section class="section">
+    <SectionHeading eyebrow="Notes" title={`${status} Notes`} />
+    <NoteList notes={notes} emptyMessage="No public notes have this status yet." />
+  </section>
+
+  {
+    relatedCategories.length > 0 && (
+      <section class="section browse-section">
+        <SectionHeading eyebrow="Related" title="Related Structure" />
+        <div class="browse-grid">
+          <BrowsePills label="Categories" items={relatedCategories} />
+          <BrowsePills label="Learning paths" items={relatedPaths} />
+        </div>
+      </section>
+    )
+  }
+</Layout>

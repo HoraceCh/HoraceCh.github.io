@@ -1,0 +1,70 @@
+---
+import { getCollection } from 'astro:content';
+import BrowsePills from '../../../components/BrowsePills.astro';
+import Layout from '../../../layouts/Layout.astro';
+import NoteList from '../../../components/NoteList.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import { categoryDefinitions, pathDefinitions } from '../../../utils/notes';
+import { slugify } from '../../../utils/slugify';
+
+export async function getStaticPaths() {
+  return categoryDefinitions.map((category) => ({
+    params: { category: slugify(category.name) },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+const notes = (await getCollection('notes', ({ data }) => !data.draft))
+  .filter((note) => note.data.category === category.name)
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999) || b.data.date.valueOf() - a.data.date.valueOf());
+const relatedPaths = pathDefinitions
+  .filter((path) => notes.some((note) => note.data.path === path.title))
+  .map((path) => ({
+    label: path.title,
+    href: `/notes/paths/${slugify(path.title)}/`,
+    count: notes.filter((note) => note.data.path === path.title).length,
+    description: path.purpose,
+  }));
+const relatedTags = [...new Set(notes.flatMap((note) => note.data.tags))]
+  .sort((a, b) => a.localeCompare(b))
+  .map((tag) => ({
+    label: tag,
+    href: `/notes/tags/${slugify(tag)}/`,
+    count: notes.filter((note) => note.data.tags.includes(tag)).length,
+  }));
+---
+
+<Layout title={`${category.name} Notes`} description={category.description}>
+  <section class="article filter-hero">
+    <p class="eyebrow">Notes / Category</p>
+    <h1>{category.name}</h1>
+    <p class="lead">{category.description}</p>
+    <p>{notes.length} public note{notes.length === 1 ? '' : 's'} in this category.</p>
+  </section>
+
+  <section class="section">
+    <SectionHeading eyebrow="Related" title="Related Learning Paths" />
+    {
+      relatedPaths.length > 0 ? (
+        <BrowsePills label="Paths" items={relatedPaths} />
+      ) : (
+        <p class="empty-state">No public learning paths are linked to this category yet.</p>
+      )
+    }
+  </section>
+
+  <section class="section">
+    <SectionHeading eyebrow="Notes" title={`Notes in ${category.name}`} />
+    <NoteList notes={notes} emptyMessage="No public notes in this category yet." />
+  </section>
+
+  {
+    relatedTags.length > 0 && (
+      <section class="section">
+        <SectionHeading eyebrow="Tags" title="Tags in This Category" />
+        <BrowsePills label="Tags" items={relatedTags} />
+      </section>
+    )
+  }
+</Layout>

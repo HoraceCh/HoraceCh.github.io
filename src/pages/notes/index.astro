@@ -1,19 +1,21 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import BrowsePills from '../../components/BrowsePills.astro';
 import KnowledgeMap from '../../components/KnowledgeMap.astro';
 import LearningPath from '../../components/LearningPath.astro';
-import NoteCard from '../../components/NoteCard.astro';
 import NoteCategoryOverview from '../../components/NoteCategoryOverview.astro';
+import NoteList from '../../components/NoteList.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import StartHere from '../../components/StartHere.astro';
+import { categoryDefinitions, pathDefinitions, statusDescriptions, typeLabels } from '../../utils/notes';
+import { noteSlug, slugify } from '../../utils/slugify';
 
-const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
-const noteHref = (id: string) => `/notes/${toSlug(id)}/`;
+const noteHref = (id: string) => `/notes/${noteSlug(id)}/`;
 const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
-const notesBySlug = new Map(notes.map((note) => [toSlug(note.id), note]));
+const notesBySlug = new Map(notes.map((note) => [noteSlug(note.id), note]));
 
 const startHereSlugs = [
   {
@@ -49,40 +51,9 @@ const startHereEntries = startHereSlugs
   })
   .filter(Boolean);
 
-const pathDefinitions = [
-  {
-    title: 'Robotics Foundations',
-    purpose: 'Build the engineering and control background needed for robot systems.',
-    steps: ['Mechanical design basics', 'Kinematics', 'Dynamics', 'Control systems', 'Simulation', 'Project logs'],
-  },
-  {
-    title: 'Embodied AI / VLA',
-    purpose: 'Understand how models connect vision, language, and action in robotic systems.',
-    steps: [
-      'Machine learning basics',
-      'Vision-language models',
-      'Robot learning',
-      'VLA papers',
-      'Datasets and benchmarks',
-      'Reproduction / implementation notes',
-    ],
-  },
-  {
-    title: 'AI-assisted Research Workflow',
-    purpose: 'Use AI tools to improve literature search, knowledge organization, and project execution.',
-    steps: [
-      'Literature search',
-      'Paper reading template',
-      'Knowledge extraction',
-      'Note organization',
-      'Agent workflow',
-      'Project documentation',
-    ],
-  },
-];
-
 const learningPaths = pathDefinitions.map((path) => ({
   ...path,
+  href: `/notes/paths/${slugify(path.title)}/`,
   notes: notes
     .filter((note) => note.data.path === path.title)
     .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999))
@@ -95,36 +66,37 @@ const learningPaths = pathDefinitions.map((path) => ({
     })),
 }));
 
-const categoryDefinitions = [
-  {
-    name: 'Paper Reading',
-    description: 'Structured records for papers, methods, assumptions, and open questions.',
-  },
-  {
-    name: 'Robotics & Control',
-    description: 'Notes for kinematics, dynamics, control systems, simulation, and robot behavior.',
-  },
-  {
-    name: 'Mechanical Design',
-    description: 'CAD, mechanism design, manufacturing, and engineering design reflection notes.',
-  },
-  {
-    name: 'AI-assisted Workflow',
-    description: 'Workflows for literature search, note-taking, project management, and agent-assisted work.',
-  },
-  {
-    name: 'Project Logs',
-    description: 'Implementation records where reading and learning become projects.',
-  },
-  {
-    name: 'Learning Methods',
-    description: 'Meta-notes about the knowledge system, learning strategy, and documentation habits.',
-  },
-];
-
 const categories = categoryDefinitions.map((category) => ({
   ...category,
   count: notes.filter((note) => note.data.category === category.name).length,
+}));
+
+const tagCounts = [...new Set(notes.flatMap((note) => note.data.tags))]
+  .sort((a, b) => a.localeCompare(b))
+  .map((tag) => ({
+    label: tag,
+    href: `/notes/tags/${slugify(tag)}/`,
+    count: notes.filter((note) => note.data.tags.includes(tag)).length,
+  }));
+
+const pathCounts = pathDefinitions.map((path) => ({
+  label: path.title,
+  href: `/notes/paths/${slugify(path.title)}/`,
+  count: notes.filter((note) => note.data.path === path.title).length,
+  description: path.purpose,
+}));
+
+const typeCounts = Object.entries(typeLabels).map(([type, label]) => ({
+  label,
+  href: `/notes/types/${slugify(type)}/`,
+  count: notes.filter((note) => note.data.type === type).length,
+}));
+
+const statusCounts = Object.entries(statusDescriptions).map(([status, description]) => ({
+  label: status,
+  href: `/notes/status/${slugify(status)}/`,
+  count: notes.filter((note) => note.data.status === status).length,
+  description,
 }));
 
 const recentNotes = notes.slice(0, 4);
@@ -133,7 +105,6 @@ const allNotes = [...notes].sort((a, b) => {
   if (categoryCompare !== 0) return categoryCompare;
   return (a.data.order ?? 999) - (b.data.order ?? 999);
 });
-const tags = [...new Set(notes.flatMap((note) => note.data.tags))].sort((a, b) => a.localeCompare(b));
 ---
 
 <Layout title="Notes" description="Research notes, learning notes, paper reading, and project logs.">
@@ -151,6 +122,29 @@ const tags = [...new Set(notes.flatMap((note) => note.data.tags))].sort((a, b) =
   <KnowledgeMap />
   <LearningPath paths={learningPaths} />
   <NoteCategoryOverview categories={categories} />
+
+  <section class="section browse-section">
+    <SectionHeading
+      eyebrow="Browse"
+      title="Explore by Topic"
+      description="Use these entry points after the knowledge map when you want to narrow the notes by category, tag, path, type, or status."
+    />
+    <div class="browse-grid">
+      <BrowsePills
+        label="Categories"
+        items={categories.map((category) => ({
+          label: category.name,
+          href: `/notes/categories/${slugify(category.name)}/`,
+          count: category.count,
+          description: category.description,
+        }))}
+      />
+      <BrowsePills label="Learning paths" items={pathCounts} />
+      <BrowsePills label="Tags" items={tagCounts} />
+      <BrowsePills label="Note types" items={typeCounts} />
+      <BrowsePills label="Statuses" items={statusCounts} />
+    </div>
+  </section>
 
   <section class="section recent-notes">
     <SectionHeading
@@ -174,38 +168,8 @@ const tags = [...new Set(notes.flatMap((note) => note.data.tags))].sort((a, b) =
     <SectionHeading
       eyebrow="Index"
       title="All Notes"
-      description="Full public note index. Category and tag pages are intentionally deferred to a later stage."
+      description="Full public note index. Chronology is secondary to topic structure."
     />
-    <div class="card-grid all-notes-grid" aria-label="All notes">
-      {
-        allNotes.map((note) => (
-          <NoteCard
-            title={note.data.title}
-            description={note.data.description}
-            date={note.data.date}
-            category={note.data.category}
-            status={note.data.status}
-            type={note.data.type}
-            tags={note.data.tags}
-            href={noteHref(note.id)}
-          />
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="section">
-    <SectionHeading eyebrow="Tags" title="Current Tags" description="Tags show the vocabulary emerging from the notes." />
-    {
-      tags.length > 0 ? (
-        <ul class="tag-list tag-list-large">
-          {tags.map((tag) => (
-            <li>{tag}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>No public tags yet.</p>
-      )
-    }
+    <NoteList notes={allNotes} />
   </section>
 </Layout>

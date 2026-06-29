@@ -1,0 +1,64 @@
+---
+import { getCollection } from 'astro:content';
+import BrowsePills from '../../../components/BrowsePills.astro';
+import Layout from '../../../layouts/Layout.astro';
+import NoteList from '../../../components/NoteList.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import { pathDefinitions } from '../../../utils/notes';
+import { slugify } from '../../../utils/slugify';
+
+export async function getStaticPaths() {
+  return pathDefinitions.map((path) => ({
+    params: { path: slugify(path.title) },
+    props: { path },
+  }));
+}
+
+const { path } = Astro.props;
+const notes = (await getCollection('notes', ({ data }) => !data.draft))
+  .filter((note) => note.data.path === path.title)
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999) || b.data.date.valueOf() - a.data.date.valueOf());
+const relatedCategories = [...new Set(notes.map((note) => note.data.category))]
+  .sort((a, b) => a.localeCompare(b))
+  .map((category) => ({
+    label: category,
+    href: `/notes/categories/${slugify(category)}/`,
+    count: notes.filter((note) => note.data.category === category).length,
+  }));
+const relatedTags = [...new Set(notes.flatMap((note) => note.data.tags))]
+  .sort((a, b) => a.localeCompare(b))
+  .map((tag) => ({
+    label: tag,
+    href: `/notes/tags/${slugify(tag)}/`,
+    count: notes.filter((note) => note.data.tags.includes(tag)).length,
+  }));
+---
+
+<Layout title={`${path.title} Notes`} description={path.purpose}>
+  <section class="article filter-hero">
+    <p class="eyebrow">Notes / Learning Path</p>
+    <h1>{path.title}</h1>
+    <p class="lead">{path.purpose}</p>
+    <p>{notes.length} public note{notes.length === 1 ? '' : 's'} currently belong to this path.</p>
+  </section>
+
+  <section class="section">
+    <SectionHeading eyebrow="Sequence" title="Path Sequence" />
+    <ol class="path-steps path-steps-wide">
+      {path.steps.map((step) => <li>{step}</li>)}
+    </ol>
+  </section>
+
+  <section class="section">
+    <SectionHeading eyebrow="Notes" title="Notes in This Path" />
+    <NoteList notes={notes} emptyMessage="No public notes in this path yet." />
+  </section>
+
+  <section class="section browse-section">
+    <SectionHeading eyebrow="Related" title="Related Topics" />
+    <div class="browse-grid">
+      <BrowsePills label="Categories" items={relatedCategories} />
+      <BrowsePills label="Tags" items={relatedTags} />
+    </div>
+  </section>
+</Layout>

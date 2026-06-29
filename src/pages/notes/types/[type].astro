@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+import BrowsePills from '../../../components/BrowsePills.astro';
+import Layout from '../../../layouts/Layout.astro';
+import NoteList from '../../../components/NoteList.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import { typeLabels } from '../../../utils/notes';
+import { slugify } from '../../../utils/slugify';
+
+export async function getStaticPaths() {
+  return Object.entries(typeLabels).map(([type, label]) => ({
+    params: { type: slugify(type) },
+    props: { type, label },
+  }));
+}
+
+const { type, label } = Astro.props;
+const notes = (await getCollection('notes', ({ data }) => !data.draft))
+  .filter((note) => note.data.type === type)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const relatedCategories = [...new Set(notes.map((note) => note.data.category))]
+  .sort((a, b) => a.localeCompare(b))
+  .map((category) => ({
+    label: category,
+    href: `/notes/categories/${slugify(category)}/`,
+    count: notes.filter((note) => note.data.category === category).length,
+  }));
+const relatedTags = [...new Set(notes.flatMap((note) => note.data.tags))]
+  .sort((a, b) => a.localeCompare(b))
+  .map((tag) => ({
+    label: tag,
+    href: `/notes/tags/${slugify(tag)}/`,
+    count: notes.filter((note) => note.data.tags.includes(tag)).length,
+  }));
+---
+
+<Layout title={`${label} Notes`} description={`Notes with type ${label}.`}>
+  <section class="article filter-hero">
+    <p class="eyebrow">Notes / Type</p>
+    <h1>{label}</h1>
+    <p class="lead">{notes.length} public note{notes.length === 1 ? '' : 's'} use this note type.</p>
+  </section>
+
+  <section class="section">
+    <SectionHeading eyebrow="Notes" title={`${label} Notes`} />
+    <NoteList notes={notes} emptyMessage="No public notes use this type yet." />
+  </section>
+
+  {
+    relatedCategories.length > 0 && (
+      <section class="section browse-section">
+        <SectionHeading eyebrow="Related" title="Related Topics" />
+        <div class="browse-grid">
+          <BrowsePills label="Categories" items={relatedCategories} />
+          <BrowsePills label="Tags" items={relatedTags} />
+        </div>
+      </section>
+    )
+  }
+</Layout>

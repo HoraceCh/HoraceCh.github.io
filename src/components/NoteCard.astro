@@ -29,5 +29,5 @@ const formattedDate = new Intl.DateTimeFormat('en', {
   <h3><a href={href}>{title}</a></h3>
   <p>{description}</p>
   <p class="meta">{formattedDate} / {type}</p>
-  <TagList tags={tags} />
+  <TagList tags={tags} linkBase="/notes/tags" />
 </article>

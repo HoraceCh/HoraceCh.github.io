@@ -1,0 +1,45 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import TagList from '../../components/TagList.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.id.replace(/\.mdx?$/, '').replace(/\/index$/, '') },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<Layout title={project.data.title} description={project.data.description}>
+  <article class="article">
+    <p class="back-link"><a href="/projects/">Back to Projects</a></p>
+    <p class="eyebrow">{project.data.category}</p>
+    <h1>{project.data.title}</h1>
+    <p class="lead">{project.data.description}</p>
+    <div class="card-meta article-meta">
+      <StatusBadge status={project.data.status} />
+      <span>{project.data.category}</span>
+    </div>
+    <TagList tags={project.data.tags} />
+    {
+      (project.data.links.github || project.data.links.demo || project.data.links.notes) && (
+        <div class="link-row">
+          {project.data.links.github && (
+            <a href={project.data.links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+          )}
+          {project.data.links.demo && (
+            <a href={project.data.links.demo} target="_blank" rel="noopener noreferrer">Demo</a>
+          )}
+          {project.data.links.notes && <a href={project.data.links.notes}>Related Notes</a>}
+        </div>
+      )
+    }
+    <Content />
+  </article>
+</Layout>

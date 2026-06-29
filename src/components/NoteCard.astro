@@ -1,0 +1,33 @@
+---
+import StatusBadge from './StatusBadge.astro';
+import TagList from './TagList.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  category: string;
+  status: string;
+  type: string;
+  tags: string[];
+  href: string;
+}
+
+const { title, description, date, category, status, type, tags, href } = Astro.props;
+const formattedDate = new Intl.DateTimeFormat('en', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+}).format(date);
+---
+
+<article class="card note-card">
+  <div class="card-meta">
+    <StatusBadge status={status} />
+    <span>{category}</span>
+  </div>
+  <h3><a href={href}>{title}</a></h3>
+  <p>{description}</p>
+  <p class="meta">{formattedDate} / {type}</p>
+  <TagList tags={tags} linkBase="/notes/tags" />
+</article>

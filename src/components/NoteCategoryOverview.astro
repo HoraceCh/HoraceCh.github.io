@@ -1,0 +1,37 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { slugify } from '../utils/slugify';
+
+interface Category {
+  name: string;
+  description: string;
+  count: number;
+}
+
+interface Props {
+  categories: Category[];
+}
+
+const { categories } = Astro.props;
+---
+
+<section class="section" aria-labelledby="note-categories-title">
+  <SectionHeading
+    id="note-categories-title"
+    eyebrow="Categories"
+    title="Note Categories"
+    description="Categories describe the role each note plays in the larger knowledge system."
+  />
+  <div class="category-grid">
+    {
+      categories.map((category) => (
+        <article class="category-item" id={`category-${slugify(category.name)}`}>
+          <h3>{category.name}</h3>
+          <p>{category.description}</p>
+          <p class="meta">{category.count} public note{category.count === 1 ? '' : 's'}</p>
+          <a href={`/notes/categories/${slugify(category.name)}/`}>Browse category</a>
+        </article>
+      ))
+    }
+  </div>
+</section>

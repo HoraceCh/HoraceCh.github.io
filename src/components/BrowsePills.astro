@@ -1,0 +1,42 @@
+---
+interface Item {
+  label: string;
+  href?: string;
+  count?: number;
+  description?: string;
+}
+
+interface Props {
+  label: string;
+  items: Item[];
+}
+
+const { label, items } = Astro.props;
+---
+
+<div class="browse-group">
+  <h3>{label}</h3>
+  {
+    items.length > 0 ? (
+      <ul class="browse-pills">
+        {items.map((item) => (
+          <li>
+            {item.href ? (
+              <a href={item.href} title={item.description}>
+                <span>{item.label}</span>
+                {typeof item.count === 'number' && <small>{item.count}</small>}
+              </a>
+            ) : (
+              <span title={item.description}>
+                <span>{item.label}</span>
+                {typeof item.count === 'number' && <small>{item.count}</small>}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty-state empty-state-inline">No related items yet.</p>
+    )
+  }
+</div>

@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+
+const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
+const projects = (await getCollection('projects')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<Layout title="Projects" description="A scan-friendly index of projects and engineering work.">
+  <section class="article">
+    <p class="eyebrow">Projects</p>
+    <h1>Project Index</h1>
+    <p>
+      This page collects selected public projects, ongoing learning systems, and engineering work. Some entries are
+      complete repositories, while others are documented as ongoing, planned, or coursework-oriented project spaces.
+    </p>
+  </section>
+
+  <section class="section">
+    <SectionHeading
+      eyebrow="Index"
+      title="Selected and Ongoing Work"
+      description="Cards are intentionally short so projects can be scanned quickly."
+    />
+    <div class="card-grid" aria-label="Projects">
+      {
+        projects.map((project) => (
+          <ProjectCard
+            title={project.data.title}
+            description={project.data.description}
+            status={project.data.status}
+            category={project.data.category}
+            tags={project.data.tags}
+            href={`/projects/${toSlug(project.id)}/`}
+            links={project.data.links}
+          />
+        ))
+      }
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,22 @@
+---
+interface Props {
+  tags: string[];
+  linkBase?: string;
+}
+
+import { slugify } from '../utils/slugify';
+
+const { tags, linkBase } = Astro.props;
+---
+
+{
+  tags.length > 0 && (
+    <ul class="tag-list" aria-label="Tags">
+      {tags.map((tag) => (
+        <li>
+          {linkBase ? <a href={`${linkBase}/${slugify(tag)}/`}>{tag}</a> : tag}
+        </li>
+      ))}
+    </ul>
+  )
+}

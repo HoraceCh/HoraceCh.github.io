@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import BrowsePills from '../../../components/BrowsePills.astro';
+import Layout from '../../../layouts/Layout.astro';
+import NoteList from '../../../components/NoteList.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import { slugify } from '../../../utils/slugify';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes', ({ data }) => !data.draft);
+  const tags = [...new Set(notes.flatMap((note) => note.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag: slugify(tag) },
+    props: { tag },
+  }));
+}
+
+const { tag } = Astro.props;
+const notes = (await getCollection('notes', ({ data }) => !data.draft))
+  .filter((note) => note.data.tags.includes(tag))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const relatedCategories = [...new Set(notes.map((note) => note.data.category))]
+  .sort((a, b) => a.localeCompare(b))
+  .map((category) => ({
+    label: category,
+    href: `/notes/categories/${slugify(category)}/`,
+    count: notes.filter((note) => note.data.category === category).length,
+  }));
+const relatedConcepts = [...new Set(notes.flatMap((note) => note.data.concepts))]
+  .sort((a, b) => a.localeCompare(b))
+  .map((concept) => ({
+    label: concept,
+    count: notes.filter((note) => note.data.concepts.includes(concept)).length,
+  }));
+---
+
+<Layout title={`#${tag} Notes`} description={`Notes tagged ${tag}.`}>
+  <section class="article filter-hero">
+    <p class="back-link"><a href="/notes/">Back to Notes</a></p>
+    <p class="eyebrow">Notes / Tag</p>
+    <h1>#{tag}</h1>
+    <p class="lead">{notes.length} public note{notes.length === 1 ? '' : 's'} use this tag.</p>
+  </section>
+
+  <section class="section">
+    <SectionHeading eyebrow="Related" title="Related Categories" />
+    <BrowsePills label="Categories" items={relatedCategories} />
+  </section>
+
+  {
+    relatedConcepts.length > 0 && (
+      <section class="section">
+        <SectionHeading eyebrow="Concepts" title="Related Concepts" />
+        <BrowsePills label="Concepts" items={relatedConcepts} />
+      </section>
+    )
+  }
+
+  <section class="section">
+    <SectionHeading eyebrow="Notes" title={`Notes Tagged ${tag}`} />
+    <NoteList notes={notes} emptyMessage="No public notes use this tag yet." />
+  </section>
+</Layout>

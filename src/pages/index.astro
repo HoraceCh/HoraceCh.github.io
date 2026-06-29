@@ -1,0 +1,107 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import LinkButton from '../components/LinkButton.astro';
+import NoteCard from '../components/NoteCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+
+const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
+const projects = (await getCollection('projects'))
+  .filter((project) => project.data.featured)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 4);
+const notes = (await getCollection('notes', ({ data }) => !data.draft && data.featured))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 4);
+---
+
+<Layout
+  title="Horace Chan"
+  description="Mechanical Engineering student exploring Robotics, Embodied AI, and AI-assisted workflows."
+>
+  <section class="hero">
+    <p class="eyebrow">Personal research portfolio</p>
+    <h1>Horace Chan</h1>
+    <p class="lead">Mechanical Engineering student exploring Robotics, Embodied AI, and AI-assisted workflows.</p>
+    <p>
+      I document my learning, projects, and experiments across robot systems, VLA models, mechanical design, and
+      AI-assisted engineering workflows.
+    </p>
+    <div class="link-row">
+      <LinkButton href="/projects/" label="Projects" />
+      <LinkButton href="/notes/" label="Notes" />
+      <LinkButton href="/resume/" label="Resume" />
+      <LinkButton href="https://github.com/HoraceCh" label="GitHub" external />
+    </div>
+  </section>
+
+  <section class="section">
+    <SectionHeading eyebrow="Focus" title="Current Areas" />
+    <div class="card-grid">
+      <article class="card">
+        <h3>Mechanical Engineering</h3>
+        <p>Building a foundation in mechanical design, systems thinking, CAD work, and engineering documentation.</p>
+      </article>
+      <article class="card">
+        <h3>Robotics & Control</h3>
+        <p>Studying robot systems, control fundamentals, and the bridge between hardware and behavior.</p>
+      </article>
+      <article class="card">
+        <h3>Embodied AI / VLA</h3>
+        <p>Following early learning around perception, language, action, and robot learning research.</p>
+      </article>
+      <article class="card">
+        <h3>AI-assisted Workflows</h3>
+        <p>Testing practical workflows for research, paper reading, project logs, and technical learning.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <SectionHeading
+      eyebrow="Projects"
+      title="Selected Projects"
+      description="A short preview of active project areas and documentation spaces."
+    />
+    <div class="card-grid">
+      {
+        projects.map((project) => (
+          <ProjectCard
+            title={project.data.title}
+            description={project.data.description}
+            status={project.data.status}
+            category={project.data.category}
+            tags={project.data.tags}
+            href={`/projects/${toSlug(project.id)}/`}
+            links={project.data.links}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <SectionHeading
+      eyebrow="Notes"
+      title="Latest / Featured Notes"
+      description="Early entries for the research notes and learning system."
+    />
+    <div class="card-grid">
+      {
+        notes.map((note) => (
+          <NoteCard
+            title={note.data.title}
+            description={note.data.description}
+            date={note.data.date}
+            category={note.data.category}
+            status={note.data.status}
+            type={note.data.type}
+            tags={note.data.tags}
+            href={`/notes/${toSlug(note.id)}/`}
+          />
+        ))
+      }
+    </div>
+  </section>
+</Layout>

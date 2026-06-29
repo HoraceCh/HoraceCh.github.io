@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LinkButton from '../components/LinkButton.astro';
+---
+
+<Layout title="Page Not Found" description="The requested page could not be found.">
+  <section class="article not-found">
+    <p class="eyebrow">404</p>
+    <h1>Page not found</h1>
+    <p class="lead">
+      This page may have moved while the Astro site is being prepared. The main portfolio and notes sections are still
+      available.
+    </p>
+    <div class="link-row">
+      <LinkButton href="/" label="Home" />
+      <LinkButton href="/projects/" label="Projects" />
+      <LinkButton href="/notes/" label="Notes" />
+    </div>
+  </section>
+</Layout>

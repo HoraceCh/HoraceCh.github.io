@@ -1,0 +1,68 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import StatusBadge from './StatusBadge.astro';
+
+interface PathNote {
+  title: string;
+  href: string;
+  status: string;
+  level?: string;
+  order?: number;
+}
+
+interface PathItem {
+  title: string;
+  purpose: string;
+  steps: string[];
+  notes: PathNote[];
+  href?: string;
+}
+
+interface Props {
+  paths: PathItem[];
+}
+
+const { paths } = Astro.props;
+---
+
+<section class="section learning-paths" aria-labelledby="learning-paths-title">
+  <SectionHeading
+    id="learning-paths-title"
+    eyebrow="Learning Paths"
+    title="Routes Through the Notes"
+    description="Each path shows the intended sequence and links to notes that already exist."
+  />
+  <div class="path-grid">
+    {
+      paths.map((path) => (
+        <article class="path-card">
+          <h3>{path.href ? <a href={path.href}>{path.title}</a> : path.title}</h3>
+          <p>{path.purpose}</p>
+          <ol class="path-steps">
+            {path.steps.map((step) => (
+              <li>{step}</li>
+            ))}
+          </ol>
+          <div class="path-notes">
+            <h4>Related notes</h4>
+            {path.notes.length > 0 ? (
+              <ul>
+                {path.notes.map((note) => (
+                  <li>
+                    <a href={note.href}>{note.title}</a>
+                    <span class="path-note-meta">
+                      <StatusBadge status={note.status} />
+                      {note.level && <span>{note.level}</span>}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No public notes in this path yet.</p>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>

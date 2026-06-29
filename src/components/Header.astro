@@ -1,0 +1,26 @@
+---
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/about/', label: 'About' },
+  { href: '/projects/', label: 'Projects' },
+  { href: '/notes/', label: 'Notes' },
+  { href: '/resume/', label: 'Resume' },
+  { href: '/contact/', label: 'Contact' },
+];
+
+const currentPath = Astro.url.pathname;
+const isCurrent = (href: string) => currentPath === href || (href !== '/' && currentPath.startsWith(href));
+---
+
+<header class="site-header">
+  <a class="site-brand" href="/">Horace Chan</a>
+  <nav class="site-nav" aria-label="Main navigation">
+    {
+      links.map((link) => (
+        <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+</header>

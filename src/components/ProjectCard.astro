@@ -1,0 +1,48 @@
+---
+import StatusBadge from './StatusBadge.astro';
+import TagList from './TagList.astro';
+
+interface ProjectLinks {
+  github?: string;
+  demo?: string;
+  notes?: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  status: string;
+  category: string;
+  tags: string[];
+  href: string;
+  links?: ProjectLinks;
+}
+
+const { title, description, status, category, tags, href, links = {} } = Astro.props;
+const visibleLinks = [
+  links.github && { href: links.github, label: 'GitHub', external: true },
+  links.demo && { href: links.demo, label: 'Demo', external: true },
+  links.notes && { href: links.notes, label: 'Notes', external: false },
+].filter(Boolean) as { href: string; label: string; external: boolean }[];
+---
+
+<article class="card project-card">
+  <div class="card-meta">
+    <StatusBadge status={status} />
+    <span>{category}</span>
+  </div>
+  <h3><a href={href}>{title}</a></h3>
+  <p>{description}</p>
+  <TagList tags={tags} />
+  {
+    visibleLinks.length > 0 && (
+      <div class="card-links" aria-label={`${title} links`}>
+        {visibleLinks.map((link) => (
+          <a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener noreferrer' : undefined}>
+            {link.label}
+          </a>
+        ))}
+      </div>
+    )
+  }
+</article>

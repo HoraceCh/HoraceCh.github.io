@@ -1,0 +1,123 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import TagList from '../../components/TagList.astro';
+import { slugify } from '../../utils/slugify';
+
+const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
+const noteHref = (id: string) => `/notes/${toSlug(id)}/`;
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes', ({ data }) => !data.draft);
+  return notes.map((note) => ({
+    params: { slug: note.id.replace(/\.mdx?$/, '').replace(/\/index$/, '') },
+    props: { note },
+  }));
+}
+
+const { note } = Astro.props;
+const allNotes = await getCollection('notes', ({ data }) => !data.draft);
+const notesBySlug = new Map(allNotes.map((entry) => [toSlug(entry.id), entry]));
+const { Content } = await render(note);
+const formattedDate = new Intl.DateTimeFormat('en', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(note.data.date);
+const relatedNotes = note.data.related.map((slug: string) => ({
+  slug,
+  note: notesBySlug.get(slug),
+}));
+const prerequisiteItems = note.data.prerequisites.map((item: string) => ({
+  label: item,
+  note: notesBySlug.get(item),
+}));
+---
+
+<Layout title={note.data.title} description={note.data.description}>
+  <article class="article">
+    <p class="back-link"><a href="/notes/">Back to Notes</a></p>
+    <p class="eyebrow">{note.data.category}</p>
+    <h1>{note.data.title}</h1>
+    <p class="lead">{note.data.description}</p>
+    <div class="card-meta article-meta">
+      <StatusBadge status={note.data.status} />
+      <span>{formattedDate}</span>
+      <span>{note.data.type}</span>
+    </div>
+
+    <aside class="note-context" aria-label="Note context">
+      <div>
+        <h2>Note Context</h2>
+        <dl class="metadata-list">
+          <div>
+            <dt>Category</dt>
+            <dd><a href={`/notes/categories/${slugify(note.data.category)}/`}>{note.data.category}</a></dd>
+          </div>
+          {note.data.subcategory && (
+            <div>
+              <dt>Subcategory</dt>
+              <dd>{note.data.subcategory}</dd>
+            </div>
+          )}
+          {note.data.path && (
+            <div>
+              <dt>Learning path</dt>
+              <dd>
+                <a href={`/notes/paths/${slugify(note.data.path)}/`}>{note.data.path}</a>
+                {note.data.order ? ` / step ${note.data.order}` : ''}
+              </dd>
+            </div>
+          )}
+          {note.data.level && (
+            <div>
+              <dt>Level</dt>
+              <dd>{note.data.level}</dd>
+            </div>
+          )}
+        </dl>
+      </div>
+
+      {note.data.concepts.length > 0 && (
+        <div>
+          <h3>Concepts</h3>
+          <TagList tags={note.data.concepts} />
+        </div>
+      )}
+
+      {note.data.prerequisites.length > 0 && (
+        <div>
+          <h3>Prerequisites</h3>
+          <ul class="context-link-list">
+            {prerequisiteItems.map((item) => (
+              <li>
+                {item.note ? <a href={noteHref(item.note.id)}>{item.note.data.title}</a> : <span>{item.label}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {relatedNotes.length > 0 && (
+        <div>
+          <h3>Related Notes</h3>
+          <ul class="context-link-list">
+            {relatedNotes.map((item) => (
+              <li>
+                {item.note ? <a href={noteHref(item.note.id)}>{item.note.data.title}</a> : <span>{item.slug}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div>
+        <h3>Tags</h3>
+        <TagList tags={note.data.tags} linkBase="/notes/tags" />
+      </div>
+    </aside>
+
+    <Content />
+  </article>
+</Layout>

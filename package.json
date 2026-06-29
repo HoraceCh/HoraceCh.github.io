@@ -7,10 +7,16 @@
   },
   "description": "A Sukka-inspired minimal personal website and blog built with Hexo.",
   "scripts": {
+    "dev": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "preview": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "server": "hexo server",
-    "dev": "hexo server",
-    "build": "hexo clean && hexo generate",
+    "hexo:dev": "hexo server",
+    "hexo:server": "hexo server",
+    "hexo:build": "hexo clean && hexo generate",
     "build:pages": "node tools/build-pages.mjs",
+    "hexo:clean": "hexo clean",
+    "hexo:new": "hexo new",
     "clean": "hexo clean",
     "new": "hexo new"
   },
@@ -24,5 +30,8 @@
     "hexo-renderer-marked": "^7.0.0",
     "hexo-server": "^3.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "astro": "^7.0.3",
+    "cross-env": "^10.1.0"
+  }
 }

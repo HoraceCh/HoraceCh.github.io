@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LinkButton from '../components/LinkButton.astro';
+---
+
+<Layout title="Research" description="Research interests and learning directions.">
+  <article class="article">
+    <p class="eyebrow">Research</p>
+    <h1>Research Directions</h1>
+    <p class="lead">
+      This page is kept as a lightweight place for research directions and reading paths. It is not part of the main
+      navigation for now.
+    </p>
+
+    <h2>Current Directions</h2>
+    <ul>
+      <li>Vision-Language-Action Models</li>
+      <li>Embodied AI</li>
+      <li>Robot learning</li>
+      <li>Robot control</li>
+      <li>AI-assisted research workflows</li>
+    </ul>
+
+    <h2>Reading Path</h2>
+    <p>
+      Detailed reading notes and learning paths now live in Notes. I will use this space when a research direction
+      becomes mature enough to organize separately from general notes and project pages.
+    </p>
+    <div class="link-row">
+      <LinkButton href="/notes/" label="Notes" />
+      <LinkButton href="/notes/paths/embodied-ai-vla/" label="Embodied AI / VLA" />
+      <LinkButton href="/notes/paths/robotics-foundations/" label="Robotics Foundations" />
+      <LinkButton href="/notes/paths/ai-assisted-research-workflow/" label="AI-assisted Workflow" />
+    </div>
+  </article>
+</Layout>

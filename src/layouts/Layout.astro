@@ -11,7 +11,7 @@ interface Props {
 const siteTitle = 'Horace Chan';
 const {
   title = siteTitle,
-  description = 'Personal research portfolio and notes system for robotics, embodied AI, and AI-assisted engineering workflows.',
+  description = 'Personal research portfolio and notes system for robotics, embodied AI, VLA models, mechanical design, and AI-assisted workflows.',
 } = Astro.props;
 const pageTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
@@ -25,11 +25,18 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+    <meta name="theme-color" content="#f7f7f4" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary" />
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="site-shell">
       <Header />
-      <main class="site-main">
+      <main class="site-main" id="main-content" tabindex="-1">
         <slot />
       </main>
       <Footer />

@@ -36,6 +36,7 @@ const relatedTags = [...new Set(notes.flatMap((note) => note.data.tags))]
 
 <Layout title={`${path.title} Notes`} description={path.purpose}>
   <section class="article filter-hero">
+    <p class="back-link"><a href="/notes/">Back to Notes</a></p>
     <p class="eyebrow">Notes / Learning Path</p>
     <h1>{path.title}</h1>
     <p class="lead">{path.purpose}</p>

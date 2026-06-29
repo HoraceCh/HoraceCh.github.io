@@ -36,6 +36,7 @@ const relatedConcepts = [...new Set(notes.flatMap((note) => note.data.concepts))
 
 <Layout title={`#${tag} Notes`} description={`Notes tagged ${tag}.`}>
   <section class="article filter-hero">
+    <p class="back-link"><a href="/notes/">Back to Notes</a></p>
     <p class="eyebrow">Notes / Tag</p>
     <h1>#{tag}</h1>
     <p class="lead">{notes.length} public note{notes.length === 1 ? '' : 's'} use this tag.</p>

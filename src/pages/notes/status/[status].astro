@@ -36,6 +36,7 @@ const relatedPaths = [...new Set(notes.map((note) => note.data.path).filter(Bool
 
 <Layout title={`${status} Notes`} description={description}>
   <section class="article filter-hero">
+    <p class="back-link"><a href="/notes/">Back to Notes</a></p>
     <p class="eyebrow">Notes / Status</p>
     <h1>{status}</h1>
     <p class="lead">{description}</p>

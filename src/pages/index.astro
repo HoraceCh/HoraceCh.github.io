@@ -1,10 +1,19 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import LinkButton from '../components/LinkButton.astro';
+import NoteCard from '../components/NoteCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SectionHeading from '../components/SectionHeading.astro';
 
 const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
-const projects = (await getCollection('projects')).slice(0, 3);
-const notes = (await getCollection('notes', ({ data }) => !data.draft)).slice(0, 3);
+const projects = (await getCollection('projects'))
+  .filter((project) => project.data.featured)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 4);
+const notes = (await getCollection('notes', ({ data }) => !data.draft && data.featured))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 4);
 ---
 
 <Layout
@@ -20,22 +29,19 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft)).slice(0,
       AI-assisted engineering workflows.
     </p>
     <div class="link-row">
-      <a href="/projects/">Projects</a>
-      <a href="/notes/">Notes</a>
-      <a href="/resume/">Resume</a>
-      <a href="https://github.com/HoraceCh" rel="noopener noreferrer" target="_blank">GitHub</a>
+      <LinkButton href="/projects/" label="Projects" />
+      <LinkButton href="/notes/" label="Notes" />
+      <LinkButton href="/resume/" label="Resume" />
+      <LinkButton href="https://github.com/HoraceCh" label="GitHub" external />
     </div>
   </section>
 
   <section class="section">
-    <div class="section-heading">
-      <p class="eyebrow">Focus</p>
-      <h2>Current Areas</h2>
-    </div>
+    <SectionHeading eyebrow="Focus" title="Current Areas" />
     <div class="card-grid">
       <article class="card">
         <h3>Mechanical Engineering</h3>
-        <p>Building a foundation in mechanical design, systems thinking, and engineering documentation.</p>
+        <p>Building a foundation in mechanical design, systems thinking, CAD work, and engineering documentation.</p>
       </article>
       <article class="card">
         <h3>Robotics & Control</h3>
@@ -52,41 +58,50 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft)).slice(0,
     </div>
   </section>
 
-  <section class="section split">
-    <div>
-      <div class="section-heading">
-        <p class="eyebrow">Projects</p>
-        <h2>Starter Project Index</h2>
-      </div>
-      <div class="stack">
-        {
-          projects.map((project) => (
-            <article class="card">
-              <p class="meta">{project.data.status} · {project.data.category}</p>
-              <h3><a href={`/projects/${toSlug(project.id)}/`}>{project.data.title}</a></h3>
-              <p>{project.data.description}</p>
-            </article>
-          ))
-        }
-      </div>
+  <section class="section">
+    <SectionHeading
+      eyebrow="Projects"
+      title="Selected Projects"
+      description="A short preview of active project areas and documentation spaces."
+    />
+    <div class="card-grid">
+      {
+        projects.map((project) => (
+          <ProjectCard
+            title={project.data.title}
+            description={project.data.description}
+            status={project.data.status}
+            category={project.data.category}
+            tags={project.data.tags}
+            href={`/projects/${toSlug(project.id)}/`}
+            links={project.data.links}
+          />
+        ))
+      }
     </div>
+  </section>
 
-    <div>
-      <div class="section-heading">
-        <p class="eyebrow">Notes</p>
-        <h2>Starter Notes</h2>
-      </div>
-      <div class="stack">
-        {
-          notes.map((note) => (
-            <article class="card">
-              <p class="meta">{note.data.status} · {note.data.category}</p>
-              <h3><a href={`/notes/${toSlug(note.id)}/`}>{note.data.title}</a></h3>
-              <p>{note.data.description}</p>
-            </article>
-          ))
-        }
-      </div>
+  <section class="section">
+    <SectionHeading
+      eyebrow="Notes"
+      title="Latest / Featured Notes"
+      description="Early entries for the research notes and learning system."
+    />
+    <div class="card-grid">
+      {
+        notes.map((note) => (
+          <NoteCard
+            title={note.data.title}
+            description={note.data.description}
+            date={note.data.date}
+            category={note.data.category}
+            status={note.data.status}
+            type={note.data.type}
+            tags={note.data.tags}
+            href={`/notes/${toSlug(note.id)}/`}
+          />
+        ))
+      }
     </div>
   </section>
 </Layout>

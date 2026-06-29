@@ -1,30 +1,211 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import KnowledgeMap from '../../components/KnowledgeMap.astro';
+import LearningPath from '../../components/LearningPath.astro';
+import NoteCard from '../../components/NoteCard.astro';
+import NoteCategoryOverview from '../../components/NoteCategoryOverview.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import StartHere from '../../components/StartHere.astro';
 
 const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
+const noteHref = (id: string) => `/notes/${toSlug(id)}/`;
 const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
+const notesBySlug = new Map(notes.map((note) => [toSlug(note.id), note]));
+
+const startHereSlugs = [
+  {
+    slug: 'ai-assisted-literature-workflow',
+    reason: 'Start here for the research workflow behind literature search and note organization.',
+  },
+  {
+    slug: 'robot-control-learning-map',
+    reason: 'Use this as the entry point for robotics and control foundations.',
+  },
+  {
+    slug: 'openvla-reading-template',
+    reason: 'Use this template before turning VLA papers into structured reading notes.',
+  },
+  {
+    slug: 'starting-this-personal-website',
+    reason: 'Read this for the purpose of the public notes and project documentation system.',
+  },
+];
+
+const startHereEntries = startHereSlugs
+  .map((item) => {
+    const note = notesBySlug.get(item.slug);
+    if (!note) return null;
+    return {
+      title: note.data.title,
+      description: note.data.description,
+      href: noteHref(note.id),
+      status: note.data.status,
+      category: note.data.category,
+      reason: item.reason,
+    };
+  })
+  .filter(Boolean);
+
+const pathDefinitions = [
+  {
+    title: 'Robotics Foundations',
+    purpose: 'Build the engineering and control background needed for robot systems.',
+    steps: ['Mechanical design basics', 'Kinematics', 'Dynamics', 'Control systems', 'Simulation', 'Project logs'],
+  },
+  {
+    title: 'Embodied AI / VLA',
+    purpose: 'Understand how models connect vision, language, and action in robotic systems.',
+    steps: [
+      'Machine learning basics',
+      'Vision-language models',
+      'Robot learning',
+      'VLA papers',
+      'Datasets and benchmarks',
+      'Reproduction / implementation notes',
+    ],
+  },
+  {
+    title: 'AI-assisted Research Workflow',
+    purpose: 'Use AI tools to improve literature search, knowledge organization, and project execution.',
+    steps: [
+      'Literature search',
+      'Paper reading template',
+      'Knowledge extraction',
+      'Note organization',
+      'Agent workflow',
+      'Project documentation',
+    ],
+  },
+];
+
+const learningPaths = pathDefinitions.map((path) => ({
+  ...path,
+  notes: notes
+    .filter((note) => note.data.path === path.title)
+    .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999))
+    .map((note) => ({
+      title: note.data.title,
+      href: noteHref(note.id),
+      status: note.data.status,
+      level: note.data.level,
+      order: note.data.order,
+    })),
+}));
+
+const categoryDefinitions = [
+  {
+    name: 'Paper Reading',
+    description: 'Structured records for papers, methods, assumptions, and open questions.',
+  },
+  {
+    name: 'Robotics & Control',
+    description: 'Notes for kinematics, dynamics, control systems, simulation, and robot behavior.',
+  },
+  {
+    name: 'Mechanical Design',
+    description: 'CAD, mechanism design, manufacturing, and engineering design reflection notes.',
+  },
+  {
+    name: 'AI-assisted Workflow',
+    description: 'Workflows for literature search, note-taking, project management, and agent-assisted work.',
+  },
+  {
+    name: 'Project Logs',
+    description: 'Implementation records where reading and learning become projects.',
+  },
+  {
+    name: 'Learning Methods',
+    description: 'Meta-notes about the knowledge system, learning strategy, and documentation habits.',
+  },
+];
+
+const categories = categoryDefinitions.map((category) => ({
+  ...category,
+  count: notes.filter((note) => note.data.category === category.name).length,
+}));
+
+const recentNotes = notes.slice(0, 4);
+const allNotes = [...notes].sort((a, b) => {
+  const categoryCompare = a.data.category.localeCompare(b.data.category);
+  if (categoryCompare !== 0) return categoryCompare;
+  return (a.data.order ?? 999) - (b.data.order ?? 999);
+});
+const tags = [...new Set(notes.flatMap((note) => note.data.tags))].sort((a, b) => a.localeCompare(b));
 ---
 
 <Layout title="Notes" description="Research notes, learning notes, paper reading, and project logs.">
-  <section class="article">
+  <section class="notes-hero">
     <p class="eyebrow">Notes</p>
     <h1>Research Notes</h1>
-    <p>Starter structure for a long-term notes system. Categories, tags, and filters will be expanded in later stages.</p>
+    <p class="lead">
+      Notes are my long-term research and learning records across robotics, embodied AI, VLA models, mechanical design,
+      and AI-assisted workflows.
+    </p>
+    <p>Some notes are seeds, some are growing, and some are more stable references.</p>
   </section>
 
-  <section class="card-grid" aria-label="Notes">
+  <StartHere entries={startHereEntries} />
+  <KnowledgeMap />
+  <LearningPath paths={learningPaths} />
+  <NoteCategoryOverview categories={categories} />
+
+  <section class="section recent-notes">
+    <SectionHeading
+      eyebrow="Recent"
+      title="Recent Notes"
+      description="Recent notes are shown here for continuity, but the main structure is the learning map above."
+    />
+    <div class="compact-note-list" aria-label="Recent notes">
+      {
+        recentNotes.map((note) => (
+          <a class="compact-note" href={noteHref(note.id)}>
+            <span>{note.data.title}</span>
+            <small>{note.data.category} / {note.data.status}</small>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section" id="all-notes">
+    <SectionHeading
+      eyebrow="Index"
+      title="All Notes"
+      description="Full public note index. Category and tag pages are intentionally deferred to a later stage."
+    />
+    <div class="card-grid all-notes-grid" aria-label="All notes">
+      {
+        allNotes.map((note) => (
+          <NoteCard
+            title={note.data.title}
+            description={note.data.description}
+            date={note.data.date}
+            category={note.data.category}
+            status={note.data.status}
+            type={note.data.type}
+            tags={note.data.tags}
+            href={noteHref(note.id)}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <SectionHeading eyebrow="Tags" title="Current Tags" description="Tags show the vocabulary emerging from the notes." />
     {
-      notes.map((note) => (
-        <article class="card">
-          <p class="meta">{note.data.status} · {note.data.category}</p>
-          <h2><a href={`/notes/${toSlug(note.id)}/`}>{note.data.title}</a></h2>
-          <p>{note.data.description}</p>
-          <p class="tag-row">{note.data.tags.map((tag) => <span>{tag}</span>)}</p>
-        </article>
-      ))
+      tags.length > 0 ? (
+        <ul class="tag-list tag-list-large">
+          {tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No public tags yet.</p>
+      )
     }
   </section>
 </Layout>

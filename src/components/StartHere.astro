@@ -1,0 +1,46 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import StatusBadge from './StatusBadge.astro';
+
+interface Entry {
+  title: string;
+  description: string;
+  href: string;
+  status: string;
+  category: string;
+  reason: string;
+}
+
+interface Props {
+  entries: Entry[];
+}
+
+const { entries } = Astro.props;
+---
+
+<section class="section start-here" aria-labelledby="start-here-title">
+  <SectionHeading
+    id="start-here-title"
+    eyebrow="Start Here"
+    title="Recommended Entry Points"
+    description="A curated route into the notes, ordered by usefulness for a newcomer rather than by date."
+  />
+  <div class="start-grid">
+    {
+      entries.map((entry, index) => (
+        <article class="start-card">
+          <p class="start-index">{String(index + 1).padStart(2, '0')}</p>
+          <div>
+            <div class="card-meta">
+              <StatusBadge status={entry.status} />
+              <span>{entry.category}</span>
+            </div>
+            <h3><a href={entry.href}>{entry.title}</a></h3>
+            <p>{entry.description}</p>
+            <p class="start-reason">{entry.reason}</p>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>

@@ -24,6 +24,12 @@ const notes = defineCollection({
       .default('learning-note'),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
+    path: z.string().optional(),
+    order: z.number().optional(),
+    level: z.enum(['foundation', 'intermediate', 'advanced']).optional(),
+    related: z.array(z.string()).default([]),
+    prerequisites: z.array(z.string()).default([]),
+    concepts: z.array(z.string()).default([]),
   }),
 });
 

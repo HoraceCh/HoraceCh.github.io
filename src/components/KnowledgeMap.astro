@@ -1,0 +1,66 @@
+---
+import SectionHeading from './SectionHeading.astro';
+
+const domains = [
+  {
+    title: 'Foundations',
+    description: 'Background knowledge that supports both robot systems and embodied AI reading.',
+    items: ['Mechanical Engineering', 'Programming', 'Math / Control Basics', 'Machine Learning Basics'],
+  },
+  {
+    title: 'Robotics Systems',
+    description: 'Engineering topics for understanding physical robot behavior and control.',
+    items: ['Kinematics', 'Dynamics', 'Control', 'Simulation', 'Mechanical Design'],
+  },
+  {
+    title: 'Embodied AI / VLA',
+    description: 'Model and evaluation topics connecting perception, language, and action.',
+    items: [
+      'Vision-Language Models',
+      'Vision-Language-Action Models',
+      'Robot Learning',
+      'Datasets / Benchmarks',
+      'Evaluation',
+    ],
+  },
+  {
+    title: 'AI-assisted Workflows',
+    description: 'Methods for making learning, research, and project execution more structured.',
+    items: ['Literature Search', 'Note-taking', 'Agent Workflows', 'Project Management', 'Knowledge Organization'],
+  },
+  {
+    title: 'Project Logs',
+    description: 'Where learning becomes implementation notes, experiments, and portfolio records.',
+    items: ['AI Retrieval Tool', 'VLA Learning System', 'Mechanical Design Portfolio', 'Robotics / Control Projects'],
+  },
+];
+---
+
+<section class="section knowledge-section" aria-labelledby="knowledge-map-title">
+  <SectionHeading
+    id="knowledge-map-title"
+    eyebrow="Knowledge Map"
+    title="How the Topics Relate"
+    description="A static map of the learning system. It is intentionally simple so it stays maintainable."
+  />
+  <div class="knowledge-flow" aria-label="Knowledge relationship summary">
+    <span>Foundations support Robotics Systems and Embodied AI / VLA.</span>
+    <span>AI-assisted Workflows support learning and project execution.</span>
+    <span>Project Logs turn learning into implementation records.</span>
+  </div>
+  <div class="knowledge-map">
+    {
+      domains.map((domain) => (
+        <article class="knowledge-domain">
+          <h3>{domain.title}</h3>
+          <p>{domain.description}</p>
+          <ul>
+            {domain.items.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </article>
+      ))
+    }
+  </div>
+</section>

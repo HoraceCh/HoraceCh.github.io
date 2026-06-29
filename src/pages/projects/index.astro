@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
 
 const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
 const projects = (await getCollection('projects')).sort(
@@ -12,19 +14,32 @@ const projects = (await getCollection('projects')).sort(
   <section class="article">
     <p class="eyebrow">Projects</p>
     <h1>Project Index</h1>
-    <p>Starter structure for portfolio entries. Detailed project content will be migrated after the Astro skeleton is stable.</p>
+    <p>
+      This page collects selected public projects, ongoing learning systems, and engineering work. Some entries are
+      complete repositories, while others are documented as ongoing, planned, or coursework-oriented project spaces.
+    </p>
   </section>
 
-  <section class="card-grid" aria-label="Projects">
-    {
-      projects.map((project) => (
-        <article class="card">
-          <p class="meta">{project.data.status} · {project.data.category}</p>
-          <h2><a href={`/projects/${toSlug(project.id)}/`}>{project.data.title}</a></h2>
-          <p>{project.data.description}</p>
-          <p class="tag-row">{project.data.tags.map((tag) => <span>{tag}</span>)}</p>
-        </article>
-      ))
-    }
+  <section class="section">
+    <SectionHeading
+      eyebrow="Index"
+      title="Selected and Ongoing Work"
+      description="Cards are intentionally short so projects can be scanned quickly."
+    />
+    <div class="card-grid" aria-label="Projects">
+      {
+        projects.map((project) => (
+          <ProjectCard
+            title={project.data.title}
+            description={project.data.description}
+            status={project.data.status}
+            category={project.data.category}
+            tags={project.data.tags}
+            href={`/projects/${toSlug(project.id)}/`}
+            links={project.data.links}
+          />
+        ))
+      }
+    </div>
   </section>
 </Layout>

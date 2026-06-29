@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
+const projects = (await getCollection('projects')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<Layout title="Projects" description="A scan-friendly index of projects and engineering work.">
+  <section class="article">
+    <p class="eyebrow">Projects</p>
+    <h1>Project Index</h1>
+    <p>Starter structure for portfolio entries. Detailed project content will be migrated after the Astro skeleton is stable.</p>
+  </section>
+
+  <section class="card-grid" aria-label="Projects">
+    {
+      projects.map((project) => (
+        <article class="card">
+          <p class="meta">{project.data.status} · {project.data.category}</p>
+          <h2><a href={`/projects/${toSlug(project.id)}/`}>{project.data.title}</a></h2>
+          <p>{project.data.description}</p>
+          <p class="tag-row">{project.data.tags.map((tag) => <span>{tag}</span>)}</p>
+        </article>
+      ))
+    }
+  </section>
+</Layout>

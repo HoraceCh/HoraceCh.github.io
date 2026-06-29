@@ -1,5 +1,8 @@
 node_modules/
 public/
+dist/
+.astro/
+.npm-cache/
 db.json
 .serena/
 .deploy_git/

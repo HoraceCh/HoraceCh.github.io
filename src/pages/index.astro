@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
+const projects = (await getCollection('projects')).slice(0, 3);
+const notes = (await getCollection('notes', ({ data }) => !data.draft)).slice(0, 3);
+---
+
+<Layout
+  title="Horace Chan"
+  description="Mechanical Engineering student exploring Robotics, Embodied AI, and AI-assisted workflows."
+>
+  <section class="hero">
+    <p class="eyebrow">Personal research portfolio</p>
+    <h1>Horace Chan</h1>
+    <p class="lead">Mechanical Engineering student exploring Robotics, Embodied AI, and AI-assisted workflows.</p>
+    <p>
+      I document my learning, projects, and experiments across robot systems, VLA models, mechanical design, and
+      AI-assisted engineering workflows.
+    </p>
+    <div class="link-row">
+      <a href="/projects/">Projects</a>
+      <a href="/notes/">Notes</a>
+      <a href="/resume/">Resume</a>
+      <a href="https://github.com/HoraceCh" rel="noopener noreferrer" target="_blank">GitHub</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
+      <p class="eyebrow">Focus</p>
+      <h2>Current Areas</h2>
+    </div>
+    <div class="card-grid">
+      <article class="card">
+        <h3>Mechanical Engineering</h3>
+        <p>Building a foundation in mechanical design, systems thinking, and engineering documentation.</p>
+      </article>
+      <article class="card">
+        <h3>Robotics & Control</h3>
+        <p>Studying robot systems, control fundamentals, and the bridge between hardware and behavior.</p>
+      </article>
+      <article class="card">
+        <h3>Embodied AI / VLA</h3>
+        <p>Following early learning around perception, language, action, and robot learning research.</p>
+      </article>
+      <article class="card">
+        <h3>AI-assisted Workflows</h3>
+        <p>Testing practical workflows for research, paper reading, project logs, and technical learning.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section split">
+    <div>
+      <div class="section-heading">
+        <p class="eyebrow">Projects</p>
+        <h2>Starter Project Index</h2>
+      </div>
+      <div class="stack">
+        {
+          projects.map((project) => (
+            <article class="card">
+              <p class="meta">{project.data.status} · {project.data.category}</p>
+              <h3><a href={`/projects/${toSlug(project.id)}/`}>{project.data.title}</a></h3>
+              <p>{project.data.description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+
+    <div>
+      <div class="section-heading">
+        <p class="eyebrow">Notes</p>
+        <h2>Starter Notes</h2>
+      </div>
+      <div class="stack">
+        {
+          notes.map((note) => (
+            <article class="card">
+              <p class="meta">{note.data.status} · {note.data.category}</p>
+              <h3><a href={`/notes/${toSlug(note.id)}/`}>{note.data.title}</a></h3>
+              <p>{note.data.description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>

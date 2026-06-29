@@ -1,0 +1,26 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.id.replace(/\.mdx?$/, '').replace(/\/index$/, '') },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<Layout title={project.data.title} description={project.data.description}>
+  <article class="article">
+    <p class="eyebrow">{project.data.category}</p>
+    <h1>{project.data.title}</h1>
+    <p class="lead">{project.data.description}</p>
+    <p class="meta">Status: {project.data.status}</p>
+    <p class="tag-row">{project.data.tags.map((tag: string) => <span>{tag}</span>)}</p>
+    <Content />
+  </article>
+</Layout>

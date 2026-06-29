@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
+const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<Layout title="Notes" description="Research notes, learning notes, paper reading, and project logs.">
+  <section class="article">
+    <p class="eyebrow">Notes</p>
+    <h1>Research Notes</h1>
+    <p>Starter structure for a long-term notes system. Categories, tags, and filters will be expanded in later stages.</p>
+  </section>
+
+  <section class="card-grid" aria-label="Notes">
+    {
+      notes.map((note) => (
+        <article class="card">
+          <p class="meta">{note.data.status} · {note.data.category}</p>
+          <h2><a href={`/notes/${toSlug(note.id)}/`}>{note.data.title}</a></h2>
+          <p>{note.data.description}</p>
+          <p class="tag-row">{note.data.tags.map((tag) => <span>{tag}</span>)}</p>
+        </article>
+      ))
+    }
+  </section>
+</Layout>

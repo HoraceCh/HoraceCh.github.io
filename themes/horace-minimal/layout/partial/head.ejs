@@ -3,7 +3,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><% if (page.title) { %><%= page.title %> | <% } %><%= config.title %></title>
   <meta name="description" content="<%= page.description || config.description || '' %>">
-  <meta name="theme-color" content="#5755d9">
+  <% if (config.content_license && config.content_license.url) { %>
+    <link rel="license" href="<%- config.content_license.url %>">
+  <% } %>
+  <meta name="theme-color" content="#f7f7fb">
+  <script>
+    (function () {
+      try {
+        var storedTheme = window.localStorage.getItem('horace-theme');
+        var hasStoredTheme = storedTheme === 'light' || storedTheme === 'dark';
+        var systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var effectiveTheme = storedTheme === 'dark' || (!hasStoredTheme && systemDark) ? 'dark' : 'light';
+        var themeColor = document.querySelector('meta[name="theme-color"]');
+        if (hasStoredTheme) {
+          document.documentElement.setAttribute('data-theme', storedTheme);
+        }
+        if (themeColor) {
+          themeColor.setAttribute('content', effectiveTheme === 'dark' ? '#101116' : '#f7f7fb');
+        }
+      } catch (error) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">

@@ -13,3 +13,9 @@ The site focuses on Mechanical Engineering, AI-assisted workflows, VLA / Embodie
 - GitHub Pages
 
 Deployment is handled by GitHub Actions.
+
+## Content License
+
+Syncing Knowledge Garden Content licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+This is the website content license only; it does not apply to repository source code or theme code.

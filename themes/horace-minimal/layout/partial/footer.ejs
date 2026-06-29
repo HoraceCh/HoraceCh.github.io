@@ -1,4 +1,9 @@
 <footer class="site-footer">
-  <p>&copy; <%= new Date().getFullYear() %> <%= config.author || config.title %>. Built with Hexo.</p>
-  <p class="footer-note">Minimal, fast, and content-first.</p>
+  <% const contentLicense = config.content_license || {}; %>
+  <p>
+    &copy; <%= new Date().getFullYear() %> <%= config.author || config.title %>.
+    <% if (contentLicense.text && contentLicense.label && contentLicense.url) { %>
+      <%= contentLicense.text %> <a href="<%- contentLicense.url %>" target="_blank" rel="license noopener noreferrer"><%= contentLicense.label %></a>.
+    <% } %>
+  </p>
 </footer>

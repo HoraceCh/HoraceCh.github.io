@@ -58,37 +58,39 @@ theme: horace-minimal
 
 # Profile content used by themes/horace-minimal
 profile:
-  greeting: "Hi, I'm Horace Chan."
-  pronunciation: ""
-  roles:
-    - "Mechanical Engineering Undergraduate Student"
-    - "AI-assisted Workflows"
-    - "VLA / Embodied AI / Robotics"
-  headline: "I study mechanical engineering while building a long-term learning path around intelligent agents, robot control, and research workflows."
+  greeting: "Hello, I'm Horace Chan."
+  headline: "Mechanical Engineering undergraduate exploring Embodied AI, VLA models, and intelligent robots."
   intro: >-
-    I am a mechanical engineering undergraduate student interested in how intelligent agents and robot systems are built. My current focus connects AI-assisted workflows, Vision-Language-Action models, embodied AI, robotics, and robot control with hands-on engineering practice.
-  status_cards:
-    - label: "Background"
-      value: "Mechanical Engineering"
-    - label: "Focus"
-      value: "VLA / Embodied AI"
-    - label: "Tools"
-      value: "CAD / Python / C / C++"
-  links:
+    I connect AI-assisted workflows, Vision-Language-Action models, embodied AI, robotics, and robot control with hands-on engineering practice.
+  cta_links:
     - label: "About"
       url: "/about/"
     - label: "Projects"
       url: "/projects/"
-    - label: "Notes"
-      url: "/archives/"
+    - label: "GitHub"
+      url: "https://github.com/HoraceCh"
     - label: "Contact"
       url: "/contact/"
+  featured_project:
+    title: "AI_RETRIEVAL_X / Information-Retrieval-Tool"
+    url: "https://github.com/HoraceCh/Information-Retrieval-Tool"
+    description: "An LLM-powered search query generator that turns natural language into optimized Boolean queries for academic databases such as CNKI, Web of Science, PubMed, and Ei Compendex. Built with TypeScript, Vite, and multi-model API support."
+    tags:
+      - "TypeScript"
+      - "Vite"
+      - "LLM-assisted workflow"
+
+content_license:
+  text: "Syncing Knowledge Garden Content licensed under"
+  label: "CC BY-NC-SA 4.0"
+  url: "https://creativecommons.org/licenses/by-nc-sa/4.0/"
 
 menu:
   Home: /
   About: /about/
   Projects: /projects/
   Notes: /archives/
+  Links: /links/
   Resume: /resume/
   Contact: /contact/
 

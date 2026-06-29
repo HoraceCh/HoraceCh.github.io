@@ -1,56 +1,66 @@
-<% const profile = config.profile || {}; %>
-<section class="hero">
-  <div class="hero-kicker">Personal Website</div>
-  <h1><%= profile.greeting || config.title %></h1>
-  <% if (profile.pronunciation) { %>
-    <p class="pronunciation"><%= profile.pronunciation %></p>
-  <% } %>
-  <div class="role-line">
-    <% (profile.roles || []).forEach(function(role, index) { %>
-      <span><%= role %></span><% if (index < profile.roles.length - 1) { %><i>/</i><% } %>
-    <% }) %>
-  </div>
-  <p class="hero-headline"><%= profile.headline || config.description %></p>
-  <div class="hero-actions">
-    <% (profile.links || []).forEach(function(link) { %>
-      <a class="button" href="<%- link.url %>"><%= link.label %></a>
-    <% }) %>
-  </div>
-</section>
+<%
+const profile = config.profile || {};
+const ctaLinks = profile.cta_links || [];
+const featuredProject = profile.featured_project || {};
+const linkHref = function(rawUrl) {
+  if (!rawUrl) return '#';
+  return /^(https?:|mailto:)/.test(rawUrl) ? rawUrl : url_for(rawUrl);
+};
+const opensNewTab = function(rawUrl) {
+  return /^https?:/.test(rawUrl || '');
+};
+%>
 
-<section class="about-panel">
-  <div>
-    <p class="section-label">About</p>
-    <h2>Mechanical engineering, intelligent agents, and robot systems.</h2>
-  </div>
-  <p><%= profile.intro || '' %></p>
-</section>
+<section class="home-lite">
+  <header class="home-lite-hero">
+    <p class="home-lite-kicker">HoraceCh.github.io</p>
+    <h1><%= profile.greeting || "Hello, I'm Horace Chan." %></h1>
+    <p class="home-lite-lead"><%= profile.headline || config.description %></p>
+    <p class="home-lite-intro"><%= profile.intro || '' %></p>
+    <nav class="home-link-row" aria-label="Home page links">
+      <% ctaLinks.forEach(function(link) { %>
+        <a href="<%- linkHref(link.url) %>"<% if (opensNewTab(link.url)) { %> target="_blank" rel="noopener"<% } %>><%= link.label %></a>
+      <% }) %>
+    </nav>
+  </header>
 
-<section class="stat-grid">
-  <% (profile.status_cards || []).forEach(function(card) { %>
-    <article class="stat-card">
-      <span><%= card.label %></span>
-      <strong><%= card.value %></strong>
+  <section class="home-lite-section" aria-labelledby="home-i-am">
+    <h2 id="home-i-am">I am</h2>
+    <ul class="home-text-list">
+      <li>A mechanical engineering undergraduate student interested in mechanical systems, intelligent agents, and AI-assisted research workflows.</li>
+      <li>Building a foundation in mechanical design, robot systems, machine learning, deep learning, and robot control.</li>
+      <li>Exploring Vision-Language-Action models, embodied AI, robotics, and robot control through reading notes and practical projects.</li>
+      <li>Documenting notes, projects, experiments, reading paths, and reflections as they become concrete.</li>
+    </ul>
+  </section>
+
+  <section class="home-lite-section" aria-labelledby="home-featured-project">
+    <h2 id="home-featured-project">Featured Project</h2>
+    <article class="home-project">
+      <h3><a href="<%- linkHref(featuredProject.url) %>" target="_blank" rel="noopener"><%= featuredProject.title || 'AI_RETRIEVAL_X / Information-Retrieval-Tool' %></a></h3>
+      <p><%= featuredProject.description || '' %></p>
+      <% if (featuredProject.tags && featuredProject.tags.length) { %>
+        <p class="home-tag-row">
+          <% featuredProject.tags.forEach(function(tag) { %>
+            <span><%= tag %></span>
+          <% }) %>
+        </p>
+      <% } %>
     </article>
-  <% }) %>
-</section>
+  </section>
 
-<section class="content-grid">
-  <div class="section-heading">
-    <p class="section-label">Latest Writing</p>
-    <h2>Notes and updates</h2>
-  </div>
-  <div class="post-list">
-    <% site.posts.sort('date', -1).limit(5).forEach(function(post) { %>
-      <article class="post-card">
-        <a href="<%- url_for(post.path) %>">
-          <time><%= date(post.date, 'YYYY-MM-DD') %></time>
-          <h3><%= post.title %></h3>
-          <% if (post.excerpt) { %>
-            <p><%- strip_html(post.excerpt).substring(0, 120) %></p>
-          <% } %>
-        </a>
-      </article>
-    <% }) %>
-  </div>
+  <section class="home-lite-section" aria-labelledby="home-about-me">
+    <h2 id="home-about-me">About Me</h2>
+    <p>I study mechanical engineering while learning how intelligent agents and robot systems are built. This website is a public record for notes, projects, experiments, reading paths, and reflections around AI-assisted workflows, embodied intelligence, robot control, and hands-on engineering practice.</p>
+  </section>
+
+  <section class="home-lite-section" aria-labelledby="home-find-me">
+    <h2 id="home-find-me">Find Me At</h2>
+    <p class="home-link-row">
+      <a href="https://github.com/HoraceCh" target="_blank" rel="noopener">GitHub</a>
+      <a href="<%- url_for('/archives/') %>">Notes</a>
+      <a href="mailto:horacebuddle@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/horacech" target="_blank" rel="noopener">LinkedIn</a>
+    </p>
+  </section>
 </section>

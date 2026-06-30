@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LinkButton from '../components/LinkButton.astro';
+---
+
+<Layout title="Friends moved to Links" description="The old friends page now points to the Links page.">
+  <section class="article">
+    <p class="eyebrow">Moved</p>
+    <h1>Friends moved to Links</h1>
+    <p class="lead">Friend links now live on the Links page.</p>
+    <p>
+      The old Friends route is kept here for compatibility while the Astro version of the site replaces the previous
+      Hexo structure.
+    </p>
+    <div class="link-row">
+      <LinkButton href="/links/" label="Go to Links" />
+    </div>
+  </section>
+</Layout>

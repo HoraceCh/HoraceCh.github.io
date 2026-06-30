@@ -1,0 +1,112 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Friends / Links" description="Friend links, communities, tools, and stable resources.">
+  <article class="article">
+    <p class="eyebrow">Links</p>
+    <h1>Friends / Links</h1>
+    <p class="lead">
+      Here are the websites I follow and recommend, together with stable communities and resources that are useful
+      enough to keep.
+    </p>
+
+    <h2>Friends | Links I Follow</h2>
+    <div class="friend-links">
+      <a class="friend-link" href="http://www.edwinjing-blog.com" target="_blank" rel="noopener noreferrer">
+        <img
+          class="friend-link-avatar"
+          src="https://api.dicebear.com/7.x/notionists/svg?seed=Edwin&amp;backgroundColor=f0f4f8"
+          alt="Chen Jing avatar"
+          width="48"
+          height="48"
+        />
+        <span class="friend-link-body">
+          <strong>Chen Jing</strong>
+          <span>Be Global. Be Active.</span>
+        </span>
+      </a>
+    </div>
+
+    <h2>Research / Learning Communities</h2>
+    <p>Resource links will be added when they become useful and stable.</p>
+
+    <h2>Tools &amp; Resources</h2>
+    <p>Resource links will be added when they become useful and stable.</p>
+
+    <h2>Link Exchange</h2>
+    <p>
+      If you would like to exchange links, please make sure the site is suitable for public display and can stay
+      available over time. Links will be added after confirmation.
+    </p>
+
+    <h2>Link Format</h2>
+    <p>Please include the following four fields:</p>
+    <pre><code>{`name: Site Name
+url: https://site-url
+avatar: https://avatar-url
+desc: One-sentence introduction.`}</code></pre>
+
+    <h2>Link Notes</h2>
+    <p>
+      Links are ordered by the time they are added. I may check link availability from time to time. If a website
+      becomes unavailable, the link may be temporarily removed and restored later.
+    </p>
+  </article>
+</Layout>
+
+<style>
+  .friend-links {
+    display: grid;
+    gap: 12px;
+    margin: 18px 0 8px;
+  }
+
+  .friend-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px;
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .friend-link:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  .friend-link-avatar {
+    flex: 0 0 auto;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+
+  .friend-link-body {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .friend-link-body span {
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  pre {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+    background: var(--surface);
+  }
+
+  code {
+    font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+    font-size: 0.92rem;
+  }
+</style>

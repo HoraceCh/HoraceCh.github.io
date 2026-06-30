@@ -22,9 +22,33 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      (() => {
+        const storageKey = 'theme';
+        const root = document.documentElement;
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let theme = systemPrefersDark ? 'dark' : 'light';
+
+        try {
+          const storedTheme = window.localStorage.getItem(storageKey);
+          if (storedTheme === 'dark' || storedTheme === 'light') {
+            theme = storedTheme;
+          } else if (storedTheme !== null) {
+            window.localStorage.removeItem(storageKey);
+          }
+        } catch (error) {}
+
+        root.classList.toggle('dark', theme === 'dark');
+        root.style.colorScheme = theme;
+      })();
+    </script>
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/png" href="/favicon.png" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/png" href="/favicon-dark.png" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
     <meta name="theme-color" content="#f7f7f4" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />

@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LinkButton from '../components/LinkButton.astro';
+---
+
+<Layout title="Archives moved to Notes" description="The old archive route now points to the Notes index.">
+  <section class="article">
+    <p class="eyebrow">Moved</p>
+    <h1>Archives moved to Notes</h1>
+    <p class="lead">The old chronological archive is now covered by the Notes index.</p>
+    <p>
+      Notes are organized by topic, learning path, type, status, and tags. Chronology is still visible inside the note
+      entries, but the main structure is the public knowledge system.
+    </p>
+    <div class="link-row">
+      <LinkButton href="/notes/" label="Go to Notes" />
+    </div>
+  </section>
+</Layout>

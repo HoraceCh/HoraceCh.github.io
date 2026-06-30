@@ -1,4 +1,6 @@
 ---
+import ThemeToggle from './ThemeToggle.astro';
+
 const links = [
   { href: '/', label: 'Home' },
   { href: '/about/', label: 'About' },
@@ -15,13 +17,16 @@ const isCurrent = (href: string) => currentPath === href || (href !== '/' && cur
 
 <header class="site-header">
   <a class="site-brand" href="/">Horace Chan</a>
-  <nav class="site-nav" aria-label="Main navigation">
-    {
-      links.map((link) => (
-        <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>
-          {link.label}
-        </a>
-      ))
-    }
-  </nav>
+  <div class="header-actions">
+    <nav class="site-nav" aria-label="Main navigation">
+      {
+        links.map((link) => (
+          <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+    <ThemeToggle />
+  </div>
 </header>

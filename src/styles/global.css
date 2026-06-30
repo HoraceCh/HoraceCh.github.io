@@ -303,7 +303,7 @@ li {
 .name-portrait {
   position: absolute;
   top: calc(50% + 6px);
-  right: clamp(-1.55rem, -3.4vw, -0.85rem);
+  right: clamp(-2.25rem, -4.4vw, -1.45rem);
   z-index: 1;
   display: grid;
   width: clamp(11rem, 33.5%, 17.3rem);
@@ -1120,7 +1120,7 @@ li {
   }
 
   .name-portrait {
-    right: -1.35rem;
+    right: -2rem;
     width: clamp(10.4rem, 32%, 15rem);
   }
 
@@ -1210,7 +1210,7 @@ li {
 
   .name-portrait {
     top: 57%;
-    right: -1.6rem;
+    right: -2.15rem;
     width: clamp(8rem, 37%, 10.2rem);
   }
 
@@ -1283,7 +1283,7 @@ li {
   }
 
   .name-portrait {
-    right: -2rem;
+    right: -2.55rem;
     width: 8.5rem;
   }
 }

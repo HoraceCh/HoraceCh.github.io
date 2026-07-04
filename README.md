@@ -28,6 +28,14 @@ Build the Astro site:
 npm run build
 ```
 
+Sync notes from an Obsidian Publish folder:
+
+```bash
+npm run notes:sync:dry -- --source "D:\Path\To\Obsidian Publish" --vault "D:\Path\To\Obsidian Vault"
+```
+
+See [Obsidian Notes Sync 使用说明](docs/OBSIDIAN_NOTES_SYNC.md) for the full workflow and safety notes.
+
 Preview the Astro build:
 
 ```bash

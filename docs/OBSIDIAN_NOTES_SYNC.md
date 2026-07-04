@@ -1,6 +1,6 @@
 # Obsidian Notes Sync 使用说明
 
-本项目提供 `scripts/sync-obsidian-notes.mjs`，用于把一个明确选择的 Obsidian Publish 文件夹同步到 Astro notes 内容集合。
+本项目提供 `tools/sync-obsidian-notes.mjs`，用于把一个明确选择的 Obsidian Publish 文件夹同步到 Astro notes 内容集合。
 
 这个脚本只会读取 `--source` 指定目录里的 Markdown 文件。`--vault` 不能作为发布来源，只能作为解析附件路径的辅助目录。脚本不会扫描整个 Obsidian vault 来发布 notes。
 
@@ -83,4 +83,3 @@ npm.cmd run notes:sync:strict -- --source "D:\Path\To\Obsidian Publish" --vault 
 - `--dry-run` 不会产生任何文件系统改动。
 - `--clean` 只清理配置的输出 notes 目录和附件目录中由脚本生成的内容。
 - 脚本不会修改 Obsidian source、vault、Hexo 文件、首页、布局或现有设计。
-

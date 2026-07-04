@@ -8,16 +8,25 @@ import { slugify } from '../../../utils/slugify';
 
 export async function getStaticPaths() {
   const notes = await getCollection('notes', ({ data }) => !data.draft);
-  const tags = [...new Set(notes.flatMap((note) => note.data.tags))];
-  return tags.map((tag) => ({
-    params: { tag: slugify(tag) },
-    props: { tag },
+  const tagsBySlug = new Map<string, Set<string>>();
+
+  for (const tag of notes.flatMap((note) => note.data.tags)) {
+    const tagSlug = slugify(tag);
+    const sourceTags = tagsBySlug.get(tagSlug) ?? new Set<string>();
+    sourceTags.add(tag);
+    tagsBySlug.set(tagSlug, sourceTags);
+  }
+
+  return [...tagsBySlug.entries()].map(([tagSlug, sourceTags]) => ({
+    params: { tag: tagSlug },
+    props: { tagSlug, sourceTags: [...sourceTags] },
   }));
 }
 
-const { tag } = Astro.props;
+const { tagSlug, sourceTags } = Astro.props;
+const tagLabel = sourceTags.length === 1 ? sourceTags[0] : tagSlug;
 const notes = (await getCollection('notes', ({ data }) => !data.draft))
-  .filter((note) => note.data.tags.includes(tag))
+  .filter((note) => note.data.tags.some((tag: string) => sourceTags.includes(tag)))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const relatedCategories = [...new Set(notes.map((note) => note.data.category))]
   .sort((a, b) => a.localeCompare(b))
@@ -34,11 +43,11 @@ const relatedConcepts = [...new Set(notes.flatMap((note) => note.data.concepts))
   }));
 ---
 
-<Layout title={`#${tag} Notes`} description={`Notes tagged ${tag}.`}>
+<Layout title={`#${tagLabel} Notes`} description={`Notes tagged ${tagLabel}.`}>
   <section class="article filter-hero">
     <p class="back-link"><a href="/notes/">Back to Notes</a></p>
     <p class="eyebrow">Notes / Tag</p>
-    <h1>#{tag}</h1>
+    <h1>#{tagLabel}</h1>
     <p class="lead">{notes.length} public note{notes.length === 1 ? '' : 's'} use this tag.</p>
   </section>
 
@@ -57,7 +66,7 @@ const relatedConcepts = [...new Set(notes.flatMap((note) => note.data.concepts))
   }
 
   <section class="section">
-    <SectionHeading eyebrow="Notes" title={`Notes Tagged ${tag}`} />
+    <SectionHeading eyebrow="Notes" title={`Notes Tagged ${tagLabel}`} />
     <NoteList notes={notes} emptyMessage="No public notes use this tag yet." />
   </section>
 </Layout>

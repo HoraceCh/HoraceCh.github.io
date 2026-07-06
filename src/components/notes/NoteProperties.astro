@@ -1,0 +1,87 @@
+---
+import StatusBadge from '../StatusBadge.astro';
+import TagList from '../TagList.astro';
+
+interface PropertyItem {
+  label: string;
+  value?: string | number | null;
+  href?: string;
+}
+
+interface LinkItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  properties: PropertyItem[];
+  concepts: string[];
+  prerequisites: LinkItem[];
+  relatedNotes: LinkItem[];
+  tags: string[];
+  status: string;
+}
+
+const { properties, concepts, prerequisites, relatedNotes, tags, status } = Astro.props;
+const visibleProperties = properties.filter((item) => item.value !== undefined && item.value !== null && item.value !== '');
+---
+
+<aside class="note-context" aria-label="Note context">
+  <div>
+    <div class="note-context-heading">
+      <h2>Properties</h2>
+      <StatusBadge status={status} />
+    </div>
+    <dl class="metadata-list note-properties">
+      {
+        visibleProperties.map((item) => (
+          <div>
+            <dt>{item.label}</dt>
+            <dd>{item.href ? <a href={item.href}>{item.value}</a> : item.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+
+  {concepts.length > 0 && (
+    <div>
+      <h3>Concepts</h3>
+      <TagList tags={concepts} />
+    </div>
+  )}
+
+  {prerequisites.length > 0 && (
+    <div>
+      <h3>Prerequisites</h3>
+      <ul class="context-link-list">
+        {prerequisites.map((item) => <li>{item.href ? <a href={item.href}>{item.label}</a> : <span>{item.label}</span>}</li>)}
+      </ul>
+    </div>
+  )}
+
+  {relatedNotes.length > 0 && (
+    <div>
+      <h3>Related Notes</h3>
+      <ul class="context-link-list">
+        {relatedNotes.map((item) => <li>{item.href ? <a href={item.href}>{item.label}</a> : <span>{item.label}</span>}</li>)}
+      </ul>
+    </div>
+  )}
+
+  <div>
+    <h3>Tags</h3>
+    <TagList tags={tags} linkBase="/notes/tags" />
+  </div>
+
+  <div class="note-placeholder-grid" aria-label="Future note navigation">
+    <section class="note-placeholder">
+      <h3>Backlinks</h3>
+      <p>Incoming note references will appear here after backlink extraction is added.</p>
+    </section>
+    <section class="note-placeholder">
+      <h3>Outline</h3>
+      <p>Heading navigation will appear here after outline extraction is added.</p>
+    </section>
+  </div>
+</aside>

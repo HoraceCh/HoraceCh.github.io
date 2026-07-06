@@ -1,0 +1,29 @@
+---
+import NoteOutline from './NoteOutline.astro';
+
+interface OutlineItem {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  outline: OutlineItem[];
+}
+
+const { outline } = Astro.props;
+---
+
+<aside class="note-sidepane" aria-label="Note navigation">
+  <div class="note-sidepane-inner">
+    <details class="note-sidepane-section" open>
+      <summary>Outline</summary>
+      <NoteOutline outline={outline} />
+    </details>
+
+    <details class="note-sidepane-section">
+      <summary>Backlinks</summary>
+      <p class="note-sidepane-empty">Incoming note references will appear here after backlink extraction is added.</p>
+    </details>
+  </div>
+</aside>

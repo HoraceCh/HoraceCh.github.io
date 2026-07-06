@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import NoteProperties from '../../components/notes/NoteProperties.astro';
+import NoteSidepane from '../../components/notes/NoteSidepane.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import { slugify } from '../../utils/slugify';
 
@@ -19,7 +20,8 @@ export async function getStaticPaths() {
 const { note } = Astro.props;
 const allNotes = await getCollection('notes', ({ data }) => !data.draft);
 const notesBySlug = new Map(allNotes.map((entry) => [toSlug(entry.id), entry]));
-const { Content } = await render(note);
+const { Content, headings } = await render(note);
+const outlineItems = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const formattedDate = new Intl.DateTimeFormat('en', {
   year: 'numeric',
   month: 'long',
@@ -82,27 +84,35 @@ const relatedLinks = relatedNotes.map((item) => ({
 
 <Layout title={note.data.title} description={note.data.description}>
   <article class="article note-article">
-    <p class="back-link"><a href="/notes/">Back to Notes</a></p>
-    <p class="eyebrow">{note.data.category}</p>
-    <h1>{note.data.title}</h1>
-    <p class="lead">{note.data.description}</p>
-    <div class="card-meta article-meta">
-      <StatusBadge status={note.data.status} />
-      <span>{formattedDate}</span>
-      <span>{note.data.type}</span>
+    <div class="note-header">
+      <p class="back-link"><a href="/notes/">Back to Notes</a></p>
+      <p class="eyebrow">{note.data.category}</p>
+      <h1>{note.data.title}</h1>
+      <p class="lead">{note.data.description}</p>
+      <div class="card-meta article-meta">
+        <StatusBadge status={note.data.status} />
+        <span>{formattedDate}</span>
+        <span>{note.data.type}</span>
+      </div>
     </div>
 
-    <NoteProperties
-      properties={propertyItems}
-      concepts={note.data.concepts}
-      prerequisites={prerequisiteLinks}
-      relatedNotes={relatedLinks}
-      tags={note.data.tags}
-      status={note.data.status}
-    />
+    <div class="note-reading-layout">
+      <div class="note-properties-slot">
+        <NoteProperties
+          properties={propertyItems}
+          concepts={note.data.concepts}
+          prerequisites={prerequisiteLinks}
+          relatedNotes={relatedLinks}
+          tags={note.data.tags}
+          status={note.data.status}
+        />
+      </div>
 
-    <div class="note-prose">
-      <Content />
+      <NoteSidepane outline={outlineItems} />
+
+      <div class="note-prose" data-note-prose>
+        <Content />
+      </div>
     </div>
   </article>
 </Layout>

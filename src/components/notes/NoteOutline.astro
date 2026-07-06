@@ -1,0 +1,159 @@
+---
+interface OutlineItem {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  outline: OutlineItem[];
+}
+
+interface OutlineLabel {
+  prefix?: string;
+  text: string;
+}
+
+const { outline } = Astro.props;
+
+const decorativeMarkerPattern =
+  /^(?:[\s\u00a0]*(?:[#*_~`>|]+|[-–—•·∙◦‣⁃▪▫■□◆◇○●◉◎★☆✦✧✳✴❖※]+|\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?)*)[\s\u00a0:：.,;|/\\-]*)+/u;
+const parenthesizedNumericPrefixPattern = /^[\(（]\s*(\d+(?:\.\d+)*)\.?\s*[\)）]\s*(.*)$/;
+const plainNumericPrefixPattern = /^(\d+(?:\.\d+)*)(?:\.)?(?:\s+|[\u00a0:：、，,;|/\\-]+|$)(.*)$/;
+const leadingSeparatorPattern = /^[\s\u00a0:：、，,.;|/\\-]+/;
+
+const stripLeadingDecorations = (value: string) => {
+  const cleaned = value.replace(decorativeMarkerPattern, '').trimStart();
+  return cleaned || value;
+};
+
+const cleanLabelText = (value: string) => stripLeadingDecorations(value.replace(leadingSeparatorPattern, '').trimStart()).trim();
+
+const normalizeOutlineLabel = (value: string): OutlineLabel => {
+  const original = value.trim();
+  const withoutDecorations = stripLeadingDecorations(original);
+  const numericMatch =
+    withoutDecorations.match(parenthesizedNumericPrefixPattern) ?? withoutDecorations.match(plainNumericPrefixPattern);
+
+  if (!numericMatch) {
+    return { text: withoutDecorations || original };
+  }
+
+  const cleanedText = cleanLabelText(numericMatch[2]);
+  return { prefix: numericMatch[1], text: cleanedText };
+};
+
+const outlineItems = outline
+  .filter((item) => (item.depth === 2 || item.depth === 3) && item.slug && item.text)
+  .map((item) => ({ ...item, label: normalizeOutlineLabel(item.text) }));
+---
+
+<div class="note-outline" data-note-outline>
+  {
+    outlineItems.length > 0 ? (
+      <nav aria-label="Section outline">
+        <ol class="note-outline-list">
+          {outlineItems.map((item) => (
+            <li class={`note-outline-item is-depth-${item.depth}`}>
+              <a href={`#${item.slug}`} aria-label={item.label.prefix ? `${item.label.prefix} ${item.label.text}`.trim() : item.label.text}>
+                <span class="note-outline-prefix" aria-hidden="true">{item.label.prefix}</span>
+                <span class="note-outline-text">{item.label.text}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    ) : (
+      <p class="note-outline-empty">No section headings yet.</p>
+    )
+  }
+</div>
+
+<script>
+  const setupNoteOutlineScrollspy = () => {
+    const outline = document.querySelector('[data-note-outline]');
+    const article = document.querySelector('[data-note-prose]');
+
+    if (!(outline instanceof HTMLElement) || !(article instanceof HTMLElement)) {
+      return;
+    }
+
+    const links = Array.from(outline.querySelectorAll('a[href^="#"]'));
+    const linkByHeadingId = new Map();
+
+    for (const link of links) {
+      if (!(link instanceof HTMLAnchorElement) || !link.hash) {
+        continue;
+      }
+
+      try {
+        linkByHeadingId.set(decodeURIComponent(link.hash.slice(1)), link);
+      } catch {
+        linkByHeadingId.set(link.hash.slice(1), link);
+      }
+    }
+
+    const headings = Array.from(article.querySelectorAll('h2[id], h3[id]')).filter((heading) =>
+      linkByHeadingId.has(heading.id),
+    );
+
+    if (headings.length === 0) {
+      return;
+    }
+
+    let activeId = '';
+    let frameId = 0;
+
+    const setActiveHeading = (headingId) => {
+      if (headingId === activeId) {
+        return;
+      }
+
+      if (activeId) {
+        const previousLink = linkByHeadingId.get(activeId);
+        previousLink?.removeAttribute('aria-current');
+        previousLink?.classList.remove('is-active');
+        previousLink?.closest('.note-outline-item')?.classList.remove('is-active');
+      }
+
+      const activeLink = linkByHeadingId.get(headingId);
+      activeLink?.setAttribute('aria-current', 'location');
+      activeLink?.classList.add('is-active');
+      activeLink?.closest('.note-outline-item')?.classList.add('is-active');
+      activeLink?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' });
+      activeId = headingId;
+    };
+
+    const updateActiveHeading = () => {
+      frameId = 0;
+      const activationLine = Math.max(96, window.innerHeight * 0.22);
+      let currentHeading = headings[0];
+
+      for (const heading of headings) {
+        if (heading.getBoundingClientRect().top <= activationLine) {
+          currentHeading = heading;
+          continue;
+        }
+
+        break;
+      }
+
+      setActiveHeading(currentHeading.id);
+    };
+
+    const requestActiveHeadingUpdate = () => {
+      if (frameId) {
+        return;
+      }
+
+      frameId = window.requestAnimationFrame(updateActiveHeading);
+    };
+
+    updateActiveHeading();
+    window.addEventListener('scroll', requestActiveHeadingUpdate, { passive: true });
+    window.addEventListener('resize', requestActiveHeadingUpdate);
+    window.addEventListener('hashchange', requestActiveHeadingUpdate);
+  };
+
+  setupNoteOutlineScrollspy();
+</script>

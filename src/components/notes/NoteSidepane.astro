@@ -1,5 +1,6 @@
 ---
 import NoteOutline from './NoteOutline.astro';
+import type { NoteBacklink } from '../../utils/noteBacklinks';
 
 interface OutlineItem {
   depth: number;
@@ -9,21 +10,104 @@ interface OutlineItem {
 
 interface Props {
   outline: OutlineItem[];
+  backlinks?: NoteBacklink[];
 }
 
-const { outline } = Astro.props;
+type BacklinkGroup = {
+  sourceSlug: string;
+  sourceTitle: string;
+  href: string;
+  linkCount: number;
+  snippets: string[];
+};
+
+const { outline, backlinks = [] } = Astro.props;
+
+const cleanSnippet = (context?: string) => {
+  if (!context) {
+    return '';
+  }
+
+  const snippet = context
+    .replace(/!?\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|([^\]]+))?\]\]/g, (_match, target, alias) => alias || target)
+    .replace(/!?\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/^[\s>*+-]+/, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return snippet.length > 170 ? `${snippet.slice(0, 167).trim()}...` : snippet;
+};
+
+const backlinkGroups = [...backlinks.reduce((groups, backlink) => {
+  const group =
+    groups.get(backlink.sourceSlug) ??
+    ({
+      sourceSlug: backlink.sourceSlug,
+      sourceTitle: backlink.sourceTitle,
+      href: `/notes/${backlink.sourceSlug}/`,
+      linkCount: 0,
+      snippets: [],
+    } satisfies BacklinkGroup);
+  const snippet = cleanSnippet(backlink.context);
+
+  group.linkCount += 1;
+
+  if (snippet && !group.snippets.includes(snippet) && group.snippets.length < 3) {
+    group.snippets.push(snippet);
+  }
+
+  groups.set(backlink.sourceSlug, group);
+  return groups;
+}, new Map<string, BacklinkGroup>()).values()];
+
+const backlinkCount = backlinks.length;
 ---
 
 <aside class="note-sidepane" aria-label="Note navigation">
   <div class="note-sidepane-inner">
-    <details class="note-sidepane-section" open>
+    <details class="note-sidepane-section note-outline-section" open>
       <summary>Outline</summary>
       <NoteOutline outline={outline} />
     </details>
 
-    <details class="note-sidepane-section">
-      <summary>Backlinks</summary>
-      <p class="note-sidepane-empty">Incoming note references will appear here after backlink extraction is added.</p>
+    <details class="note-sidepane-section note-backlinks-section">
+      <summary>
+        <span class="note-sidepane-summary-label">
+          <span>Backlinks</span>
+          {backlinkCount > 0 ? <span class="note-backlinks-count" aria-label={`${backlinkCount} incoming backlinks`}>{backlinkCount}</span> : null}
+        </span>
+      </summary>
+      {
+        backlinkGroups.length > 0 ? (
+          <nav aria-label="Incoming backlinks">
+            <ol class="note-backlink-list">
+              {backlinkGroups.map((group) => (
+                <li class="note-backlink-source">
+                  <a class="note-backlink-title" href={group.href}>
+                    <span>{group.sourceTitle}</span>
+                    {group.linkCount > 1 ? (
+                      <span class="note-backlink-source-count" aria-label={`${group.linkCount} references from this note`}>
+                        {group.linkCount}
+                      </span>
+                    ) : null}
+                  </a>
+                  {group.snippets.length > 0 ? (
+                    <ul class="note-backlink-contexts" aria-label={`Context snippets from ${group.sourceTitle}`}>
+                      {group.snippets.map((snippet) => (
+                        <li>{snippet}</li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </li>
+              ))}
+            </ol>
+          </nav>
+        ) : (
+          <p class="note-sidepane-empty">No backlinks yet.</p>
+        )
+      }
     </details>
   </div>
 </aside>

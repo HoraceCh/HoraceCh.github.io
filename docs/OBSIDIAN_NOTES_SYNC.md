@@ -60,6 +60,8 @@ npm.cmd run notes:sync:strict -- --source "D:\Path\To\Obsidian Publish" --vault 
 - `[[Note Name]]` 转成 `/notes/[slug]/` 链接。
 - `[[Note Name|Alias]]` 保留显示文本，链接到对应 note。
 - `![[image.png]]` 和 Markdown 图片会复制附件到 `astro-public/notes-assets/[note-slug]/`。
+- 附件查找会优先保持原有顺序：note 同级、Publish 文件夹、常见附件目录，然后在 `--vault` 中查找。额外支持 vault 下的集中图片目录：`99 Settings/Reference/C Images` 和 `99 Settings/Reference/Python Images`。
+- 如果同一篇 note 中两个不同来源的附件清理后会写到同一个输出文件名，脚本会保留第一个输出路径，并给后续冲突文件追加来自源路径的短后缀，避免静默覆盖。
 - Obsidian callout 会转换成普通 Markdown blockquote。
 - `==highlight==` 会转换成 `<mark>highlight</mark>`。
 - Dataview / DataviewJS 代码块会被移除，并输出 warning。
@@ -70,6 +72,8 @@ npm.cmd run notes:sync:strict -- --source "D:\Path\To\Obsidian Publish" --vault 
 `unresolved wiki link`：wiki link 没有在 `--source` 的 Markdown 文件中找到对应 note。确认目标 note 是否应该放进 Publish 文件夹，或者改成普通外部链接。
 
 `missing asset`：引用的附件找不到。确认附件是否在 Publish 文件夹、note 同级目录、常见附件目录，或 `--vault` 里。
+
+`asset-collision`：两个不同来源的附件会写入同一个清理后的输出文件名。脚本会为后续文件追加短后缀并在 dry-run 中报告映射结果。
 
 `removed Dataview block`：Dataview 内容不会发布。需要公开展示的内容应改成普通 Markdown。
 

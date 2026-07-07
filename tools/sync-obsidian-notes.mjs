@@ -11,6 +11,11 @@ const MANIFEST_FILE = '.obsidian-notes-sync-manifest.json';
 const DEFAULT_OUT = 'src/content/notes';
 const DEFAULT_PUBLIC_DIR = 'astro-public';
 const DEFAULT_ASSETS_DIR = 'notes-assets';
+const COMMON_ATTACHMENT_DIRS = ['attachments', 'Attachments', 'assets', 'Assets', '_attachments'];
+const DEFAULT_VAULT_ASSET_SEARCH_ROOTS = [
+  '99 Settings/Reference/C Images',
+  '99 Settings/Reference/Python Images',
+];
 const ASSET_EXTENSIONS = new Set([
   '.avif',
   '.bmp',
@@ -878,22 +883,111 @@ function planAssetCopy({ targetPath, record, source, vault, assetsDir, publicAss
     return null;
   }
 
-  const safeName = safeAssetName(path.basename(resolved));
-  const publicPath = `${publicAssetBase}/${record.slug}/${safeName}`;
-  const destination = path.join(assetsDir, record.slug, safeName);
-  const existing = assetPlan.find((plan) => samePath(plan.destination, destination));
+  const output = resolveAssetOutput({
+    resolved,
+    record,
+    source,
+    vault,
+    assetsDir,
+    publicAssetBase,
+    assetPlan,
+  });
 
-  if (existing) {
-    return existing;
+  if (output.existing) {
+    return output.existing;
+  }
+
+  if (output.collision) {
+    warnings.push({
+      file: record.relativePath,
+      message:
+        `Asset output collision for "${output.collision.baseName}" between ` +
+        `"${output.collision.existingSource}" and "${output.collision.newSource}"; ` +
+        `using "${output.safeName}" for the later asset.`,
+      type: 'asset-collision',
+    });
   }
 
   const plan = {
-    destination,
-    publicPath,
+    destination: output.destination,
+    publicPath: output.publicPath,
     source: resolved,
   };
   assetPlan.push(plan);
   return plan;
+}
+
+function resolveAssetOutput({ resolved, record, source, vault, assetsDir, publicAssetBase, assetPlan }) {
+  const outputDirectory = path.join(assetsDir, record.slug);
+  const existingForSource = assetPlan.find(
+    (plan) => samePath(plan.source, resolved) && samePath(path.dirname(plan.destination), outputDirectory),
+  );
+
+  if (existingForSource) {
+    return { existing: existingForSource };
+  }
+
+  const baseSafeName = safeAssetName(path.basename(resolved));
+  const baseDestination = path.join(outputDirectory, baseSafeName);
+  const existingAtBase = assetPlan.find((plan) => samePath(plan.destination, baseDestination));
+
+  if (!existingAtBase) {
+    return {
+      destination: baseDestination,
+      publicPath: `${publicAssetBase}/${record.slug}/${baseSafeName}`,
+      safeName: baseSafeName,
+    };
+  }
+
+  const suffix = shortHash(assetSourceKey({ resolved, source, vault }));
+  let index = 0;
+
+  while (true) {
+    const safeName = appendAssetNameSuffix(
+      baseSafeName,
+      index === 0 ? suffix : `${suffix}-${index + 1}`,
+    );
+    const destination = path.join(outputDirectory, safeName);
+    const existing = assetPlan.find((plan) => samePath(plan.destination, destination));
+
+    if (!existing) {
+      return {
+        collision: {
+          baseName: baseSafeName,
+          existingSource: displayAssetSource(existingAtBase.source),
+          newSource: displayAssetSource(resolved),
+        },
+        destination,
+        publicPath: `${publicAssetBase}/${record.slug}/${safeName}`,
+        safeName,
+      };
+    }
+
+    if (samePath(existing.source, resolved)) {
+      return { existing };
+    }
+
+    index += 1;
+  }
+}
+
+function appendAssetNameSuffix(safeName, suffix) {
+  const extension = path.extname(safeName);
+  const stem = path.basename(safeName, extension);
+  return `${stem}-${suffix}${extension}`;
+}
+
+function assetSourceKey({ resolved, source, vault }) {
+  for (const root of [source, vault].filter(Boolean)) {
+    if (isPathInside(resolved, root)) {
+      return slash(path.relative(root, resolved));
+    }
+  }
+  return slash(path.resolve(resolved));
+}
+
+function displayAssetSource(value) {
+  return slash(value);
 }
 
 function resolveAssetPath({ targetPath, record, source, vault }) {
@@ -907,7 +1001,7 @@ function resolveAssetPath({ targetPath, record, source, vault }) {
     candidates.push(path.resolve(recordDirectory, cleanTarget));
     candidates.push(path.resolve(source, cleanTarget));
 
-    for (const attachmentDir of ['attachments', 'Attachments', 'assets', 'Assets', '_attachments']) {
+    for (const attachmentDir of COMMON_ATTACHMENT_DIRS) {
       candidates.push(path.resolve(recordDirectory, attachmentDir, cleanTarget));
       candidates.push(path.resolve(source, attachmentDir, cleanTarget));
       candidates.push(path.resolve(recordDirectory, attachmentDir, path.basename(cleanTarget)));
@@ -916,9 +1010,13 @@ function resolveAssetPath({ targetPath, record, source, vault }) {
 
     if (vault) {
       candidates.push(path.resolve(vault, cleanTarget));
-      for (const attachmentDir of ['attachments', 'Attachments', 'assets', 'Assets', '_attachments']) {
+      for (const attachmentDir of COMMON_ATTACHMENT_DIRS) {
         candidates.push(path.resolve(vault, attachmentDir, cleanTarget));
         candidates.push(path.resolve(vault, attachmentDir, path.basename(cleanTarget)));
+      }
+      for (const assetSearchRoot of DEFAULT_VAULT_ASSET_SEARCH_ROOTS) {
+        candidates.push(path.resolve(vault, assetSearchRoot, cleanTarget));
+        candidates.push(path.resolve(vault, assetSearchRoot, path.basename(cleanTarget)));
       }
     }
   }

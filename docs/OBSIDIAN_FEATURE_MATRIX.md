@@ -1,44 +1,63 @@
 # Obsidian Feature Matrix
 
-This matrix tracks the public notes display layer for the Horace_Website Astro site. The goal is to make exported Obsidian notes readable and useful on a static website without cloning Obsidian or executing user-authored code.
+This matrix tracks the public Notes display layer for the Horace_Website Astro site. The goal is to make exported Obsidian notes readable and useful on a static website without cloning Obsidian, executing user-authored code, or claiming Obsidian parity.
 
-| Feature | MVP / Current Round | V1 | V2 | V3 | Status |
-| --- | --- | --- | --- | --- | --- |
-| Note reading layout | Single-column detail page with a compact context block and readable prose width. | Preserve layout while adding richer navigation panels. | Support graph and timeline entry points outside the reader. | Support optional multi-pane reading. | MVP |
-| Obsidian-like prose style | Typography, spacing, links, images, code, tables, blockquotes, and mark styling tuned for notes. | Refine with real note samples. | Add richer static note transforms where useful. | Add embed and block-reference treatments. | MVP |
-| Properties display | Compact Obsidian-like property rows from existing frontmatter metadata. | Add derived fields when extraction supports them. | Add property index pages. | Support advanced property filters. | MVP |
-| Tag pills | Compact linked chips for note tags and concept chips for local metadata. | Polish tag index and tag landing states. | Add property/tag cross-filter views. | Add advanced filters. | MVP |
-| Callout visual style | Style normal blockquotes as quiet note blocks and support future semantic note/info/tip/warning/danger classes. | Parse exported callout metadata at sync time if needed. | Add richer static callout variants. | Preserve callouts inside embeds and multi-pane mode. | MVP |
-| Wikilink visual states | Resolved internal links render as normal inline links; `/notes/missing-note/` links get a degraded unresolved style. | Add hover preview shell for internal note links. | Add graph-aware link browsing. | Add note embed preview. | MVP |
-| Image embed style | Responsive rounded images with quiet borders and horizontal safety. | Improve generated asset coverage in pipeline if needed. | Add gallery-like note image treatments. | Add Excalidraw-like image/card treatment. | MVP |
-| Code block style | Inline code and fenced code blocks styled for light/dark reading; blocks scroll horizontally. | Add language labels if available from renderer. | Add richer static code metadata. | Preserve code blocks in embeds. | MVP |
-| Blockquote style | Blockquotes styled as calm note blocks, separate from body prose. | Add callout-specific rendering if sync emits semantic classes. | Add richer static admonition patterns. | Preserve nested callouts in embeds. | MVP |
-| Table style | Tables use hairline borders and horizontal scroll behavior. | Refine dense table readability. | Add static Dataview-like tables. | Support advanced filters around tables. | MVP |
-| Backlinks placeholder | Placeholder panel can receive the static incoming-reference count. | Real backlinks panel. | Backlinks feed graph views. | Backlinks support multi-pane reading. | MVP |
-| Outline placeholder | Placeholder panel explains that heading extraction is not available yet. | Heading outline extraction. | Outline can coordinate with graph/timeline views. | Outline works in multi-pane reading. | MVP |
-| Dark/light readable contrast | Reader, properties, chips, links, and code styles use existing theme variables with dark counterparts. | Continue contrast QA as note volume grows. | Maintain contrast across graph/timeline views. | Maintain contrast across canvas and panes. | MVP |
-| Real backlinks panel | Placeholder only. | Show incoming links per note from extracted link graph. | Add graph and filter integration. | Support deep links and multi-pane context. | V1 |
-| Static backlinks data index | Build-time utility extracts wikilinks and sync-converted internal note links into incoming, outgoing, and unresolved-link structures. | Use the index to render the real backlinks panel. | Feed graph and filter integrations. | Support deep links and multi-pane context. | V1 |
-| Heading outline extraction | Placeholder only. | Generate static outline from rendered headings. | Reuse outline in graph/timeline navigation. | Multi-pane outline support. | V1 |
-| Hover preview shell | Not included. | Static shell for internal note preview on hover/focus. | Include graph-aware context. | Include note embed preview. | V1 |
-| Local graph placeholder/simple list | Not included beyond related/prerequisite lists. | Add a simple local graph placeholder or static adjacency list. | Real local graph view. | Multi-pane graph context. | V1 |
-| Recent notes | Existing notes landing page includes recent notes. | Polish recent note presentation. | Add timeline view. | Add advanced filters. | V1 |
-| Tag index polish | Existing tag routes are preserved. | Improve tag index hierarchy and empty states. | Add cross-filtering with properties. | Add advanced filters. | V1 |
-| Notes landing page polish | Existing `/notes/` route is preserved. | Improve browsing hierarchy and density. | Add graph/timeline entry points. | Add multi-pane entry points. | V1 |
-| Search integration | Not included unless an existing search base is ready. | Integrate search if existing static search base is available. | Add command palette integration. | Add advanced filtering and panes. | V1 |
-| Global graph view | Not included. | Not planned for V1 except placeholders. | Static global graph view. | Graph coordinates with canvas/panes. | V2 |
-| Local graph view | Not included. | Simple list or placeholder only. | Static local graph view. | Graph coordinates with multi-pane reading. | V2 |
-| Command palette | Not included. | Not included. | Static command palette for site navigation/search. | Palette supports advanced views. | V2 |
-| Timeline view | Not included. | Recent notes only. | Timeline view for notes and updates. | Timeline works with advanced filters. | V2 |
-| Heatmap view | Not included. | Not included. | Static note activity or update heatmap. | Heatmap works with advanced filters. | V2 |
-| Static Dataview-like tables | Not included. | Not included. | Build-time generated tables from safe metadata only. | Advanced table filters. | V2 |
-| Properties index pages | Not included. | Not included beyond existing category/tag/path/type/status routes. | Index pages for selected properties. | Advanced property filters. | V2 |
-| Obsidian Canvas read-only viewer | Not included. | Not included. | Not included. | Read-only canvas viewer for exported canvas data. | V3 |
-| Excalidraw-like image/card treatment | Not included. | Not included. | Basic image improvements only. | Special treatment for Excalidraw-style exports. | V3 |
-| Block reference deep linking | Not included. | Not included. | Not included. | Stable deep links to exported block references. | V3 |
-| Note embed preview | Not included. | Hover preview shell only. | Graph-aware previews only. | Static embedded note preview. | V3 |
-| Advanced filters | Not included. | Basic route browsing only. | Some property index support. | Multi-field filtering across note metadata. | V3 |
-| Multi-pane reading mode | Not included. | Not included. | Not included. | Optional multi-pane note reading. | V3 |
+Status labels:
+
+- Implemented: present in the current static Notes system.
+- Partial: useful but intentionally limited, or dependent on available static metadata.
+- Future: not present; possible only as static-build-friendly work.
+- Out of scope: not planned for this website.
+
+## Current Notes Display Layer
+
+| Feature | Status | Current state | Future boundary |
+| --- | --- | --- | --- |
+| Note reading layout | Implemented | Individual notes render with a header, properties/context card, sidepane, and prose area. | Preserve the static reader model; multi-pane reading is future work. |
+| Obsidian-like prose style | Implemented | Typography, spacing, links, images, tables, blockquotes, highlights, inline code, and fenced code blocks are tuned for public notes. | Refine with real note samples; do not treat this as full Obsidian rendering. |
+| Properties card | Implemented | Note metadata renders in a compact properties card with linked fields where useful. | Add derived fields only after schema/pipeline ownership review. |
+| Concepts chips | Implemented | `concepts` render as compact chips in the note context card. | Future filtering should stay static and metadata-backed. |
+| Tag chips | Implemented | Tags render as linked chips and connect to existing tag routes. | Polish tag routes separately if taxonomy changes. |
+| Browse routes | Implemented | Notes can be browsed by category, tag, learning path, type, and status. | Property index pages beyond these routes are future work. |
+| Notes sidepane | Implemented | The sidepane contains outline and backlinks near the reader on wider screens. | Keep visual polish Notes-scoped unless intentionally doing a design-system pass. |
+| Static H2/H3 outline | Implemented | Outline items are generated from Astro-rendered H2 and H3 headings. | Deeper document navigation is future work. |
+| Outline scrollspy / active state | Implemented | The active outline item updates while reading and uses `aria-current`. | Future changes should preserve keyboard and screen-reader behavior. |
+| Static backlinks index | Implemented | Wikilinks and Markdown links to `/notes/...` are extracted into incoming, outgoing, and unresolved-link structures. | The index can feed future graph/search features, but those are not current features. |
+| Real backlinks panel | Implemented | Incoming backlinks render in the sidepane, grouped by source note with counts and short snippets. | Keep this described as static backlinks, not a full knowledge graph. |
+| Backlinks default collapsed behavior | Implemented | The backlinks section defaults collapsed while the outline defaults open. | Any default-state change should be a reading-experience decision. |
+| Backlinks panel polish | Partial | The panel is useful but incoming-only; outgoing links, unresolved links, filters, and graph traversal are not exposed in the UI. | Future polish may add static outgoing/unresolved views or graph-aware browsing. |
+| Wikilink handling | Partial | Resolved links are converted or indexed; unresolved links warn or degrade depending on the path through the sync/render system. | Hover Preview and graph-aware link browsing are future work. |
+| Image embed style | Implemented | Note images are responsive and styled for the reader. | Gallery or Excalidraw-specific treatment is future work. |
+| Callout visual style | Partial | Obsidian callouts are downgraded to ordinary Markdown blockquotes and styled calmly. | Semantic callout variants require pipeline output changes owned by `obsidian_notes_pipeline`. |
+| Table style | Implemented | Tables use readable borders and horizontal overflow safety. | Dataview-like tables are future static metadata work, not current Dataview support. |
+| Code block contrast polish | Implemented | Light and dark mode code block contrast has been tuned for Notes. | Continue contrast QA as visual design changes. |
+| Code block copy button | Implemented | Enhanced Notes code blocks include a copy button with accessible feedback states. | Clipboard availability still depends on the browser context. |
+| Code block language labels | Partial | Labels show when reliable language metadata is available; generic or unknown labels are suppressed. | Do not assume every block has a reliable language label. |
+| Redundant `pre` tabindex removal | Implemented | Notes code block enhancement removes redundant `pre` `tabindex`. | Preserve this behavior during future code block work. |
+| Recent notes | Implemented | The Notes landing page includes recent notes. | Timeline and heatmap views are future work. |
+| Notes landing page | Implemented | `/notes/` provides curated browsing surfaces and note lists. | More dense browsing or graph/timeline entry points are future work. |
+| Accessibility affordances | Partial | Current controls use semantic regions, native `details`, accessible labels, and active outline state. | A full keyboard/screen-reader audit and accessibility CI are not implemented. |
+
+## Future Features
+
+These are not current features.
+
+| Feature | Status | Notes |
+| --- | --- | --- |
+| Graph view | Future | Global/local graph views may reuse the static backlinks index later; no graph UI exists now. |
+| Hover Preview | Future | Could be added as static pre-rendered summaries for internal note links. |
+| Search | Future | Should only be added if a simple static search base is intentionally introduced. |
+| Dataview-like static views | Future | Only safe build-time metadata/frontmatter tables are in scope; DataviewJS execution is out of scope. |
+| Canvas read-only viewer | Future | Only relevant if exported Canvas data becomes a real public-content requirement. |
+| Command palette | Future | No command palette exists now. |
+| Timeline view | Future | Recent notes exist; a timeline view does not. |
+| Heatmap view | Future | No activity or update heatmap exists now. |
+| Property index pages | Future | Existing browse routes cover category, tag, path, type, and status only. |
+| Advanced filters | Future | No multi-field filtering UI exists now. |
+| Multi-pane reading mode | Future | Current reader is static single-note reading, not an Obsidian workspace. |
+| Note embed preview | Future | No embedded note preview exists now. |
+| Block reference deep linking | Future | No stable exported block-reference model exists now. |
+| Excalidraw-like image/card treatment | Future | Note images render normally; no Excalidraw-specific treatment exists. |
 
 ## Explicitly Unsupported
 
@@ -46,4 +65,7 @@ This matrix tracks the public notes display layer for the Horace_Website Astro s
 - Full Obsidian plugin API.
 - DataviewJS execution.
 - Browser-side parsing of all Markdown.
+- Live private-vault sync.
+- Publishing the entire private Obsidian vault.
+- Treating `--vault` as a public content source.
 - Full Obsidian clone behavior.

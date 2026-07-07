@@ -227,7 +227,7 @@ What should not be changed casually:
 Near term:
 
 - Treat this document as the current Notes status boundary for future Codex prompts.
-- Reconcile [Obsidian Feature Matrix](./OBSIDIAN_FEATURE_MATRIX.md) with current source, because outline and backlinks have advanced beyond earlier placeholder rows.
+- Keep [Obsidian Feature Matrix](./OBSIDIAN_FEATURE_MATRIX.md) aligned with current source as outline, backlinks, code block controls, and future roadmap items change.
 - Add a small Notes QA checklist for generated notes, unresolved links, missing assets, backlinks counts, outline behavior, and code block controls.
 - Run a content IA pass on Notes taxonomy: Start Here, categories, paths, note types, statuses, concepts, and tags.
 - Run an accessibility-focused Notes reader audit across desktop/mobile, keyboard use, light/dark contrast, and generated Markdown edge cases.
@@ -305,4 +305,3 @@ Pipeline or schema changes:
 - Preserve generated-note safety.
 - Confirm source/vault boundaries.
 - Run build after implementation.
-

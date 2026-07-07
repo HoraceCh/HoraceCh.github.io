@@ -107,4 +107,114 @@ const relatedLinks = relatedNotes.map((item) => ({
       </div>
     </div>
   </article>
+
+  <script>
+    const genericCodeLanguages = new Set(['plaintext', 'text', 'txt', 'plain', 'none']);
+    const copyFeedbackDelay = 1600;
+    const copyResetTimers = new WeakMap();
+
+    function getReliableCodeLanguage(pre) {
+      const language = pre.getAttribute('data-language')?.trim();
+
+      if (!language || genericCodeLanguages.has(language.toLowerCase())) {
+        return '';
+      }
+
+      if (!/^[a-z0-9#+._-]+$/i.test(language)) {
+        return '';
+      }
+
+      return language;
+    }
+
+    function resetCopyButton(button) {
+      button.textContent = 'Copy';
+      button.setAttribute('aria-label', 'Copy code');
+    }
+
+    function showCopyFeedback(button, label, accessibleLabel) {
+      const existingTimer = copyResetTimers.get(button);
+
+      if (existingTimer) {
+        window.clearTimeout(existingTimer);
+      }
+
+      button.textContent = label;
+      button.setAttribute('aria-label', accessibleLabel);
+
+      const resetTimer = window.setTimeout(() => {
+        resetCopyButton(button);
+        copyResetTimers.delete(button);
+      }, copyFeedbackDelay);
+
+      copyResetTimers.set(button, resetTimer);
+    }
+
+    function enhanceNoteCodeBlocks() {
+      document.querySelectorAll('[data-note-prose] pre').forEach((pre) => {
+        if (!(pre instanceof HTMLPreElement) || pre.dataset.noteCodeEnhanced === 'true') {
+          return;
+        }
+
+        const code = pre.querySelector(':scope > code');
+
+        if (!code) {
+          return;
+        }
+
+        pre.dataset.noteCodeEnhanced = 'true';
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'note-code-block';
+        wrapper.dataset.noteCodeBlock = '';
+
+        const header = document.createElement('div');
+        header.className = 'note-code-block__header';
+
+        const language = getReliableCodeLanguage(pre);
+
+        if (language) {
+          const label = document.createElement('span');
+          label.className = 'note-code-block__language';
+          label.textContent = language;
+          header.append(label);
+        } else {
+          header.classList.add('note-code-block__header--copy-only');
+        }
+
+        const copyButton = document.createElement('button');
+        copyButton.className = 'note-code-copy';
+        copyButton.type = 'button';
+        copyButton.textContent = 'Copy';
+        copyButton.setAttribute('aria-label', 'Copy code');
+        copyButton.setAttribute('aria-live', 'polite');
+
+        copyButton.addEventListener('click', async () => {
+          if (!navigator.clipboard?.writeText) {
+            showCopyFeedback(copyButton, 'Unavailable', 'Copy unavailable');
+            return;
+          }
+
+          try {
+            await navigator.clipboard.writeText(code.textContent ?? '');
+            showCopyFeedback(copyButton, 'Copied', 'Code copied');
+          } catch {
+            showCopyFeedback(copyButton, 'Failed', 'Copy failed');
+          }
+        });
+
+        header.append(copyButton);
+        pre.before(wrapper);
+        wrapper.append(header, pre);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', enhanceNoteCodeBlocks, { once: true });
+    } else {
+      enhanceNoteCodeBlocks();
+    }
+
+    document.addEventListener('astro:page-load', enhanceNoteCodeBlocks);
+  </script>
 </Layout>

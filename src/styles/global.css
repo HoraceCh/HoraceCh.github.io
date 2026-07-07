@@ -1925,6 +1925,90 @@ li {
   tab-size: 2;
 }
 
+.note-prose .note-code-block {
+  overflow: hidden;
+  margin: 1.35rem 0;
+  border: 1px solid var(--note-code-line);
+  border-radius: 6px;
+  background: var(--note-code-bg);
+  color: var(--note-code-text);
+}
+
+.note-prose .note-code-block__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 2rem;
+  padding: 0.36rem 0.45rem 0.34rem 0.8rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--note-code-line) 70%, transparent);
+  background: color-mix(in srgb, var(--note-code-bg) 88%, var(--surface));
+}
+
+.note-prose .note-code-block__header--copy-only {
+  justify-content: flex-end;
+  padding-left: 0.45rem;
+}
+
+.note-prose .note-code-block__language {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.note-prose .note-code-copy {
+  appearance: none;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 4px;
+  padding: 0.28rem 0.48rem;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.note-prose .note-code-copy:hover {
+  background: color-mix(in srgb, var(--muted) 10%, transparent);
+  color: var(--text);
+}
+
+.note-prose .note-code-copy:active {
+  transform: translateY(1px);
+}
+
+.note-prose .note-code-copy:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 75%, transparent);
+  outline-offset: 2px;
+}
+
+.note-prose .note-code-block pre {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.note-prose .note-code-block pre:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 65%, transparent);
+  outline-offset: -2px;
+}
+
 .note-prose pre::-webkit-scrollbar {
   height: 6px;
 }
@@ -1971,6 +2055,22 @@ li {
 
 :root:not(.dark) .note-prose pre.astro-code.github-dark code span[style*="color:#FFAB70" i] {
   color: #9a3412 !important;
+}
+
+@media (max-width: 640px) {
+  .note-prose .note-code-block__header {
+    gap: 0.55rem;
+    padding: 0.34rem 0.38rem 0.32rem 0.65rem;
+  }
+
+  .note-prose .note-code-block__header--copy-only {
+    padding-left: 0.38rem;
+  }
+
+  .note-prose .note-code-copy,
+  .note-prose .note-code-block__language {
+    font-size: 0.64rem;
+  }
 }
 
 .note-prose table {

@@ -20,6 +20,10 @@ Style:
 - Early-stage researcher appropriate
 - Avoid hype and buzzwords
 
+Global UI guidance:
+- Agents must read `docs/design/UI_DESIGN.md` before planning or implementing visual UI changes; it is the canonical UI reference for visual specs, implementation, and QA review.
+- Keep UI changes aligned to that file unless the user explicitly approves a different direction.
+
 Implementation priorities:
 1. Keep the site statically deployable.
 2. Preserve existing content unless migration is intentional.

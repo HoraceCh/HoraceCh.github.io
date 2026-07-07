@@ -134,7 +134,7 @@ project_architect
 修改 notes generated content
 修改 deploy workflow
 修改 package scripts
-从 Hexo 迁移到 Astro
+Astro active-site cleanup or migration follow-up
 影响多个目录
 ```
 
@@ -420,7 +420,6 @@ Required checks:
 - git diff summary
 - boundary violations
 - npm run build
-- npm run hexo:build if Hexo-related files are touched
 - notes:sync:dry if notes pipeline is touched and source path is available
 - dark/light regression risk
 - content/schema risk
@@ -448,7 +447,7 @@ Task:
 [一句话说明要做什么]
 
 Context:
-- Repo: Astro personal website, migrating away from Hexo
+- Repo: Astro personal website
 - Main sections: Home / About / Projects / Notes / Resume / Contact
 - Notes source: Obsidian publish pipeline
 - Design references: Vercel light + Linear dark

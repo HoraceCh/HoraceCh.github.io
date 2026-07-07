@@ -51,7 +51,7 @@ npm.cmd run notes:sync:strict -- --source "D:\Path\To\Obsidian Publish" --vault 
 
 `--dry-run`：只打印计划动作和 warnings，不写入、不删除、不复制、不修改任何文件。
 
-`--clean`：同步前清理脚本之前生成的 notes 和附件。清理范围只限配置的 `--out` 和 `--assets` 目录；不会触碰 Obsidian source、vault、Hexo 文件、首页、布局或网站设计。
+`--clean`：同步前清理脚本之前生成的 notes 和附件。清理范围只限配置的 `--out` 和 `--assets` 目录；不会触碰 Obsidian source、vault、Astro 页面、布局或网站设计。
 
 `--strict`：如果出现 warnings，以非零状态码结束，适合 CI 或发布前检查。
 
@@ -82,4 +82,4 @@ npm.cmd run notes:sync:strict -- --source "D:\Path\To\Obsidian Publish" --vault 
 - `--vault` 不会被扫描成公开 notes。
 - `--dry-run` 不会产生任何文件系统改动。
 - `--clean` 只清理配置的输出 notes 目录和附件目录中由脚本生成的内容。
-- 脚本不会修改 Obsidian source、vault、Hexo 文件、首页、布局或现有设计。
+- 脚本不会修改 Obsidian source、vault、Astro 页面、布局或现有设计。

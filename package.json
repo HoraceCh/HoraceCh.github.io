@@ -2,37 +2,16 @@
   "name": "horace-personal-website",
   "version": "0.1.0",
   "private": true,
-  "hexo": {
-    "version": "7.3.0"
-  },
-  "description": "A Sukka-inspired minimal personal website and blog built with Hexo.",
+  "description": "A minimal personal research portfolio website built with Astro.",
   "scripts": {
     "dev": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro dev",
     "build": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro build",
     "preview": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "notes:sync": "node tools/sync-obsidian-notes.mjs",
     "notes:sync:dry": "node tools/sync-obsidian-notes.mjs --dry-run",
-    "notes:sync:strict": "node tools/sync-obsidian-notes.mjs --strict",
-    "server": "hexo server",
-    "hexo:dev": "hexo server",
-    "hexo:server": "hexo server",
-    "hexo:build": "hexo clean && hexo generate",
-    "build:pages": "node tools/build-pages.mjs",
-    "hexo:clean": "hexo clean",
-    "hexo:new": "hexo new",
-    "clean": "hexo clean",
-    "new": "hexo new"
+    "notes:sync:strict": "node tools/sync-obsidian-notes.mjs --strict"
   },
-  "dependencies": {
-    "hexo": "^7.3.0",
-    "hexo-generator-archive": "^2.0.0",
-    "hexo-generator-category": "^2.0.0",
-    "hexo-generator-index": "^4.0.0",
-    "hexo-generator-tag": "^2.0.0",
-    "hexo-renderer-ejs": "^2.0.0",
-    "hexo-renderer-marked": "^7.0.0",
-    "hexo-server": "^3.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "astro": "^7.0.3",
     "cross-env": "^10.1.0"

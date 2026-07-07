@@ -12,7 +12,7 @@ The site focuses on Mechanical Engineering, AI-assisted workflows, VLA / Embodie
 - Astro Content Collections for projects and notes
 - GitHub Pages via GitHub Actions
 
-The previous Hexo source, theme, and build tooling are preserved temporarily as a fallback during the migration.
+Astro is the active site system.
 
 ## Development
 
@@ -42,13 +42,7 @@ Preview the Astro build:
 npm run preview
 ```
 
-Build the old Hexo site as a fallback:
-
-```bash
-npm run hexo:build
-```
-
-GitHub Pages deployment now builds Astro and uploads `dist/`. Astro static assets are served from `astro-public/` to avoid colliding with Hexo's generated `public/` directory. Hexo files remain in place and may be removed in a later cleanup stage.
+GitHub Pages deployment builds Astro and uploads `dist/`. Astro static assets are served from `astro-public/`.
 
 ## Content License
 

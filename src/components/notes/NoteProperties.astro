@@ -62,7 +62,7 @@ const visibleProperties = properties.filter((item) => item.value !== undefined &
 
   {relatedNotes.length > 0 && (
     <div class="note-context-section">
-      <h3>Related Notes</h3>
+      <h3>Related notes</h3>
       <ul class="context-link-list">
         {relatedNotes.map((item) => <li>{item.href ? <a href={item.href}>{item.label}</a> : <span>{item.label}</span>}</li>)}
       </ul>

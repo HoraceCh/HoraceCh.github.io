@@ -8,13 +8,13 @@
   --accent: #2f6f5e;
   --accent-soft: #e7f0eb;
   --note-property-bg: var(--surface);
-  --note-property-line: var(--line);
+  --note-property-line: #e8e6de;
   --note-callout-bg: var(--surface);
   --note-callout-line: var(--line);
   --note-callout-accent: var(--accent);
-  --note-code-bg: #fbfbf8;
-  --note-code-inline-bg: #f1f0ea;
-  --note-code-line: var(--line);
+  --note-code-bg: #f5f5f1;
+  --note-code-inline-bg: #f4f3ee;
+  --note-code-line: #e8e6de;
   --note-code-text: #24231f;
   --note-table-head-bg: var(--bg);
   --note-unresolved: var(--muted);
@@ -31,14 +31,14 @@
   --line: #30332e;
   --accent: #8dc9b4;
   --accent-soft: #20362f;
-  --note-property-bg: var(--surface);
-  --note-property-line: var(--line);
+  --note-property-bg: #0f1011;
+  --note-property-line: #23252a;
   --note-callout-bg: var(--surface);
   --note-callout-line: var(--line);
   --note-callout-accent: var(--accent);
-  --note-code-bg: #171916;
-  --note-code-inline-bg: #20231f;
-  --note-code-line: var(--line);
+  --note-code-bg: #0f1011;
+  --note-code-inline-bg: #161718;
+  --note-code-line: #23252a;
   --note-code-text: var(--text);
   --note-table-head-bg: var(--bg);
   --note-unresolved: var(--muted);
@@ -1225,6 +1225,9 @@ li {
 .note-context .metadata-list a {
   color: inherit;
   text-decoration: none;
+  transition:
+    color 160ms ease-out,
+    text-decoration-color 160ms ease-out;
 }
 
 .note-context .metadata-list a:hover {
@@ -1304,20 +1307,33 @@ li {
   --note-sidepane-bottom: 24px;
   --note-sidepane-max-height: calc(100vh - var(--note-sidepane-top) - var(--note-sidepane-bottom));
   --note-sidepane-max-height: calc(100svh - var(--note-sidepane-top) - var(--note-sidepane-bottom));
-  --note-pane-line: color-mix(in srgb, var(--line) 46%, transparent);
+  --note-pane-line: rgba(24, 24, 23, 0.12);
   --note-pane-title: color-mix(in srgb, var(--muted) 88%, var(--text));
   --note-pane-heading: color-mix(in srgb, var(--text) 72%, var(--muted));
   --note-pane-child: color-mix(in srgb, var(--muted) 72%, var(--text));
   --note-pane-prefix: color-mix(in srgb, var(--muted) 78%, transparent);
-  --note-pane-hover: color-mix(in srgb, var(--text) 5%, transparent);
-  --note-pane-active-bg: color-mix(in srgb, var(--text) 7%, transparent);
-  --note-pane-active-rail: color-mix(in srgb, var(--text) 22%, transparent);
-  --note-pane-focus: color-mix(in srgb, var(--text) 34%, transparent);
-  --note-pane-scrollbar: color-mix(in srgb, var(--muted) 28%, transparent);
+  --note-pane-hover: rgba(24, 24, 23, 0.045);
+  --note-pane-active-bg: rgba(24, 24, 23, 0.065);
+  --note-pane-active-rail: rgba(24, 24, 23, 0.22);
+  --note-pane-focus: rgba(47, 111, 94, 0.42);
+  --note-pane-scrollbar: rgba(102, 100, 94, 0.28);
+  --note-empty-bg: #fafafa;
+  --note-empty-text: color-mix(in srgb, var(--muted) 78%, var(--text));
   --note-outline-prefix-width: 2.75rem;
   height: auto;
   max-height: var(--note-sidepane-max-height);
   overflow: visible;
+}
+
+:root.dark .note-sidepane {
+  --note-pane-line: rgba(255, 255, 255, 0.075);
+  --note-pane-hover: rgba(241, 240, 232, 0.055);
+  --note-pane-active-bg: rgba(255, 255, 255, 0.075);
+  --note-pane-active-rail: rgba(255, 255, 255, 0.22);
+  --note-pane-focus: rgba(141, 201, 180, 0.46);
+  --note-pane-scrollbar: rgba(170, 167, 157, 0.26);
+  --note-empty-bg: #161718;
+  --note-empty-text: color-mix(in srgb, var(--muted) 76%, var(--text));
 }
 
 .note-sidepane-inner {
@@ -1376,7 +1392,7 @@ li {
   line-height: 1.2;
   list-style: none;
   text-transform: uppercase;
-  transition: color 140ms ease;
+  transition: color 160ms ease-out;
 }
 
 .note-sidepane-section summary:hover,
@@ -1437,13 +1453,17 @@ li {
 .note-sidepane-empty,
 .note-outline-empty {
   margin: 0;
-  color: var(--note-pane-child);
+  border: 1px solid var(--note-pane-line);
+  border-radius: 6px;
+  padding: 0.62rem 0.72rem;
+  background: var(--note-empty-bg);
+  color: var(--note-empty-text);
   font-size: 0.84rem;
   line-height: 1.5;
 }
 
 .note-sidepane-empty {
-  padding: 2px 0 0;
+  max-width: 24rem;
 }
 
 .note-outline,
@@ -1507,8 +1527,10 @@ li {
   line-height: 1.35;
   text-decoration: none;
   transition:
-    background-color 140ms ease,
-    color 140ms ease;
+    background-color 160ms ease-out,
+    color 160ms ease-out,
+    border-color 160ms ease-out,
+    text-decoration-color 160ms ease-out;
 }
 
 .note-backlink-title span:first-child {
@@ -1602,8 +1624,10 @@ li {
   line-height: 1.35;
   text-decoration: none;
   transition:
-    background-color 140ms ease,
-    color 140ms ease;
+    background-color 160ms ease-out,
+    color 160ms ease-out,
+    border-color 160ms ease-out,
+    text-decoration-color 160ms ease-out;
 }
 
 .note-outline-prefix {
@@ -1637,8 +1661,9 @@ li {
 .note-outline-item a.is-active,
 .note-outline-item.is-active a {
   background: var(--note-pane-active-bg);
-  box-shadow: inset 1px 0 0 var(--note-pane-active-rail);
+  box-shadow: inset 2px 0 0 var(--note-pane-active-rail);
   color: var(--text);
+  font-weight: 580;
 }
 
 .note-outline-item a.is-active .note-outline-prefix,
@@ -1659,6 +1684,12 @@ li {
   color: var(--note-pane-child);
   font-size: 0.85rem;
   font-weight: 430;
+}
+
+.note-outline-item.is-depth-3 a.is-active,
+.note-outline-item.is-depth-3.is-active a {
+  color: var(--text);
+  font-weight: 520;
 }
 
 .note-sidepane-inner:has(.note-backlinks-section[open]) .note-backlink-list,
@@ -1873,21 +1904,38 @@ li {
 .note-prose :not(pre) > code {
   border: 1px solid var(--note-code-line);
   border-radius: 5px;
-  padding: 0.12em 0.32em;
+  padding: 0.1em 0.34em;
   background: var(--note-code-inline-bg);
   color: var(--text);
   font-family: var(--mono);
   font-size: 0.9em;
+  line-height: 1.45;
 }
 
 .note-prose pre {
   overflow-x: auto;
   margin: 1.35rem 0;
   border: 1px solid var(--note-code-line);
-  border-radius: 8px;
-  padding: 14px 16px;
+  border-radius: 6px;
+  padding: 15px 16px;
   background: var(--note-code-bg) !important;
   color: var(--note-code-text) !important;
+  scrollbar-color: color-mix(in srgb, var(--muted) 28%, transparent) transparent;
+  scrollbar-width: thin;
+  tab-size: 2;
+}
+
+.note-prose pre::-webkit-scrollbar {
+  height: 6px;
+}
+
+.note-prose pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.note-prose pre::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--muted) 28%, transparent);
 }
 
 .note-prose pre code {
@@ -1899,8 +1947,30 @@ li {
   line-height: 1.65;
 }
 
-:root:not(.dark) .note-prose pre code span {
+/* Astro emits github-dark inline token colors; remap them only on light Notes blocks. */
+:root:not(.dark) .note-prose pre.astro-code.github-dark code span[style*="color:#E1E4E8" i] {
   color: var(--note-code-text) !important;
+}
+
+:root:not(.dark) .note-prose pre.astro-code.github-dark code span[style*="color:#6A737D" i] {
+  color: #57606a !important;
+}
+
+:root:not(.dark) .note-prose pre.astro-code.github-dark code span[style*="color:#F97583" i] {
+  color: #b4232f !important;
+}
+
+:root:not(.dark) .note-prose pre.astro-code.github-dark code span[style*="color:#79B8FF" i],
+:root:not(.dark) .note-prose pre.astro-code.github-dark code span[style*="color:#9ECBFF" i] {
+  color: #0550ae !important;
+}
+
+:root:not(.dark) .note-prose pre.astro-code.github-dark code span[style*="color:#B392F0" i] {
+  color: #6f42c1 !important;
+}
+
+:root:not(.dark) .note-prose pre.astro-code.github-dark code span[style*="color:#FFAB70" i] {
+  color: #9a3412 !important;
 }
 
 .note-prose table {
@@ -2175,6 +2245,32 @@ li {
 
   .note-sidepane {
     margin-bottom: 20px;
+  }
+
+  .note-sidepane-section summary,
+  .note-backlink-title,
+  .note-outline-item a,
+  .note-context .metadata-list a,
+  .note-context .context-link-list a,
+  .note-context .tag-list a {
+    min-height: 40px;
+    align-items: center;
+  }
+
+  .note-sidepane-section summary {
+    padding: 4px 0;
+  }
+
+  .note-backlink-title,
+  .note-outline-item a {
+    padding-top: 0.46rem;
+    padding-bottom: 0.46rem;
+  }
+
+  .note-context .metadata-list a,
+  .note-context .context-link-list a,
+  .note-context .tag-list a {
+    display: inline-flex;
   }
 
   .note-outline-list {

@@ -54,7 +54,7 @@ const backlinkGroups = [...backlinks.reduce((groups, backlink) => {
 
   group.linkCount += 1;
 
-  if (snippet && !group.snippets.includes(snippet) && group.snippets.length < 3) {
+  if (snippet && !group.snippets.includes(snippet) && group.snippets.length < 2) {
     group.snippets.push(snippet);
   }
 
@@ -105,7 +105,7 @@ const backlinkCount = backlinks.length;
             </ol>
           </nav>
         ) : (
-          <p class="note-sidepane-empty">No backlinks yet.</p>
+          <p class="note-sidepane-empty">No backlinks yet. When another note references this page, it will appear here.</p>
         )
       }
     </details>

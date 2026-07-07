@@ -162,6 +162,7 @@ const relatedLinks = relatedNotes.map((item) => ({
           return;
         }
 
+        pre.removeAttribute('tabindex');
         pre.dataset.noteCodeEnhanced = 'true';
 
         const wrapper = document.createElement('div');

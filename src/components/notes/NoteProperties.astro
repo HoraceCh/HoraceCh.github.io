@@ -26,7 +26,7 @@ const { properties, concepts, prerequisites, relatedNotes, tags, status } = Astr
 const visibleProperties = properties.filter((item) => item.value !== undefined && item.value !== null && item.value !== '');
 ---
 
-<aside class="note-context" aria-label="Note context">
+<aside class="note-context note-properties-card" aria-label="Note context">
   <div class="note-context-section note-context-section-properties">
     <div class="note-context-heading">
       <h2>Properties</h2>
@@ -45,7 +45,7 @@ const visibleProperties = properties.filter((item) => item.value !== undefined &
   </div>
 
   {concepts.length > 0 && (
-    <div class="note-context-section">
+    <div class="note-context-section note-properties-chip-section">
       <h3>Concepts</h3>
       <TagList tags={concepts} />
     </div>
@@ -69,7 +69,7 @@ const visibleProperties = properties.filter((item) => item.value !== undefined &
     </div>
   )}
 
-  <div class="note-context-section">
+  <div class="note-context-section note-properties-chip-section">
     <h3>Tags</h3>
     <TagList tags={tags} linkBase="/notes/tags" />
   </div>

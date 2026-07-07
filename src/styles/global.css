@@ -1250,6 +1250,34 @@ li {
   min-height: 26px;
 }
 
+.note-properties-card .note-properties-chip-section .tag-list {
+  align-items: center;
+}
+
+.note-properties-card .note-properties-chip-section .tag-list li {
+  display: inline-flex;
+  min-height: 26px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--note-property-line));
+  border-radius: 9999px;
+  padding: 5px 9px;
+  background: color-mix(in srgb, var(--accent-soft) 78%, var(--note-property-bg));
+  color: color-mix(in srgb, var(--accent) 78%, var(--text));
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.note-properties-card .note-properties-chip-section .tag-list a {
+  display: inline-flex;
+  min-height: 0;
+  align-items: center;
+  color: inherit;
+  line-height: 1;
+  text-decoration: none;
+}
+
 .note-context .context-link-list {
   gap: 9px;
 }
@@ -1272,11 +1300,10 @@ li {
   position: sticky;
   top: var(--note-sidepane-top);
   align-self: start;
-  height: calc(100vh - var(--note-sidepane-top) - var(--note-sidepane-bottom));
-  max-height: calc(100vh - var(--note-sidepane-top) - var(--note-sidepane-bottom));
-  overflow: hidden;
   --note-sidepane-top: 88px;
   --note-sidepane-bottom: 24px;
+  --note-sidepane-max-height: calc(100vh - var(--note-sidepane-top) - var(--note-sidepane-bottom));
+  --note-sidepane-max-height: calc(100svh - var(--note-sidepane-top) - var(--note-sidepane-bottom));
   --note-pane-line: color-mix(in srgb, var(--line) 46%, transparent);
   --note-pane-title: color-mix(in srgb, var(--muted) 88%, var(--text));
   --note-pane-heading: color-mix(in srgb, var(--text) 72%, var(--muted));
@@ -1288,13 +1315,17 @@ li {
   --note-pane-focus: color-mix(in srgb, var(--text) 34%, transparent);
   --note-pane-scrollbar: color-mix(in srgb, var(--muted) 28%, transparent);
   --note-outline-prefix-width: 2.75rem;
+  height: auto;
+  max-height: var(--note-sidepane-max-height);
+  overflow: visible;
 }
 
 .note-sidepane-inner {
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, auto) auto;
   gap: 12px;
-  height: 100%;
+  height: auto;
+  max-height: var(--note-sidepane-max-height);
   min-height: 0;
   border-left: 1px solid var(--note-pane-line);
   overflow: hidden;
@@ -1306,11 +1337,13 @@ li {
 }
 
 .note-sidepane-inner:has(.note-backlinks-section[open]):has(.note-outline-section[open]) {
-  grid-template-rows: minmax(12rem, 3fr) minmax(10rem, 2fr);
+  grid-template-rows: minmax(0, 3fr) minmax(0, 2fr);
+  height: var(--note-sidepane-max-height);
 }
 
 .note-sidepane-inner:has(.note-backlinks-section[open]):not(:has(.note-outline-section[open])) {
   grid-template-rows: auto minmax(0, 1fr);
+  height: var(--note-sidepane-max-height);
 }
 
 .note-sidepane-section {
@@ -1416,7 +1449,8 @@ li {
 .note-outline,
 .note-outline nav,
 .note-backlinks-section > nav {
-  height: 100%;
+  height: auto;
+  max-height: 100%;
   min-height: 0;
   overflow: hidden;
 }
@@ -1424,8 +1458,7 @@ li {
 .note-backlink-list {
   display: grid;
   gap: 0;
-  height: 100%;
-  max-height: none;
+  max-height: calc(var(--note-sidepane-max-height) - 4.5rem);
   margin: 0;
   overflow: auto;
   padding: 0;
@@ -1521,8 +1554,7 @@ li {
   align-content: start;
   grid-auto-rows: max-content;
   gap: 0;
-  height: 100%;
-  max-height: none;
+  max-height: calc(var(--note-sidepane-max-height) - 4.5rem);
   margin: 0;
   overflow: auto;
   padding: 0;
@@ -1627,6 +1659,12 @@ li {
   color: var(--note-pane-child);
   font-size: 0.85rem;
   font-weight: 430;
+}
+
+.note-sidepane-inner:has(.note-backlinks-section[open]) .note-backlink-list,
+.note-sidepane-inner:has(.note-backlinks-section[open]) .note-outline-list {
+  height: 100%;
+  max-height: 100%;
 }
 
 .empty-state {

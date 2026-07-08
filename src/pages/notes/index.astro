@@ -11,6 +11,7 @@ import {
   flattenNoteModuleTree,
   isNoteIndexEntry,
   isOrdinaryNote,
+  isPublicBrowseNote,
   noteHref,
   sortNotesForHierarchy,
 } from '../../utils/noteModules';
@@ -19,41 +20,42 @@ import { slugify } from '../../utils/slugify';
 const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
-const noteModules = buildNoteModuleTree(notes);
+const publicBrowseNotes = notes.filter(isPublicBrowseNote);
+const noteModules = buildNoteModuleTree(publicBrowseNotes);
 const moduleNodes = flattenNoteModuleTree(noteModules);
-const ordinaryNotes = notes.filter(isOrdinaryNote);
-const hierarchyIndexNotes = sortNotesForHierarchy(notes.filter(isNoteIndexEntry));
+const ordinaryNotes = publicBrowseNotes.filter(isOrdinaryNote);
+const hierarchyIndexNotes = sortNotesForHierarchy(publicBrowseNotes.filter(isNoteIndexEntry));
 
 const categories = categoryDefinitions.map((category) => ({
   ...category,
-  count: notes.filter((note) => note.data.category === category.name).length,
+  count: publicBrowseNotes.filter((note) => note.data.category === category.name).length,
 }));
 
-const tagCounts = [...new Set(notes.flatMap((note) => note.data.tags))]
+const tagCounts = [...new Set(publicBrowseNotes.flatMap((note) => note.data.tags))]
   .sort((a, b) => a.localeCompare(b))
   .map((tag) => ({
     label: tag,
     href: `/notes/tags/${slugify(tag)}/`,
-    count: notes.filter((note) => note.data.tags.includes(tag)).length,
+    count: publicBrowseNotes.filter((note) => note.data.tags.includes(tag)).length,
   }));
 
 const pathCounts = pathDefinitions.map((path) => ({
   label: path.title,
   href: `/notes/paths/${slugify(path.title)}/`,
-  count: notes.filter((note) => note.data.path === path.title).length,
+  count: publicBrowseNotes.filter((note) => note.data.path === path.title).length,
   description: path.purpose,
 }));
 
 const typeCounts = Object.entries(typeLabels).map(([type, label]) => ({
   label,
   href: `/notes/types/${slugify(type)}/`,
-  count: notes.filter((note) => note.data.type === type).length,
+  count: publicBrowseNotes.filter((note) => note.data.type === type).length,
 }));
 
 const statusCounts = Object.entries(statusDescriptions).map(([status, description]) => ({
   label: status,
   href: `/notes/status/${slugify(status)}/`,
-  count: notes.filter((note) => note.data.status === status).length,
+  count: publicBrowseNotes.filter((note) => note.data.status === status).length,
   description,
 }));
 
@@ -108,7 +110,7 @@ const allNotes = [...ordinaryNotes].sort((a, b) => {
     <SectionHeading
       eyebrow="Recent"
       title="Recent Notes"
-      description="Recently updated ordinary notes, excluding collection and module index pages."
+      description="Recently updated ordinary notes, excluding collection and module index pages and hidden archive branches."
     />
     <div class="compact-note-list" aria-label="Recent ordinary notes">
       {
@@ -151,7 +153,7 @@ const allNotes = [...ordinaryNotes].sort((a, b) => {
     <SectionHeading
       eyebrow="Index"
       title="All Notes"
-      description="Complete ordinary-note archive. Module and collection indexes are kept separate so this list stays focused on individual notes."
+      description="Default ordinary-note index. Module and collection indexes and hidden archive branches are kept separate so this list stays focused on active individual notes."
     />
     <NoteList notes={allNotes} />
 

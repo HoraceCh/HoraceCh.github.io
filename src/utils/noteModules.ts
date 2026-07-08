@@ -27,6 +27,7 @@ interface MutableNoteModuleNode extends NoteModuleNode {
 }
 
 const indexRoles = new Set(['collection-index', 'module-index']);
+const archiveSegment = '_archive';
 
 export function noteHref(id: string) {
   return `/notes/${noteSlug(id)}/`;
@@ -38,6 +39,22 @@ export function isNoteIndexEntry(note: NoteEntry) {
 
 export function isOrdinaryNote(note: NoteEntry) {
   return !isNoteIndexEntry(note);
+}
+
+export function isArchiveModuleSegments(segments: string[]) {
+  return segments.some((segment) => cleanSegment(segment) === archiveSegment);
+}
+
+export function isArchivedNote(note: NoteEntry) {
+  const modulePath = Array.isArray(note.data.modulePath)
+    ? note.data.modulePath.map(cleanSegment).filter(Boolean)
+    : [];
+
+  return isArchiveModuleSegments(modulePath);
+}
+
+export function isPublicBrowseNote(note: NoteEntry) {
+  return !isArchivedNote(note);
 }
 
 export function getNoteHierarchySegments(note: NoteEntry) {
@@ -79,6 +96,10 @@ export function buildNoteModuleTree(notes: NoteEntry[]) {
   const nodesByPath = new Map<string, MutableNoteModuleNode>();
 
   for (const note of notes) {
+    if (isArchivedNote(note)) {
+      continue;
+    }
+
     const segments = getNoteHierarchySegments(note);
 
     if (segments.length === 0) {
@@ -137,6 +158,15 @@ export function flattenNoteModuleTree(nodes: NoteModuleNode[]) {
 
 export function buildNoteBreadcrumbs(note: NoteEntry) {
   const segments = getNoteHierarchySegments(note);
+
+  if (isArchivedNote(note)) {
+    return [
+      { label: 'Notes', href: '/notes/' },
+      { label: 'Archived' },
+      { label: note.data.title },
+    ] satisfies NoteBreadcrumbItem[];
+  }
+
   const linkedSegments = getBreadcrumbHierarchySegments(note, segments);
 
   return [

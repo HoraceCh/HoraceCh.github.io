@@ -21,7 +21,7 @@ Implemented:
 - The current notes schema lives in `src/content.config.ts` and covers title, description, dates, category, subcategory, tags, status, type, draft state, learning path/order/level, related notes, prerequisites, and concepts.
 - `/notes/` is the public Notes landing page and browsing entrance.
 - `/notes/[slug]/` renders individual note pages with properties, concepts, prerequisites, related notes, tags, outline, backlinks, and rendered Markdown content.
-- `/notes/collections/` and `/notes/collections/[...module]/` render metadata-backed collection and module browse pages from synced hierarchy fields.
+- `/notes/collections/` and `/notes/collections/[...module]/` render metadata-backed collection and module browse pages from synced hierarchy fields, excluding `_archive` hierarchy branches from public browse entrances.
 - Browse routes exist for categories, tags, learning paths, types, and status.
 - `NoteProperties.astro`, `NoteSidepane.astro`, and `NoteOutline.astro` own the main note-reader context UI.
 - `src/utils/noteBacklinks.ts` builds a static backlinks index from note bodies at build/render time.
@@ -43,6 +43,7 @@ Implemented:
 - Astro static build for public Notes pages.
 - Notes landing page with curated browsing surfaces and recent/full note listings.
 - Collection and module hierarchy browse pages backed by `collection`, `modulePath`, `module`, `isIndex`, and `noteRole` metadata.
+- `_archive` hierarchy branches are hidden from public collection/module browsing, recent notes, and the default all-notes list while non-draft archived notes keep their flat `/notes/[slug]/` URLs.
 - Collection and module index notes are treated as hierarchy entrances while retaining their flat canonical note URLs.
 - Static browse routes by category, tag, path, type, and status.
 - Properties card with linked metadata where useful.

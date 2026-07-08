@@ -8,6 +8,7 @@ import SectionHeading from '../../../components/SectionHeading.astro';
 import {
   buildNoteModuleTree,
   flattenNoteModuleTree,
+  isPublicBrowseNote,
   noteHref,
   noteModuleHref,
   sortNotesForHierarchy,
@@ -16,7 +17,7 @@ import {
 
 export async function getStaticPaths() {
   const notes = await getCollection('notes', ({ data }) => !data.draft);
-  const noteModules = buildNoteModuleTree(notes);
+  const noteModules = buildNoteModuleTree(notes.filter(isPublicBrowseNote));
 
   return flattenNoteModuleTree(noteModules).map((node) => ({
     params: { module: node.slugPath },

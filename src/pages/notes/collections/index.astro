@@ -3,11 +3,12 @@ import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
 import NoteModuleTree from '../../../components/NoteModuleTree.astro';
 import SectionHeading from '../../../components/SectionHeading.astro';
-import { buildNoteModuleTree, isOrdinaryNote } from '../../../utils/noteModules';
+import { buildNoteModuleTree, isOrdinaryNote, isPublicBrowseNote } from '../../../utils/noteModules';
 
 const notes = await getCollection('notes', ({ data }) => !data.draft);
-const noteModules = buildNoteModuleTree(notes);
-const ordinaryNoteCount = notes.filter(isOrdinaryNote).length;
+const publicBrowseNotes = notes.filter(isPublicBrowseNote);
+const noteModules = buildNoteModuleTree(publicBrowseNotes);
+const ordinaryNoteCount = publicBrowseNotes.filter(isOrdinaryNote).length;
 ---
 
 <Layout title="Note Collections" description="Collection and module entrances for the public notes.">

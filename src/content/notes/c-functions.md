@@ -1,7 +1,7 @@
 ---
 title: "C 函数"
 description: "函数（Function） 是一段可以重复使用的代码，用来独立地完成某个功能。"
-date: 2026-07-04
+date: 2026-07-08
 category: "Programming Languages"
 tags:
   - "c"

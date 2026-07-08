@@ -1,7 +1,7 @@
 ---
 title: "C Language"
 description: "A comprehensive guide to the C programming language, from basic syntax to advanced topics like pointers, data structures, and file operations."
-date: 2026-07-04
+date: 2026-07-08
 category: "Programming Languages"
 tags:
   - "c"
@@ -39,4 +39,4 @@ A comprehensive guide to the C programming language, from basic syntax to advanc
 
 ## Related
 
-- [二级公共基础](/notes/missing-note/) — Computer science fundamentals
+- 二级公共基础（计划补充） — Computer science fundamentals

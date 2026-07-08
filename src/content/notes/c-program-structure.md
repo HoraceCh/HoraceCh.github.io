@@ -1,7 +1,7 @@
 ---
 title: "C 程序结构与基础语法"
 description: "C程序主要包括一下部分："
-date: 2026-07-04
+date: 2026-07-08
 category: "Programming Languages"
 tags:
   - "c"

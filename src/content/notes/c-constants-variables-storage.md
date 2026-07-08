@@ -1,7 +1,7 @@
 ---
 title: "C 常量、变量与存储方式"
 description: "常量"
-date: 2026-07-04
+date: 2026-07-08
 category: "Programming Languages"
 tags:
   - "c"
@@ -158,9 +158,9 @@ const 数据类型 常量名 = 常量值;
 ```
 > **EXAMPLE: >`const int MAX_VALUE = 100;`**
 
-![常量定义](常量定义.png)
+![常量定义](/notes-assets/c-constants-variables-storage/asset-ekliwx.png)
 const 声明常量要在一个语句内完成：
-![如何声明常量](如何声明常量.png)
+![如何声明常量](/notes-assets/c-constants-variables-storage/asset-avrsw3.png)
 
 实例：
 ```C
@@ -201,8 +201,8 @@ int main()
 | ------ | --------------------------------------------------------- |
 | char   | 通常是一个字节（八位）, 这是一个整数类型。                                    |
 | int    | 整型，4 个字节，取值范围 -2147483648 到 2147483647。                   |
-| float  | 单精度浮点值。单精度是这样的格式，1位符号，8位指数，23位小数。<br><br>![Float图解](float图解.png) |
-| double | 双精度浮点值。双精度是1位符号，11位指数，52位小数。<br><br>![Double图示](double图示.png)     |
+| float  | 单精度浮点值。单精度是这样的格式，1位符号，8位指数，23位小数。<br><br>![Float图解](/notes-assets/c-constants-variables-storage/float.png) |
+| double | 双精度浮点值。双精度是1位符号，11位指数，52位小数。<br><br>![Double图示](/notes-assets/c-constants-variables-storage/double.png)     |
 | void   | 表示类型的缺失。                                                  |
 
 ---

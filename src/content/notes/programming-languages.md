@@ -1,7 +1,7 @@
 ---
 title: "Programming Languages"
 description: "Notes and references on programming languages."
-date: 2026-07-04
+date: 2026-07-08
 category: "Programming Languages"
 tags:
   - "index"

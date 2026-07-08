@@ -108,7 +108,7 @@ int main()
 }
 ```
 *图解*
-![欧几里得算法流程图](欧几里得算法流程图.png)
+![欧几里得算法流程图](/notes-assets/gcd-lcm/asset-1nmagz.png)
 
 ## 更相减损术
 > 更相减损法：更相减损术， 出自于中国古代的《九章算术》，也是一种求最大公约数的算法。  
@@ -142,7 +142,7 @@ int main()
 }
 ```
 *图解*
-![更相减损法流程图](更相减损法流程图.png)
+![更相减损法流程图](/notes-assets/gcd-lcm/asset-1vv6cc.png)
 
 ## Stein 算法
 >[! SUMMARY] 结合辗转相除法和更相减损法的优势以及移位运算
@@ -324,7 +324,7 @@ int main()
 ```
 
 *图解*
-![Stein 算法 流程图](Stein 算法 流程图.png)
+![Stein 算法 流程图](/notes-assets/gcd-lcm/stein.png)
 
 # 最小公倍数 LCM
 ## 公式法

@@ -1,7 +1,7 @@
 ---
 title: "条件运算符与循环控制"
 description: "条件运算符的语法格式为"
-date: 2026-07-04
+date: 2026-07-08
 category: "Programming Languages"
 tags:
   - "c"

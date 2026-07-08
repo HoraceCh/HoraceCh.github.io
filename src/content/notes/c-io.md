@@ -1,7 +1,7 @@
 ---
 title: "C 格式化输入输出与字符读写"
 description: "语法：int printf(const char format, ...);"
-date: 2026-07-04
+date: 2026-07-08
 category: "Programming Languages"
 tags:
   - "c"

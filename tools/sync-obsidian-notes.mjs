@@ -91,6 +91,7 @@ async function main() {
   const assetsDir = path.resolve(cwd, options.assets || path.join(DEFAULT_PUBLIC_DIR, DEFAULT_ASSETS_DIR));
   const publicAssetBase = publicBaseForAssets(assetsDir, cwd);
   const warnings = [];
+  const notices = [];
   const actions = [];
 
   await validateSource({ source, vault });
@@ -118,6 +119,7 @@ async function main() {
       publicAssetBase,
       noteIndex,
       warnings,
+      notices,
       assetPlan,
     });
     writePlan.push(converted);
@@ -131,7 +133,7 @@ async function main() {
   await copyAssets({ assetPlan, dryRun: options.dryRun, actions, warnings });
   await writeManifest({ writePlan, assetPlan, assetsDir, dryRun: options.dryRun, actions });
 
-  printSummary({ options, source, vault, outDir, assetsDir, records, assetPlan, actions, warnings });
+  printSummary({ options, source, vault, outDir, assetsDir, records, assetPlan, actions, warnings, notices });
 
   if (options.strict && warnings.length > 0) {
     process.exitCode = 1;
@@ -521,6 +523,7 @@ async function convertRecord({
   publicAssetBase,
   noteIndex,
   warnings,
+  notices,
   assetPlan,
 }) {
   const frontmatter = normalizeFrontmatter({ record, warnings, noteIndex });
@@ -533,6 +536,7 @@ async function convertRecord({
     publicAssetBase,
     noteIndex,
     warnings,
+    notices,
     assetPlan,
   });
   const content = `${formatFrontmatter(frontmatter)}\n${GENERATED_MARKER}\n\n${convertedBody.trim()}\n`;
@@ -624,6 +628,7 @@ async function convertBody({
   publicAssetBase,
   noteIndex,
   warnings,
+  notices,
   assetPlan,
 }) {
   let nextBody = body.replace(/\r\n/g, '\n');
@@ -644,6 +649,7 @@ async function convertBody({
         assetsDir,
         publicAssetBase,
         warnings,
+        notices,
         assetPlan,
         embed: true,
       });
@@ -682,6 +688,7 @@ async function convertBody({
       assetsDir,
       publicAssetBase,
       warnings,
+      notices,
       assetPlan,
       embed: true,
     });
@@ -698,6 +705,7 @@ async function convertBody({
         assetsDir,
         publicAssetBase,
         warnings,
+        notices,
         assetPlan,
       });
     }
@@ -823,7 +831,7 @@ function resolveNote(targetPath, record, noteIndex) {
   return null;
 }
 
-function assetTextLink({ target, record, source, vault, assetsDir, publicAssetBase, warnings, assetPlan }) {
+function assetTextLink({ target, record, source, vault, assetsDir, publicAssetBase, warnings, notices, assetPlan }) {
   const plan = planAssetCopy({
     targetPath: target.path,
     record,
@@ -832,6 +840,7 @@ function assetTextLink({ target, record, source, vault, assetsDir, publicAssetBa
     assetsDir,
     publicAssetBase,
     warnings,
+    notices,
     assetPlan,
   });
   const label = target.alias || assetAltText(target.path);
@@ -847,6 +856,7 @@ function copyAssetReference({
   assetsDir,
   publicAssetBase,
   warnings,
+  notices,
   assetPlan,
   embed,
 }) {
@@ -858,6 +868,7 @@ function copyAssetReference({
     assetsDir,
     publicAssetBase,
     warnings,
+    notices,
     assetPlan,
   });
 
@@ -872,7 +883,7 @@ function copyAssetReference({
   return `[${escapeMarkdownText(alt)}](${plan.publicPath})`;
 }
 
-function planAssetCopy({ targetPath, record, source, vault, assetsDir, publicAssetBase, warnings, assetPlan }) {
+function planAssetCopy({ targetPath, record, source, vault, assetsDir, publicAssetBase, warnings, notices, assetPlan }) {
   const resolved = resolveAssetPath({ targetPath, record, source, vault });
   if (!resolved) {
     warnings.push({
@@ -898,7 +909,7 @@ function planAssetCopy({ targetPath, record, source, vault, assetsDir, publicAss
   }
 
   if (output.collision) {
-    warnings.push({
+    notices.push({
       file: record.relativePath,
       message:
         `Asset output collision for "${output.collision.baseName}" between ` +
@@ -1533,7 +1544,7 @@ async function replaceAsync(value, regex, replacer) {
   return parts.join('');
 }
 
-function printSummary({ options, source, vault, outDir, assetsDir, records, assetPlan, actions, warnings }) {
+function printSummary({ options, source, vault, outDir, assetsDir, records, assetPlan, actions, warnings, notices }) {
   const mode = options.dryRun ? 'dry run' : 'sync';
   console.log(`\nObsidian notes ${mode} complete`);
   console.log(`Source: ${source}`);
@@ -1548,6 +1559,13 @@ function printSummary({ options, source, vault, outDir, assetsDir, records, asse
     console.log('\nActions:');
     for (const action of actions) {
       console.log(`- ${action}`);
+    }
+  }
+
+  if (notices.length > 0) {
+    console.log('\nNotices (non-blocking):');
+    for (const notice of notices) {
+      console.log(`- [${notice.type}] ${notice.file}: ${notice.message}`);
     }
   }
 

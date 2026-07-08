@@ -1,7 +1,7 @@
 ---
 title: "Python Notes"
 description: "This section organizes my public notes on Python fundamentals."
-date: 2026-07-04
+date: 2026-07-08
 category: "Programming Languages"
 tags:
   - "python"

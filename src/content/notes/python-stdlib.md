@@ -1,7 +1,7 @@
 ---
 title: "Python 常用库函数"
 description: "random库是Python的标准库,用于产生各种分布的伪随机数序列。"
-date: 2026-07-04
+date: 2026-07-08
 category: "Programming Languages"
 tags:
   - "python"
@@ -143,7 +143,7 @@ ls2 = jieba.lcut(sentence)
 print(ls2)
 ```
 结果如下
-![Lcut(sentence,cut All=False)](lcut(sentence,cut_all=False).png)
+![Lcut(sentence,cut All=False)](/notes-assets/python-stdlib/lcut-sentence-cut-all-false.png)
 **注意cut_all=False是精准模式，也是其默认的类型。**
 
 ## cut_for_search()、lcut_for_search()
@@ -180,7 +180,7 @@ ls5 = jieba.add_word('最好的')
 ls6 = jieba.lcut(sentence)
 print(ls6)
 ```
-![Add Word](add_word.png)
+![Add Word](/notes-assets/python-stdlib/add-word.png)
 结果如上，最终最好的就没有被切掉
 
 ## del_word(word)
@@ -194,7 +194,7 @@ ls7 = jieba.del_word('世界')
 ls8 = jieba.lcut(sentence)
 print(ls8)
 ```
-![Del Word](del_word.png)
+![Del Word](/notes-assets/python-stdlib/del-word.png)
 
 # eval()
 **eval()** 函数用来执行一个字符串表达式，并返回表达式的值。

@@ -1,7 +1,7 @@
 ---
 title: "数组 (Array)"
 description: "每个元素都可以通过索引（通常是整数）直接访问"
-date: 2026-07-04
+date: 2026-07-08
 category: "CS Fundamentals"
 tags:
   - "data-structure"
@@ -57,15 +57,15 @@ concepts:
 - **下位变体**：
   - 多维数组 (Multi-dimensional Array)
   - 动态数组 (Dynamic Array / 可变长顺序表)
-- **横向对比**：与 [链表](/notes/linked-list/) 互为镜像互补。数组重于“状态的随机访问”，链表重于“节点关系的动态修改”。
+- **横向对比**：与 链表 (Linked List) 互为镜像互补。数组重于“状态的随机访问”，链表重于“节点关系的动态修改”。
 
 ## 🚀 6. 典型应用场景 (Use Cases)
 - **高频读取、极少插入/删除**的场景（如查找表、静态配置数据）。
 - **矩阵与多维数据**的数学表示和计算。
-- 作为更复杂数据结构的**底层物理实现**：例如 [哈希表](/notes/missing-note/)（Hash Table）、[堆](/notes/missing-note/)（Heap）、[动态数组](/notes/missing-note/)（std::vector / ArrayList）。
+- 作为更复杂数据结构的**底层物理实现**：例如 哈希表（Hash Table）、堆（Heap）、动态数组（std::vector / ArrayList）。
 
 ## 🔗 7. 关联与对比 (Relations & Comparisons)
-- **对比 [链表](/notes/c-linked-list/)**：
+- **对比 链表**：
     - 数组：内存连续，随机访问快 $O(1)$ ，增删慢 $O(n)$ ，大小固定。
     - 链表：内存分散，随机访问慢 $O(n)$ ，已知节点时的增删快 $O(1)$ ，大小动态。
 - **进阶变体**：
@@ -74,6 +74,6 @@ concepts:
 
 ## 🛠️ 8. 通往实践的接口 (Link to Practice)
 > **Info: 具体代码实现、语言特性及刷题应用，请跳转至以下实践笔记：**
-- **底层实现探索**：[动态数组的扩容机制与均摊复杂度分析](/notes/missing-note/) 
+- **底层实现探索**：动态数组的扩容机制与均摊复杂度分析（计划补充）
 - **多语言特性**：
-- **常见算法**：[双指针技巧在数组中的应用](/notes/missing-note/)、[滑动窗口理论与实践](/notes/missing-note/)
+- **常见算法**：双指针技巧在数组中的应用（计划补充）、滑动窗口理论与实践（计划补充）

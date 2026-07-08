@@ -1,7 +1,7 @@
 ---
 title: "C 执行输出控制"
 description: "if else 是C语言中最常用的一种选择结构（分支结构）"
-date: 2026-07-04
+date: 2026-07-08
 category: "Programming Languages"
 tags:
   - "c"
@@ -228,7 +228,7 @@ while (条件)
 一旦条件变为假，程序就会跳出循环（结束循环），继续执行循环后面的代码。
 
 while 循环的执行过程可用下图表示：
-![While 循环流程示意图](while 循环流程示意图.png)
+![While 循环流程示意图](/notes-assets/c-control-flow/while.png)
 
 - 如果循环条件中不包含变量，会发生什么情况呢？
   如果循环条件成立时的话，while 循环会一直执行下去，永不结束，称为“死循环”
@@ -249,7 +249,7 @@ do while 循环和 while 循环的不同在于：
 while 循环执行 0~n 次循环体，do while 循环执行 1~n 次循环体，这就是它们之间的主要区别。
 
 do while 循环的执行过程可用下图表示：
-![Do While 循环流程示意图](do while 循环流程示意图.png)
+![Do While 循环流程示意图](/notes-assets/c-control-flow/do-while.png)
 
 # for循环 的用法
 >所谓循环（Loop），就是重复地执行同一段代码，直到满足特定的条件才会终止。每执行一次代码，或者每执行一次循环，就叫做一次迭代（Iteration）。
@@ -267,7 +267,7 @@ for (初始化表达式; 条件表达式; 更新表达式) {
 - `更新表达式`很多情况下是一个带有自增（++）或自减（--）运算符的表达式，以使`条件表达式`逐渐变得不成立，从而结束循环；这里的“更新”，说白了就是改变`条件表达式`中某个变量的值。
 
 for 循环的执行过程可用下图表示：
-![For循环流程示意图](for循环流程示意图.png)
+![For循环流程示意图](/notes-assets/c-control-flow/for.png)
 对于每次迭代，先执行`条件表达式`，再执行`循环体`，最后执行`更新表达式`。
 
 # C语言 goto语句 的用法

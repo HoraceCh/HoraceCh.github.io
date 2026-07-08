@@ -1,7 +1,7 @@
 ---
 title: "Python 列表（草稿）"
 description: "Working note synced from Obsidian Publish."
-date: 2026-07-04
+date: 2026-07-08
 category: "Programming Languages"
 tags:
   - "python"

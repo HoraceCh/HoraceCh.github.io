@@ -1,7 +1,7 @@
 ---
 title: "Data Structures"
 description: "Fundamental data structures and their implementations."
-date: 2026-07-04
+date: 2026-07-08
 category: "CS Fundamentals"
 tags:
   - "data-structure"

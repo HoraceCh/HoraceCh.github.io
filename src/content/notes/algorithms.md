@@ -1,7 +1,7 @@
 ---
 title: "Algorithms"
 description: "Algorithm implementations and analysis."
-date: 2026-07-04
+date: 2026-07-08
 category: "CS Fundamentals"
 tags:
   - "algorithm"

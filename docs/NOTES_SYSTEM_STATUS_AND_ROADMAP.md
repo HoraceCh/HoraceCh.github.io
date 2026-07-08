@@ -21,6 +21,7 @@ Implemented:
 - The current notes schema lives in `src/content.config.ts` and covers title, description, dates, category, subcategory, tags, status, type, draft state, learning path/order/level, related notes, prerequisites, and concepts.
 - `/notes/` is the public Notes landing page and browsing entrance.
 - `/notes/[slug]/` renders individual note pages with properties, concepts, prerequisites, related notes, tags, outline, backlinks, and rendered Markdown content.
+- `/notes/collections/` and `/notes/collections/[...module]/` render metadata-backed collection and module browse pages from synced hierarchy fields.
 - Browse routes exist for categories, tags, learning paths, types, and status.
 - `NoteProperties.astro`, `NoteSidepane.astro`, and `NoteOutline.astro` own the main note-reader context UI.
 - `src/utils/noteBacklinks.ts` builds a static backlinks index from note bodies at build/render time.
@@ -41,6 +42,8 @@ Implemented:
 
 - Astro static build for public Notes pages.
 - Notes landing page with curated browsing surfaces and recent/full note listings.
+- Collection and module hierarchy browse pages backed by `collection`, `modulePath`, `module`, `isIndex`, and `noteRole` metadata.
+- Collection and module index notes are treated as hierarchy entrances while retaining their flat canonical note URLs.
 - Static browse routes by category, tag, path, type, and status.
 - Properties card with linked metadata where useful.
 - Concepts and tags as compact chips.
@@ -61,7 +64,7 @@ Implemented:
 
 Implemented:
 
-- The reader uses a note header, a properties/context card, a sidepane, and the note prose area.
+- The reader uses a note header, hierarchy breadcrumbs when available, a properties/context card, a sidepane, and the note prose area.
 - Properties show the note's category, subcategory, path/order, level, type, updated date, status, concepts, prerequisites, related notes, and tags when present.
 - The sidepane keeps outline and backlinks near the reader on wider screens.
 - Long and short outlines have spacing tuned for scanability.
@@ -230,6 +233,7 @@ Near term:
 - Keep [Obsidian Feature Matrix](./OBSIDIAN_FEATURE_MATRIX.md) aligned with current source as outline, backlinks, code block controls, and future roadmap items change.
 - Add a small Notes QA checklist for generated notes, unresolved links, missing assets, backlinks counts, outline behavior, and code block controls.
 - Run a content IA pass on Notes taxonomy: Start Here, categories, paths, note types, statuses, concepts, and tags.
+- Continue refining collection/module labels as the synced public hierarchy grows.
 - Run an accessibility-focused Notes reader audit across desktop/mobile, keyboard use, light/dark contrast, and generated Markdown edge cases.
 
 Later:

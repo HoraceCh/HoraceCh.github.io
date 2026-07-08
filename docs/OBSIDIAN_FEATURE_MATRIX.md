@@ -19,6 +19,8 @@ Status labels:
 | Concepts chips | Implemented | `concepts` render as compact chips in the note context card. | Future filtering should stay static and metadata-backed. |
 | Tag chips | Implemented | Tags render as linked chips and connect to existing tag routes. | Polish tag routes separately if taxonomy changes. |
 | Browse routes | Implemented | Notes can be browsed by category, tag, learning path, type, and status. | Property index pages beyond these routes are future work. |
+| Collection/module hierarchy browse | Implemented | Synced `collection`, `modulePath`, `module`, `isIndex`, and `noteRole` metadata powers `/notes/collections/` and nested collection/module browse pages. Index notes remain readable at flat note URLs but act as hierarchy entrances in browse UI. | Keep this metadata-backed and static; do not infer hierarchy from titles or tags. |
+| Hierarchy breadcrumbs | Implemented | Note detail pages link back through Notes, collection, and module browse routes when hierarchy metadata is present. | Breadcrumbs should remain navigational, not a full graph trail. |
 | Notes sidepane | Implemented | The sidepane contains outline and backlinks near the reader on wider screens. | Keep visual polish Notes-scoped unless intentionally doing a design-system pass. |
 | Static H2/H3 outline | Implemented | Outline items are generated from Astro-rendered H2 and H3 headings. | Deeper document navigation is future work. |
 | Outline scrollspy / active state | Implemented | The active outline item updates while reading and uses `aria-current`. | Future changes should preserve keyboard and screen-reader behavior. |

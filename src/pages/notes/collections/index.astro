@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import NoteModuleTree from '../../../components/NoteModuleTree.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import { buildNoteModuleTree, isOrdinaryNote } from '../../../utils/noteModules';
+
+const notes = await getCollection('notes', ({ data }) => !data.draft);
+const noteModules = buildNoteModuleTree(notes);
+const ordinaryNoteCount = notes.filter(isOrdinaryNote).length;
+---
+
+<Layout title="Note Collections" description="Collection and module entrances for the public notes.">
+  <section class="article filter-hero notes-browse-hero">
+    <nav class="note-breadcrumbs" aria-label="Collection breadcrumb">
+      <ol>
+        <li><a href="/notes/">Notes</a></li>
+        <li><span aria-current="page">Collections</span></li>
+      </ol>
+    </nav>
+    <p class="eyebrow">Notes / Collections</p>
+    <h1>Collections</h1>
+    <p class="lead">
+      Broad areas that organize the public notes into modules and supporting ordinary notes.
+    </p>
+    <p>
+      {noteModules.length} collection{noteModules.length === 1 ? '' : 's'} currently organize {ordinaryNoteCount}{' '}
+      ordinary note{ordinaryNoteCount === 1 ? '' : 's'}.
+    </p>
+  </section>
+
+  <section class="section">
+    <SectionHeading
+      eyebrow="Hierarchy"
+      title="Collection Map"
+      description="Each collection links to a browse page and, when available, to its readable index note."
+    />
+    <NoteModuleTree nodes={noteModules} />
+  </section>
+</Layout>

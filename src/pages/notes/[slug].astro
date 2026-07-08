@@ -4,27 +4,27 @@ import Layout from '../../layouts/Layout.astro';
 import NoteProperties from '../../components/notes/NoteProperties.astro';
 import NoteSidepane from '../../components/notes/NoteSidepane.astro';
 import { buildNoteBacklinksIndex } from '../../utils/noteBacklinks';
+import { buildNoteBreadcrumbs, noteHref } from '../../utils/noteModules';
+import { noteSlug } from '../../utils/slugify';
 import { slugify } from '../../utils/slugify';
-
-const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
-const noteHref = (id: string) => `/notes/${toSlug(id)}/`;
 
 export async function getStaticPaths() {
   const notes = await getCollection('notes', ({ data }) => !data.draft);
   return notes.map((note) => ({
-    params: { slug: note.id.replace(/\.mdx?$/, '').replace(/\/index$/, '') },
+    params: { slug: noteSlug(note.id) },
     props: { note },
   }));
 }
 
 const { note } = Astro.props;
 const allNotes = await getCollection('notes', ({ data }) => !data.draft);
-const notesBySlug = new Map(allNotes.map((entry) => [toSlug(entry.id), entry]));
+const notesBySlug = new Map(allNotes.map((entry) => [noteSlug(entry.id), entry]));
 const backlinksIndex = buildNoteBacklinksIndex(allNotes);
-const currentSlug = toSlug(note.id);
+const currentSlug = noteSlug(note.id);
 const incomingBacklinks = backlinksIndex.backlinksBySlug[currentSlug] ?? [];
 const { Content, headings } = await render(note);
 const outlineItems = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const breadcrumbs = buildNoteBreadcrumbs(note);
 const relatedNotes = note.data.related.map((slug: string) => ({
   slug,
   note: notesBySlug.get(slug),
@@ -83,7 +83,17 @@ const relatedLinks = relatedNotes.map((item) => ({
 <Layout title={note.data.title} description={note.data.description}>
   <article class="article note-article">
     <div class="note-header">
-      <p class="back-link"><a href="/notes/">Back to Notes</a></p>
+      <nav class="note-breadcrumbs" aria-label="Note breadcrumb">
+        <ol>
+          {
+            breadcrumbs.map((item) => (
+              <li>
+                {item.href ? <a href={item.href}>{item.label}</a> : <span aria-current="page">{item.label}</span>}
+              </li>
+            ))
+          }
+        </ol>
+      </nav>
       <h1>{note.data.title}</h1>
       <p class="lead">{note.data.description}</p>
     </div>

@@ -2,69 +2,27 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import BrowsePills from '../../components/BrowsePills.astro';
-import KnowledgeMap from '../../components/KnowledgeMap.astro';
-import LearningPath from '../../components/LearningPath.astro';
-import NoteCategoryOverview from '../../components/NoteCategoryOverview.astro';
 import NoteList from '../../components/NoteList.astro';
+import NoteModuleTree from '../../components/NoteModuleTree.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
-import StartHere from '../../components/StartHere.astro';
 import { categoryDefinitions, pathDefinitions, statusDescriptions, typeLabels } from '../../utils/notes';
-import { noteSlug, slugify } from '../../utils/slugify';
+import {
+  buildNoteModuleTree,
+  flattenNoteModuleTree,
+  isNoteIndexEntry,
+  isOrdinaryNote,
+  noteHref,
+  sortNotesForHierarchy,
+} from '../../utils/noteModules';
+import { slugify } from '../../utils/slugify';
 
-const noteHref = (id: string) => `/notes/${noteSlug(id)}/`;
 const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
-const notesBySlug = new Map(notes.map((note) => [noteSlug(note.id), note]));
-
-const startHereSlugs = [
-  {
-    slug: 'ai-assisted-literature-workflow',
-    reason: 'Start here for the research workflow behind literature search and note organization.',
-  },
-  {
-    slug: 'robot-control-learning-map',
-    reason: 'Use this as the entry point for robotics and control foundations.',
-  },
-  {
-    slug: 'openvla-reading-template',
-    reason: 'Use this template before turning VLA papers into structured reading notes.',
-  },
-  {
-    slug: 'starting-this-personal-website',
-    reason: 'Read this for the purpose of the public notes and project documentation system.',
-  },
-];
-
-const startHereEntries = startHereSlugs
-  .map((item) => {
-    const note = notesBySlug.get(item.slug);
-    if (!note) return null;
-    return {
-      title: note.data.title,
-      description: note.data.description,
-      href: noteHref(note.id),
-      status: note.data.status,
-      category: note.data.category,
-      reason: item.reason,
-    };
-  })
-  .filter(Boolean);
-
-const learningPaths = pathDefinitions.map((path) => ({
-  ...path,
-  href: `/notes/paths/${slugify(path.title)}/`,
-  notes: notes
-    .filter((note) => note.data.path === path.title)
-    .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999))
-    .map((note) => ({
-      title: note.data.title,
-      href: noteHref(note.id),
-      status: note.data.status,
-      level: note.data.level,
-      order: note.data.order,
-    })),
-}));
+const noteModules = buildNoteModuleTree(notes);
+const moduleNodes = flattenNoteModuleTree(noteModules);
+const ordinaryNotes = notes.filter(isOrdinaryNote);
+const hierarchyIndexNotes = sortNotesForHierarchy(notes.filter(isNoteIndexEntry));
 
 const categories = categoryDefinitions.map((category) => ({
   ...category,
@@ -99,11 +57,29 @@ const statusCounts = Object.entries(statusDescriptions).map(([status, descriptio
   description,
 }));
 
-const recentNotes = notes.slice(0, 4);
-const allNotes = [...notes].sort((a, b) => {
+const collectionCounts = noteModules.map((collection) => ({
+  label: collection.title,
+  href: collection.href,
+  count: collection.ordinaryNoteCount,
+  description: collection.indexNote?.data.description,
+}));
+
+const moduleCounts = moduleNodes
+  .filter((module) => module.segments.length > 1)
+  .map((module) => ({
+    label: module.title,
+    href: module.href,
+    count: module.ordinaryNoteCount,
+    description: module.indexNote?.data.description,
+  }));
+
+const recentNotes = ordinaryNotes.slice(0, 5);
+const allNotes = [...ordinaryNotes].sort((a, b) => {
   const categoryCompare = a.data.category.localeCompare(b.data.category);
   if (categoryCompare !== 0) return categoryCompare;
-  return (a.data.order ?? 999) - (b.data.order ?? 999);
+  const orderCompare = (a.data.order ?? 999) - (b.data.order ?? 999);
+  if (orderCompare !== 0) return orderCompare;
+  return a.data.title.localeCompare(b.data.title);
 });
 ---
 
@@ -118,18 +94,43 @@ const allNotes = [...notes].sort((a, b) => {
     <p>Some notes are seeds, some are growing, and some are more stable references.</p>
   </section>
 
-  <StartHere entries={startHereEntries} />
-  <KnowledgeMap />
-  <LearningPath paths={learningPaths} />
-  <NoteCategoryOverview categories={categories} />
+  <section class="section notes-module-overview" id="collections">
+    <SectionHeading
+      eyebrow="Structure"
+      title="Collections and Modules"
+      description="Hierarchy-backed entrances into the public notes. Collection and module index notes are shown here as maps instead of ordinary archive items."
+    />
+    <NoteModuleTree nodes={noteModules} />
+    <p class="module-overview-link"><a href="/notes/collections/">Browse all collections</a></p>
+  </section>
+
+  <section class="section recent-notes">
+    <SectionHeading
+      eyebrow="Recent"
+      title="Recent Notes"
+      description="Recently updated ordinary notes, excluding collection and module index pages."
+    />
+    <div class="compact-note-list" aria-label="Recent ordinary notes">
+      {
+        recentNotes.map((note) => (
+          <a class="compact-note" href={noteHref(note.id)}>
+            <span>{note.data.title}</span>
+            <small>{note.data.category} / {note.data.status}</small>
+          </a>
+        ))
+      }
+    </div>
+  </section>
 
   <section class="section browse-section">
     <SectionHeading
       eyebrow="Browse"
       title="Explore by Topic"
-      description="Use these entry points after the knowledge map when you want to narrow the notes by category, tag, path, type, or status."
+      description="Secondary filters for narrowing the same public notes by hierarchy, category, tag, path, type, or status."
     />
     <div class="browse-grid">
+      <BrowsePills label="Collections" items={collectionCounts} />
+      <BrowsePills label="Modules" items={moduleCounts} />
       <BrowsePills
         label="Categories"
         items={categories.map((category) => ({
@@ -146,30 +147,28 @@ const allNotes = [...notes].sort((a, b) => {
     </div>
   </section>
 
-  <section class="section recent-notes">
-    <SectionHeading
-      eyebrow="Recent"
-      title="Recent Notes"
-      description="Recent notes are shown here for continuity, but the main structure is the learning map above."
-    />
-    <div class="compact-note-list" aria-label="Recent notes">
-      {
-        recentNotes.map((note) => (
-          <a class="compact-note" href={noteHref(note.id)}>
-            <span>{note.data.title}</span>
-            <small>{note.data.category} / {note.data.status}</small>
-          </a>
-        ))
-      }
-    </div>
-  </section>
-
   <section class="section" id="all-notes">
     <SectionHeading
       eyebrow="Index"
       title="All Notes"
-      description="Full public note index. Chronology is secondary to topic structure."
+      description="Complete ordinary-note archive. Module and collection indexes are kept separate so this list stays focused on individual notes."
     />
     <NoteList notes={allNotes} />
+
+    {
+      hierarchyIndexNotes.length > 0 && (
+        <div class="module-index-list" aria-labelledby="module-index-list-title">
+          <h3 id="module-index-list-title">Index Notes</h3>
+          <div class="compact-note-list">
+            {hierarchyIndexNotes.map((note) => (
+              <a class="compact-note compact-note-muted" href={noteHref(note.id)}>
+                <span>{note.data.title}</span>
+                <small>{note.data.isIndex ? 'index note' : note.data.noteRole}</small>
+              </a>
+            ))}
+          </div>
+        </div>
+      )
+    }
   </section>
 </Layout>

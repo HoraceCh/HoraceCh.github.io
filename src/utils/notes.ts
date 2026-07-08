@@ -29,6 +29,14 @@ export const categoryDefinitions = [
     description:
       'Notes about how I learn, organize knowledge, read papers, and build long-term technical understanding.',
   },
+  {
+    name: 'Programming Languages',
+    description: 'Public notes and references on programming language fundamentals and practice.',
+  },
+  {
+    name: 'CS Fundamentals',
+    description: 'Computer science fundamentals covering algorithms, data structures, and implementation notes.',
+  },
 ];
 
 export const pathDefinitions = [

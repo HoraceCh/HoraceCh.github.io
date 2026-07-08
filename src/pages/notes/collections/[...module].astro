@@ -1,0 +1,119 @@
+---
+import { getCollection } from 'astro:content';
+import BrowsePills from '../../../components/BrowsePills.astro';
+import Layout from '../../../layouts/Layout.astro';
+import NoteList from '../../../components/NoteList.astro';
+import NoteModuleTree from '../../../components/NoteModuleTree.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import {
+  buildNoteModuleTree,
+  flattenNoteModuleTree,
+  noteHref,
+  noteModuleHref,
+  sortNotesForHierarchy,
+  type NoteModuleNode,
+} from '../../../utils/noteModules';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes', ({ data }) => !data.draft);
+  const noteModules = buildNoteModuleTree(notes);
+
+  return flattenNoteModuleTree(noteModules).map((node) => ({
+    params: { module: node.slugPath },
+    props: { node },
+  }));
+}
+
+const { node } = Astro.props as { node: NoteModuleNode };
+const descendantNodes = flattenNoteModuleTree([node]);
+const ordinaryNotes = sortNotesForHierarchy(descendantNodes.flatMap((moduleNode) => moduleNode.notes));
+const childModuleItems = node.childModules.map((child) => ({
+  label: child.title,
+  href: child.href,
+  count: child.ordinaryNoteCount,
+  description: child.indexNote?.data.description,
+}));
+const breadcrumbs = [
+  { label: 'Notes', href: '/notes/' },
+  { label: 'Collections', href: '/notes/collections/' },
+  ...node.segments.map((segment, index) => ({
+    label: segment,
+    href: index === node.segments.length - 1 ? undefined : noteModuleHref(node.segments.slice(0, index + 1)),
+  })),
+];
+const description =
+  node.indexNote?.data.description ??
+  `${node.title} groups ${node.ordinaryNoteCount} ordinary note${node.ordinaryNoteCount === 1 ? '' : 's'}.`;
+---
+
+<Layout title={`${node.title} Notes`} description={description}>
+  <section class="article filter-hero notes-browse-hero">
+    <nav class="note-breadcrumbs" aria-label="Collection breadcrumb">
+      <ol>
+        {
+          breadcrumbs.map((item) => (
+            <li>
+              {item.href ? <a href={item.href}>{item.label}</a> : <span aria-current="page">{item.label}</span>}
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+    <p class="eyebrow">{node.segments.length === 1 ? 'Notes / Collection' : 'Notes / Module'}</p>
+    <h1>{node.title}</h1>
+    <p class="lead">{description}</p>
+    <p>
+      {node.ordinaryNoteCount} ordinary note{node.ordinaryNoteCount === 1 ? '' : 's'} and {node.indexNoteCount}{' '}
+      index note{node.indexNoteCount === 1 ? '' : 's'} in this branch.
+    </p>
+  </section>
+
+  {
+    node.indexNote && (
+      <section class="section module-index-callout" aria-labelledby="module-index-title">
+        <SectionHeading
+          id="module-index-title"
+          eyebrow="Entrance"
+          title="Index Note"
+          description="The readable index note for this branch stays at its flat canonical URL."
+        />
+        <article class="module-summary-card">
+          <h3><a href={noteHref(node.indexNote.id)}>{node.indexNote.data.title}</a></h3>
+          <p>{node.indexNote.data.description}</p>
+          <p class="meta">{node.indexNote.data.noteRole}</p>
+        </article>
+      </section>
+    )
+  }
+
+  {
+    node.childModules.length > 0 && (
+      <section class="section">
+        <SectionHeading
+          eyebrow="Modules"
+          title="Child Modules"
+          description="Nested module entrances under this branch."
+        />
+        <NoteModuleTree nodes={node.childModules} />
+      </section>
+    )
+  }
+
+  <section class="section">
+    <SectionHeading
+      eyebrow="Notes"
+      title={node.segments.length === 1 ? `Notes in ${node.title}` : 'Notes in This Module'}
+      description="Ordinary notes link to their unchanged flat note URLs."
+    />
+    <NoteList notes={ordinaryNotes} emptyMessage="No ordinary notes are published in this branch yet." />
+  </section>
+
+  {
+    childModuleItems.length > 0 && (
+      <section class="section browse-section">
+        <SectionHeading eyebrow="Browse" title="Module Links" />
+        <BrowsePills label="Child modules" items={childModuleItems} />
+      </section>
+    )
+  }
+</Layout>

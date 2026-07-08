@@ -2,6 +2,15 @@
 title: "C 指针（归档旧版）"
 description: "指针：数据在内存中的地址"
 date: 2026-07-08
+sourcePath: "Programming Languages/C/_archive/c-pointers-archive.md"
+collection: "Programming Languages"
+modulePath:
+  - "Programming Languages"
+  - "C"
+  - "_archive"
+module: "_archive"
+isIndex: false
+noteRole: "learning-note"
 category: "Programming Languages"
 tags:
   - "c"

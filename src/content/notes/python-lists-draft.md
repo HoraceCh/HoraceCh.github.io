@@ -2,6 +2,15 @@
 title: "Python 列表（草稿）"
 description: "Working note synced from Obsidian Publish."
 date: 2026-07-08
+sourcePath: "Programming Languages/Python/_archive/python-lists-draft.md"
+collection: "Programming Languages"
+modulePath:
+  - "Programming Languages"
+  - "Python"
+  - "_archive"
+module: "_archive"
+isIndex: false
+noteRole: "learning-note"
 category: "Programming Languages"
 tags:
   - "python"

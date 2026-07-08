@@ -2,6 +2,14 @@
 title: "Python Print() 函数详解"
 description: ""
 date: 2026-07-08
+sourcePath: "Programming Languages/Python/python-print.md"
+collection: "Programming Languages"
+modulePath:
+  - "Programming Languages"
+  - "Python"
+module: "Python"
+isIndex: false
+noteRole: "learning-note"
 category: "Programming Languages"
 tags:
   - "python"

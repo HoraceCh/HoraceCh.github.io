@@ -2,6 +2,14 @@
 title: "Data Structures"
 description: "Fundamental data structures and their implementations."
 date: 2026-07-08
+sourcePath: "CS Fundamentals/Data Structures/index.md"
+collection: "CS Fundamentals"
+modulePath:
+  - "CS Fundamentals"
+  - "Data Structures"
+module: "Data Structures"
+isIndex: true
+noteRole: "module-index"
 category: "CS Fundamentals"
 tags:
   - "data-structure"

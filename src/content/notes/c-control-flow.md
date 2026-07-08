@@ -2,6 +2,14 @@
 title: "C 执行输出控制"
 description: "if else 是C语言中最常用的一种选择结构（分支结构）"
 date: 2026-07-08
+sourcePath: "Programming Languages/C/c-control-flow.md"
+collection: "Programming Languages"
+modulePath:
+  - "Programming Languages"
+  - "C"
+module: "C"
+isIndex: false
+noteRole: "learning-note"
 category: "Programming Languages"
 tags:
   - "c"

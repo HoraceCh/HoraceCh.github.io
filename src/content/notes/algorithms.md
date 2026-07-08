@@ -2,6 +2,14 @@
 title: "Algorithms"
 description: "Algorithm implementations and analysis."
 date: 2026-07-08
+sourcePath: "CS Fundamentals/Algorithms/index.md"
+collection: "CS Fundamentals"
+modulePath:
+  - "CS Fundamentals"
+  - "Algorithms"
+module: "Algorithms"
+isIndex: true
+noteRole: "module-index"
 category: "CS Fundamentals"
 tags:
   - "algorithm"

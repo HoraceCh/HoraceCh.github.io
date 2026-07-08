@@ -2,6 +2,14 @@
 title: "C 常量、变量与存储方式"
 description: "常量"
 date: 2026-07-08
+sourcePath: "Programming Languages/C/c-constants-variables-storage.md"
+collection: "Programming Languages"
+modulePath:
+  - "Programming Languages"
+  - "C"
+module: "C"
+isIndex: false
+noteRole: "learning-note"
 category: "Programming Languages"
 tags:
   - "c"

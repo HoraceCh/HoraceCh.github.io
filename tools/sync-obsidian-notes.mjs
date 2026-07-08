@@ -51,11 +51,26 @@ const VALID_TYPES = new Set([
   'workflow-note',
 ]);
 const VALID_LEVELS = new Set(['foundation', 'intermediate', 'advanced']);
+const VALID_NOTE_ROLES = new Set([
+  'collection-index',
+  'module-index',
+  'learning-note',
+  'concept-note',
+  'project-log',
+  'paper-reading',
+  'workflow-note',
+]);
 const FRONTMATTER_ORDER = [
   'title',
   'description',
   'date',
   'updated',
+  'sourcePath',
+  'collection',
+  'modulePath',
+  'module',
+  'isIndex',
+  'noteRole',
   'category',
   'subcategory',
   'tags',
@@ -543,6 +558,7 @@ async function convertRecord({
 
   return {
     content,
+    frontmatter,
     outFile: path.join(outDir, `${record.slug}.md`),
     record,
   };
@@ -559,10 +575,17 @@ function normalizeFrontmatter({ record, warnings, noteIndex }) {
   const description = normalizeDescription(firstString(fm.description, fm.summary, fm.excerpt), bodyWithoutDataview);
   const status = normalizeStatus(firstString(fm.status), warnings, record.relativePath);
   const type = normalizeType(firstString(fm.type), category);
+  const hierarchy = deriveHierarchyMetadata(record);
   const frontmatter = {
     title: record.title,
     description,
     date: date || todayIsoDate(),
+    sourcePath: hierarchy.sourcePath,
+    collection: hierarchy.collection,
+    modulePath: hierarchy.modulePath,
+    module: hierarchy.module,
+    isIndex: hierarchy.isIndex,
+    noteRole: normalizeNoteRole({ fm, hierarchy, type }),
     category,
     tags: normalizeTags(fm.tags),
     status,
@@ -599,6 +622,40 @@ function normalizeFrontmatter({ record, warnings, noteIndex }) {
   }
 
   return frontmatter;
+}
+
+function deriveHierarchyMetadata(record) {
+  const sourcePath = slash(record.relativePath);
+  const directory = slash(path.dirname(sourcePath));
+  const modulePath = directory && directory !== '.' ? directory.split('/').filter(Boolean) : [];
+
+  return {
+    sourcePath,
+    collection: modulePath[0],
+    modulePath,
+    module: modulePath.at(-1),
+    isIndex: /^index\.mdx?$/i.test(path.basename(sourcePath)),
+  };
+}
+
+function normalizeNoteRole({ fm, hierarchy, type }) {
+  if (hierarchy.isIndex && hierarchy.modulePath.length === 1) {
+    return 'collection-index';
+  }
+  if (hierarchy.isIndex && hierarchy.modulePath.length >= 2) {
+    return 'module-index';
+  }
+
+  const noteRole = stringValue(fm.noteRole).toLowerCase();
+  if (noteRole && VALID_NOTE_ROLES.has(noteRole)) {
+    return noteRole;
+  }
+
+  if (VALID_NOTE_ROLES.has(type) && !type.endsWith('-index')) {
+    return type;
+  }
+
+  return 'learning-note';
 }
 
 function removeDataviewBlocks(body, file, warnings) {
@@ -1108,6 +1165,18 @@ async function writeManifest({ writePlan, assetPlan, assetsDir, dryRun, actions 
       {
         assets: assetPlan.map((plan) => slash(path.relative(process.cwd(), plan.destination))).sort(),
         generatedAt: new Date().toISOString(),
+        noteRecords: writePlan
+          .map((item) => ({
+            output: slash(path.relative(process.cwd(), item.outFile)),
+            slug: item.record.slug,
+            sourcePath: item.frontmatter.sourcePath,
+            collection: item.frontmatter.collection,
+            modulePath: item.frontmatter.modulePath,
+            module: item.frontmatter.module,
+            isIndex: item.frontmatter.isIndex,
+            noteRole: item.frontmatter.noteRole,
+          }))
+          .sort((a, b) => a.output.localeCompare(b.output)),
         notes: writePlan.map((item) => slash(path.relative(process.cwd(), item.outFile))).sort(),
       },
       null,

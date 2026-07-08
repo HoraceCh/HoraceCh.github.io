@@ -25,7 +25,381 @@
     "astro-public/notes-assets/tree-binary-tree/asset-1tycfh.png",
     "astro-public/notes-assets/tree-binary-tree/asset-cjdx96.png"
   ],
-  "generatedAt": "2026-07-08T02:29:50.887Z",
+  "generatedAt": "2026-07-08T02:53:42.375Z",
+  "noteRecords": [
+    {
+      "output": "src/content/notes/algorithms.md",
+      "slug": "algorithms",
+      "sourcePath": "CS Fundamentals/Algorithms/index.md",
+      "collection": "CS Fundamentals",
+      "modulePath": [
+        "CS Fundamentals",
+        "Algorithms"
+      ],
+      "module": "Algorithms",
+      "isIndex": true,
+      "noteRole": "module-index"
+    },
+    {
+      "output": "src/content/notes/array.md",
+      "slug": "array",
+      "sourcePath": "CS Fundamentals/Data Structures/array.md",
+      "collection": "CS Fundamentals",
+      "modulePath": [
+        "CS Fundamentals",
+        "Data Structures"
+      ],
+      "module": "Data Structures",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-arrays.md",
+      "slug": "c-arrays",
+      "sourcePath": "Programming Languages/C/c-arrays.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-conditional-loop-control.md",
+      "slug": "c-conditional-loop-control",
+      "sourcePath": "Programming Languages/C/c-conditional-loop-control.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-constants-variables-storage.md",
+      "slug": "c-constants-variables-storage",
+      "sourcePath": "Programming Languages/C/c-constants-variables-storage.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-control-flow.md",
+      "slug": "c-control-flow",
+      "sourcePath": "Programming Languages/C/c-control-flow.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-custom-types.md",
+      "slug": "c-custom-types",
+      "sourcePath": "Programming Languages/C/c-custom-types.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-data-types.md",
+      "slug": "c-data-types",
+      "sourcePath": "Programming Languages/C/c-data-types.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-file-operations.md",
+      "slug": "c-file-operations",
+      "sourcePath": "Programming Languages/C/c-file-operations.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-functions.md",
+      "slug": "c-functions",
+      "sourcePath": "Programming Languages/C/c-functions.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-io.md",
+      "slug": "c-io",
+      "sourcePath": "Programming Languages/C/c-io.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-language.md",
+      "slug": "c-language",
+      "sourcePath": "Programming Languages/C/index.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": true,
+      "noteRole": "module-index"
+    },
+    {
+      "output": "src/content/notes/c-linked-list.md",
+      "slug": "c-linked-list",
+      "sourcePath": "Programming Languages/C/c-linked-list.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-operators.md",
+      "slug": "c-operators",
+      "sourcePath": "Programming Languages/C/c-operators.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-pointers-archive.md",
+      "slug": "c-pointers-archive",
+      "sourcePath": "Programming Languages/C/_archive/c-pointers-archive.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C",
+        "_archive"
+      ],
+      "module": "_archive",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-pointers.md",
+      "slug": "c-pointers",
+      "sourcePath": "Programming Languages/C/c-pointers.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/c-program-structure.md",
+      "slug": "c-program-structure",
+      "sourcePath": "Programming Languages/C/c-program-structure.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "C"
+      ],
+      "module": "C",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/circular-linked-list.md",
+      "slug": "circular-linked-list",
+      "sourcePath": "CS Fundamentals/Data Structures/circular-linked-list.md",
+      "collection": "CS Fundamentals",
+      "modulePath": [
+        "CS Fundamentals",
+        "Data Structures"
+      ],
+      "module": "Data Structures",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/cs-fundamentals.md",
+      "slug": "cs-fundamentals",
+      "sourcePath": "CS Fundamentals/index.md",
+      "collection": "CS Fundamentals",
+      "modulePath": [
+        "CS Fundamentals"
+      ],
+      "module": "CS Fundamentals",
+      "isIndex": true,
+      "noteRole": "collection-index"
+    },
+    {
+      "output": "src/content/notes/data-structures.md",
+      "slug": "data-structures",
+      "sourcePath": "CS Fundamentals/Data Structures/index.md",
+      "collection": "CS Fundamentals",
+      "modulePath": [
+        "CS Fundamentals",
+        "Data Structures"
+      ],
+      "module": "Data Structures",
+      "isIndex": true,
+      "noteRole": "module-index"
+    },
+    {
+      "output": "src/content/notes/gcd-lcm.md",
+      "slug": "gcd-lcm",
+      "sourcePath": "CS Fundamentals/Algorithms/gcd-lcm.md",
+      "collection": "CS Fundamentals",
+      "modulePath": [
+        "CS Fundamentals",
+        "Algorithms"
+      ],
+      "module": "Algorithms",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/index.md",
+      "slug": "index",
+      "sourcePath": "index.md",
+      "modulePath": [],
+      "isIndex": true,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/programming-languages.md",
+      "slug": "programming-languages",
+      "sourcePath": "Programming Languages/index.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages"
+      ],
+      "module": "Programming Languages",
+      "isIndex": true,
+      "noteRole": "collection-index"
+    },
+    {
+      "output": "src/content/notes/python-basics.md",
+      "slug": "python-basics",
+      "sourcePath": "Programming Languages/Python/python-basics.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "Python"
+      ],
+      "module": "Python",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/python-lists-draft.md",
+      "slug": "python-lists-draft",
+      "sourcePath": "Programming Languages/Python/_archive/python-lists-draft.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "Python",
+        "_archive"
+      ],
+      "module": "_archive",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/python-print.md",
+      "slug": "python-print",
+      "sourcePath": "Programming Languages/Python/python-print.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "Python"
+      ],
+      "module": "Python",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/python-stdlib.md",
+      "slug": "python-stdlib",
+      "sourcePath": "Programming Languages/Python/python-stdlib.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "Python"
+      ],
+      "module": "Python",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/python.md",
+      "slug": "python",
+      "sourcePath": "Programming Languages/Python/index.md",
+      "collection": "Programming Languages",
+      "modulePath": [
+        "Programming Languages",
+        "Python"
+      ],
+      "module": "Python",
+      "isIndex": true,
+      "noteRole": "module-index"
+    },
+    {
+      "output": "src/content/notes/tree-binary-tree.md",
+      "slug": "tree-binary-tree",
+      "sourcePath": "CS Fundamentals/Data Structures/tree-binary-tree.md",
+      "collection": "CS Fundamentals",
+      "modulePath": [
+        "CS Fundamentals",
+        "Data Structures"
+      ],
+      "module": "Data Structures",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    }
+  ],
   "notes": [
     "src/content/notes/algorithms.md",
     "src/content/notes/array.md",

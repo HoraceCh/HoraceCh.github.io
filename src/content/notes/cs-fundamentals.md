@@ -2,6 +2,13 @@
 title: "CS Fundamentals"
 description: "Computer science fundamentals covering algorithms and data structures."
 date: 2026-07-08
+sourcePath: "CS Fundamentals/index.md"
+collection: "CS Fundamentals"
+modulePath:
+  - "CS Fundamentals"
+module: "CS Fundamentals"
+isIndex: true
+noteRole: "collection-index"
 category: "CS Fundamentals"
 tags:
   - "computer-science"

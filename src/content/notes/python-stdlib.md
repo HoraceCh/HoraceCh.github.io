@@ -2,6 +2,14 @@
 title: "Python 常用库函数"
 description: "random库是Python的标准库,用于产生各种分布的伪随机数序列。"
 date: 2026-07-08
+sourcePath: "Programming Languages/Python/python-stdlib.md"
+collection: "Programming Languages"
+modulePath:
+  - "Programming Languages"
+  - "Python"
+module: "Python"
+isIndex: false
+noteRole: "learning-note"
 category: "Programming Languages"
 tags:
   - "python"

@@ -2,6 +2,13 @@
 title: "Programming Languages"
 description: "Notes and references on programming languages."
 date: 2026-07-08
+sourcePath: "Programming Languages/index.md"
+collection: "Programming Languages"
+modulePath:
+  - "Programming Languages"
+module: "Programming Languages"
+isIndex: true
+noteRole: "collection-index"
 category: "Programming Languages"
 tags:
   - "index"

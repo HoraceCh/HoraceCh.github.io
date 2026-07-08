@@ -2,6 +2,14 @@
 title: "C 函数"
 description: "函数（Function） 是一段可以重复使用的代码，用来独立地完成某个功能。"
 date: 2026-07-08
+sourcePath: "Programming Languages/C/c-functions.md"
+collection: "Programming Languages"
+modulePath:
+  - "Programming Languages"
+  - "C"
+module: "C"
+isIndex: false
+noteRole: "learning-note"
 category: "Programming Languages"
 tags:
   - "c"

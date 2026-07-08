@@ -2,6 +2,14 @@
 title: "循环链表"
 description: "与普通单链表相比，循环链表没有明显的“尽头”。从链表中的任何一个节点出发，都可以遍历到整个链表的所有节点。"
 date: 2026-03-25
+sourcePath: "CS Fundamentals/Data Structures/circular-linked-list.md"
+collection: "CS Fundamentals"
+modulePath:
+  - "CS Fundamentals"
+  - "Data Structures"
+module: "Data Structures"
+isIndex: false
+noteRole: "learning-note"
 category: "CS Fundamentals"
 tags:
   - "data-structure"

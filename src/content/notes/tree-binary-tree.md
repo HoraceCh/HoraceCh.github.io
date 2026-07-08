@@ -2,6 +2,14 @@
 title: "树与二叉树"
 description: "树（Tree） 是 n(n=0) 个结点的有限集。n=0 时称为空树。"
 date: 2026-03-13
+sourcePath: "CS Fundamentals/Data Structures/tree-binary-tree.md"
+collection: "CS Fundamentals"
+modulePath:
+  - "CS Fundamentals"
+  - "Data Structures"
+module: "Data Structures"
+isIndex: false
+noteRole: "learning-note"
 category: "CS Fundamentals"
 tags:
   - "data-structure"

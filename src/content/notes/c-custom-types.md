@@ -2,6 +2,14 @@
 title: "C 自建数据类型"
 description: ""
 date: 2026-07-08
+sourcePath: "Programming Languages/C/c-custom-types.md"
+collection: "Programming Languages"
+modulePath:
+  - "Programming Languages"
+  - "C"
+module: "C"
+isIndex: false
+noteRole: "learning-note"
 category: "Programming Languages"
 tags:
   - "c"

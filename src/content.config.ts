@@ -22,6 +22,22 @@ const notes = defineCollection({
         'workflow-note',
       ])
       .default('learning-note'),
+    sourcePath: z.string().optional(),
+    collection: z.string().optional(),
+    modulePath: z.array(z.string()).default([]),
+    module: z.string().optional(),
+    isIndex: z.boolean().default(false),
+    noteRole: z
+      .enum([
+        'collection-index',
+        'module-index',
+        'learning-note',
+        'concept-note',
+        'project-log',
+        'paper-reading',
+        'workflow-note',
+      ])
+      .default('learning-note'),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
     path: z.string().optional(),

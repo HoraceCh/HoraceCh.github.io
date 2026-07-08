@@ -2,6 +2,14 @@
 title: "Python Notes"
 description: "This section organizes my public notes on Python fundamentals."
 date: 2026-07-08
+sourcePath: "Programming Languages/Python/index.md"
+collection: "Programming Languages"
+modulePath:
+  - "Programming Languages"
+  - "Python"
+module: "Python"
+isIndex: true
+noteRole: "module-index"
 category: "Programming Languages"
 tags:
   - "python"

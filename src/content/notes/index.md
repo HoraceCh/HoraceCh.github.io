@@ -2,6 +2,10 @@
 title: "Baukasten Nexus - Published Notes"
 description: "Welcome to the published knowledge base. This vault contains notes on computer science, programming languages, and related topics."
 date: 2026-07-08
+sourcePath: "index.md"
+modulePath: []
+isIndex: true
+noteRole: "learning-note"
 category: "Learning Methods"
 tags:
   - "index"

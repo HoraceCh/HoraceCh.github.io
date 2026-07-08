@@ -2,6 +2,14 @@
 title: "最大公约数与最小公倍数"
 description: "这是一种函数的嵌套调用的方法"
 date: 2026-04-06
+sourcePath: "CS Fundamentals/Algorithms/gcd-lcm.md"
+collection: "CS Fundamentals"
+modulePath:
+  - "CS Fundamentals"
+  - "Algorithms"
+module: "Algorithms"
+isIndex: false
+noteRole: "learning-note"
 category: "CS Fundamentals"
 tags:
   - "algorithm"

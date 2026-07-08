@@ -59,7 +59,7 @@ C 语言的令牌主要包括以下几种类型：
 - **运算符（Operators）**
 - **分隔符（Separators）**
 # C 程序的基本结构
-```C
+```c
 #include <stdio.h>   // 头文件包含
 
 #define PI 3.14159    // 宏定义
@@ -157,7 +157,7 @@ int add(int a, int b) {
 在 C 程序中，分号 ; 是语句结束符，也就是说，每个语句必须以分号结束，它表明一个逻辑实体的结束。
 
 例如，下面是两个不同的语句：
-```C
+```c
 printf("Hello, World! \n");
 return 0;
 ```

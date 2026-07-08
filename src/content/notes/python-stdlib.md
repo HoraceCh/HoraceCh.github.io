@@ -86,32 +86,32 @@ HMM：是否使用隐马尔可夫模型
 The main function that segments an entire sentence that contains Chinese characters into separated words.
 将包含汉字的整个句子分割成单独的单词的主要功能。
 
-```Python
+```python
 import jieba
 sentence = 'python是世界上最好的编程语言'
 ls = jieba.cut(sentence, cut_all=False)
 print(ls)
 # <generator object Tokenizer.cut at 0x000001966B14EA98>
 ```
-```Python
+```python
 print(type(ls))
 # <class 'generator'>
 ```
-```Python
+```python
 print(type(ls))
 # <class 'generator'>
 ```
 从type的输出结果上来看，其是**迭代器**类型
 可以用*以下三种方式显示结果*
 ① ' '.join()
-```Python
+```python
 # ①''.join
 ls_1 = ' '.join(ls)
 print(ls_1)
 # python 是 世界 上 最好 的 编程 编程语言 语言
 ```
 ② for 循环遍历
-```Python
+```python
 # ②for循环遍历
 for i in ls:
     print(i)
@@ -126,7 +126,7 @@ python
 '''
 ```
 ③ 列表推导式
-```Python
+```python
 # ③列表推导式
 ls_2 = [i for i in ls]
 print(ls_2)
@@ -134,12 +134,12 @@ print(ls_2)
 ```
 
 ### lcut(sentence,cut_all=False)
-```Python
+```python
 def lcut(self, *args, **kwargs):
 	return list(self.cut(*args, **kwargs))
 ```
 查看**jieba模块**，其定义**lcut()函数**如上，可以发现lcut()函数最终**返回的是list(cut())**
-```Python
+```python
 import jieba
 sentence = 'python是世界上最好的编程语言'
 ls = jieba.cut(sentence, cut_all=False)
@@ -158,7 +158,7 @@ print(ls2)
 >cut_for_search(sentence, HMM=True)和lcut_for_search(sentence, HMM=True)和上面所讲的类似。
 >其都是对搜索引擎进行更精细的细分，即采用搜索引擎模式。
 
-```Python
+```python
 import jieba
 sentence = 'python是世界上最好的编程语言'
 ls3 = jieba.cut_for_search(sentence)
@@ -179,7 +179,7 @@ print(ls4)
 > **函数功能**：在字典中添加一个单词。
 > **参数解析**：freq 和 tag 可以省略，*freq 默认是一个计算值，保证单词可以被切掉。*
 
-```Python
+```python
 import jieba
 sentence = 'python是世界上最好的编程语言'
 ls2 = jieba.lcut(sentence)
@@ -193,7 +193,7 @@ print(ls6)
 
 ## del_word(word)
 **函数功能**：分词词典中删除词word
-```Python
+```python
 import jieba
 sentence = 'python是世界上最好的编程语言'
 ls2 = jieba.lcut(sentence)

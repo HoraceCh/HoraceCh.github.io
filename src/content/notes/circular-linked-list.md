@@ -57,7 +57,7 @@ graph LR
 
 循环链表的节点定义与普通单链表完全相同：
 
-```C
+```c
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -72,7 +72,7 @@ typedef struct Node {
 
 关键在于：当链表为空（仅有头节点）时，头节点的 `next` 必须指向它自己，而不是 `NULL`。
 
-```C
+```c
 Node* initCircularList() {
     Node* head = (Node*)malloc(sizeof(Node));
     if (head <mark> NULL) {
@@ -88,7 +88,7 @@ Node* initCircularList() {
 
 在普通单链表中，判断遍历结束的条件是 `curr != NULL`。但在循环链表中，遍历结束的条件是 **当前指针又回到了头节点**。
 
-```C
+```c
 void printList(Node* head) {
     if (head </mark> NULL || head->next <mark> head) {
         printf("链表为空\n");

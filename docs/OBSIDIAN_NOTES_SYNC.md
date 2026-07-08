@@ -64,6 +64,7 @@ npm.cmd run notes:sync:strict -- --source "D:\Path\To\Obsidian Publish" --vault 
 - 如果同一篇 note 中两个不同来源的附件清理后会写到同一个输出文件名，脚本会保留第一个输出路径，并给后续冲突文件追加来自源路径的短后缀，避免静默覆盖。
 - Obsidian callout 会转换成普通 Markdown blockquote。
 - `==highlight==` 会转换成 `<mark>highlight</mark>`。
+- 代码围栏的语言标记会做确定性规范化，不修改代码内容或额外 metadata：`C` / `c语言` -> `c`，`Python` / `py` -> `python`，`Cpp` / `C++` / `cpp` -> `cpp`，`SHELL` / `Shell` -> `shell`，`bash` -> `bash`，`OUTPUT` / `output` / `txt` -> `text`。
 - Dataview / DataviewJS 代码块会被移除，并输出 warning。
 - 缺失或不符合 Astro notes schema 的 frontmatter 会被规范化。
 

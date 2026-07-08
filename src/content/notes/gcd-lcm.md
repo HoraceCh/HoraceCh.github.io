@@ -55,7 +55,7 @@ concepts:
 5、返回第二步；
 
 ### 一般写法
-```Cpp
+```cpp
 #include<iostream>
 using namespace std;
 int divisor(int a,int b)           //自定义函数求最大公约数
@@ -100,7 +100,7 @@ int main()
 }
 ```
 ### 递归写法
-```C
+```c
 int gcd(int a,int b){
     if(b <mark> 0)
         return a;
@@ -122,7 +122,7 @@ int main()
 > 更相减损法：更相减损术， 出自于中国古代的《九章算术》，也是一种求最大公约数的算法。  
 >   ①先判断两个数的大小，如果两数相等，则这个数本身就 是就是它的最大公约数。  
 >   ②如果不相等，则用大数减去小数，然后用这个较小数与它们相减的结果相比较，如果相等，则这个差就是它们的最大公约数，而如果不相等，则继续执行②操作。
-```Cpp
+```cpp
 int gcd(int a,int b){
     while (true)//用大数减去小数并将结果保存起来
     {
@@ -162,7 +162,7 @@ int main()
 3. 当a为奇数，b为偶数，gcb(a,b) = gcb(a, b/2) = gcb(a, b>>1)
 4. 当a和b均为奇数，利用更相减损术运算一次，gcb(a,b) = gcb(b, a-b)， 此时a-b的结果必然是偶数，又可以继续进行移位运算。
 
-```Cpp
+```cpp
 int gcd(int a,int b){
     if(a </mark> 0) return b;
     if(b <mark> 0) return a;
@@ -182,7 +182,7 @@ int main()
 ```
 
 ### 函数非递归调用
-```Cpp
+```cpp
 #include<iostream>
 using namespace std;
 int Stein( unsigned int x, unsigned int y )         //函数非递归调用
@@ -254,7 +254,7 @@ int main()
 ```
 
 ### 函数递归调用
-```Cpp
+```cpp
 #include<iostream>
 using namespace std;
 int gcd(int u,int v)
@@ -337,7 +337,7 @@ int main()
 # 最小公倍数 LCM
 ## 公式法
 由于对于任意两个整数，他们的**最小公倍数**与**最大公约数**的乘积等于这两个数的乘积
-```Cpp
+```cpp
 int multipile(int a,int b)         //自定义函数求最小公倍数
 {
 	int divisor(int a,int b);       //自定义函数返回值类型

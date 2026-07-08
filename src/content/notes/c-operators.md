@@ -52,7 +52,7 @@ concepts:
 >a++先用后加，++a先加后用
 
 > **EXAMPLE: 以下实例演示了 a++ 与 ++a 的区别：**
-> ```C
+> ```c
 > #include <stdio.h>
 >  
 > int main()
@@ -81,7 +81,7 @@ concepts:
 > }
 > ```
 
-```OUTPUT
+```text
 先赋值后运算：
 Line 1 - c 的值是 10
 Line 2 - a 的值是 11
@@ -204,7 +204,7 @@ Line 8 - a 的值是 9
 >    printf( "b 的值是 %d\n", b );
 > }
 > ```
-```OUTPUT
+```text
 Line 1 - 变量 a 的大小 = 4
 Line 2 - 变量 b 的大小 = 2
 Line 3 - 变量 c 的大小 = 8

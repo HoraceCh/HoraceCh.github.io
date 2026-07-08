@@ -16,6 +16,20 @@ const DEFAULT_VAULT_ASSET_SEARCH_ROOTS = [
   '99 Settings/Reference/C Images',
   '99 Settings/Reference/Python Images',
 ];
+const CODE_FENCE_LANGUAGE_ALIASES = new Map([
+  ['c', 'c'],
+  ['c语言', 'c'],
+  ['python', 'python'],
+  ['py', 'python'],
+  ['cpp', 'cpp'],
+  ['c++', 'cpp'],
+  ['shell', 'shell'],
+  ['bash', 'bash'],
+  ['output', 'text'],
+  ['txt', 'text'],
+]);
+const CODE_FENCE_OPENING_PATTERN = /^((?:[ \t]{0,3}>[ \t]?)*[ \t]{0,3})(`{3,}|~{3,})([^\r\n]*)$/;
+const CODE_FENCE_CLOSING_PATTERN = /^(?:[ \t]{0,3}>[ \t]?)*[ \t]{0,3}(`{3,}|~{3,})[ \t]*$/;
 const ASSET_EXTENSIONS = new Set([
   '.avif',
   '.bmp',
@@ -693,6 +707,7 @@ async function convertBody({
   nextBody = removeObsidianComments(nextBody);
   nextBody = convertCallouts(nextBody);
   nextBody = convertHighlights(nextBody);
+  nextBody = normalizeCodeFenceInfoStrings(nextBody);
 
   nextBody = await replaceAsync(nextBody, /!\[\[([^\]]+)\]\]/g, async (_match, rawTarget) => {
     const target = parseObsidianLink(rawTarget);
@@ -800,6 +815,78 @@ function convertCallouts(body) {
 
 function convertHighlights(body) {
   return body.replace(/==([^=\n][\s\S]*?[^=\n])==/g, '<mark>$1</mark>');
+}
+
+function normalizeCodeFenceInfoStrings(body) {
+  const lines = body.split('\n');
+  let activeFence = null;
+
+  return lines
+    .map((line) => {
+      const lineEnding = line.endsWith('\r') ? '\r' : '';
+      const content = lineEnding ? line.slice(0, -1) : line;
+      const opening = content.match(CODE_FENCE_OPENING_PATTERN);
+
+      if (activeFence) {
+        if (isClosingFence(content, activeFence)) {
+          activeFence = null;
+          return line;
+        }
+
+        const normalizedLine = normalizeOpeningFenceLine(opening, lineEnding);
+        if (normalizedLine && opening[2].length >= activeFence.length) {
+          return normalizedLine;
+        }
+        return line;
+      }
+
+      if (!opening) {
+        return line;
+      }
+
+      const fence = opening[2];
+      activeFence = { char: fence[0], length: fence.length };
+      return normalizeOpeningFenceLine(opening, lineEnding) ?? line;
+    })
+    .join('\n');
+}
+
+function normalizeOpeningFenceLine(opening, lineEnding) {
+  if (!opening) {
+    return null;
+  }
+
+  const [, indent, fence, rawInfo] = opening;
+  const normalizedInfo = normalizeCodeFenceInfo(rawInfo);
+  if (normalizedInfo === rawInfo) {
+    return null;
+  }
+
+  return `${indent}${fence}${normalizedInfo}${lineEnding}`;
+}
+
+function normalizeCodeFenceInfo(rawInfo) {
+  const info = rawInfo.match(/^(\s*)(\S+)([\s\S]*)$/);
+  if (!info) {
+    return rawInfo;
+  }
+
+  const [, leadingSpace, language, metadata] = info;
+  const normalizedLanguage = CODE_FENCE_LANGUAGE_ALIASES.get(language.toLowerCase());
+  if (!normalizedLanguage) {
+    return rawInfo;
+  }
+
+  return `${leadingSpace}${normalizedLanguage}${metadata}`;
+}
+
+function isClosingFence(line, activeFence) {
+  const closing = line.match(CODE_FENCE_CLOSING_PATTERN);
+  return Boolean(
+    closing &&
+      closing[1][0] === activeFence.char &&
+      closing[1].length >= activeFence.length,
+  );
 }
 
 function parseObsidianLink(rawTarget) {

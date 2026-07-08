@@ -41,7 +41,7 @@ concepts:
 
 ## C语言 无参函数的定义
 如果函数**不接收**用户传递的数据，那么定义时可以不带参数，它的语法格式如下：
-```C
+```c
 dataType  functionName(){  
     //body  
 }
@@ -52,7 +52,7 @@ dataType  functionName(){
 - 如果有返回值，在函数体中使用 return 语句返回。return 出来的数据的类型要和 dataType 一样。
 
 例如，定义一个函数，计算从 1 加到 100 的结果：
-```C
+```c
 int sum(){
     int i, sum=0;
     [for](https://c.biancheng.net/view/1811.html)(i=1; i<=100; i++){
@@ -75,7 +75,7 @@ int main(){
 
 ### 无返回值函数
 有的函数不需要返回值，或者返回值类型不确定（很少见），那么可以用 **void** 表示。如：
-```C
+```c
 void hello(){
     printf ("Hello,world \n");
     //没有返回值就不需要 return 语句
@@ -85,7 +85,7 @@ void hello(){
 
 ## C语言 有参函数的定义
 如果函数需要接收用户传递的数据，那么定义时就要带上参数，它的语法格式如下：
-```C
+```c
 dataType  functionName( dataType1 param1, dataType2 param2 ... ){  
     //body  
 }
@@ -98,7 +98,7 @@ dataType  functionName( dataType1 param1, dataType2 param2 ... ){
 函数定义时给出的参数称为**形式参数**，简称**形参**；
 函数调用时给出的参数（也就是传递的数据）称为**实际参数**，简称**实参**。
 函数调用时，将实参的值传递给形参，相当于一次赋值操作。
-```C
+```c
 int sum(int m, int n){
     int i, sum=0;
     for(i=m; i<=n; i++){

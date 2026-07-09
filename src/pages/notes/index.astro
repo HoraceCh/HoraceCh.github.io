@@ -85,50 +85,56 @@ const allNotes = [...ordinaryNotes].sort((a, b) => {
 });
 ---
 
-<Layout title="Notes" description="Research notes, learning notes, paper reading, and project logs.">
+<Layout title="Notes" description="Public learning notes organized by collections, modules, topics, and recent updates.">
   <section class="notes-hero">
     <p class="eyebrow">Notes</p>
-    <h1>Research Notes</h1>
+    <h1>Learning Notes</h1>
     <p class="lead">
-      Notes are my long-term research and learning records across robotics, embodied AI, VLA models, mechanical design,
-      and AI-assisted workflows.
+      Public notes from my learning and project work, organized as a knowledge map instead of a date-only blog archive.
     </p>
-    <p>Some notes are seeds, some are growing, and some are more stable references.</p>
+    <p>
+      Current areas include programming fundamentals, CS fundamentals, robotics, Embodied AI, VLA models,
+      mechanical design, control systems, and AI-assisted workflows. Some entries are working notes and may be incomplete.
+    </p>
   </section>
 
   <section class="section notes-module-overview" id="collections">
     <SectionHeading
       eyebrow="Structure"
       title="Collections and Modules"
-      description="Hierarchy-backed entrances into the public notes. Collection and module index notes are shown here as maps instead of ordinary archive items."
+      description="Start here for structured browsing. Collections and modules group notes by subject, sequence, and project context."
     />
-    <NoteModuleTree nodes={noteModules} />
+    <NoteModuleTree nodes={noteModules} emptyMessage="No public collections or modules are available yet." />
     <p class="module-overview-link"><a href="/notes/collections/">Browse all collections</a></p>
   </section>
 
   <section class="section recent-notes">
     <SectionHeading
-      eyebrow="Recent"
+      eyebrow="Updates"
       title="Recent Notes"
-      description="Recently updated ordinary notes, excluding collection and module index pages and hidden archive branches."
+      description="Recently updated individual notes. This is an update feed, not the main structure of the notes system."
     />
-    <div class="compact-note-list" aria-label="Recent ordinary notes">
-      {
-        recentNotes.map((note) => (
-          <a class="compact-note" href={noteHref(note.id)}>
-            <span>{note.data.title}</span>
-            <small>{note.data.category} / {note.data.status}</small>
-          </a>
-        ))
-      }
-    </div>
+    {
+      recentNotes.length > 0 ? (
+        <div class="compact-note-list" aria-label="Recently updated individual notes">
+          {recentNotes.map((note) => (
+            <a class="compact-note" href={noteHref(note.id)}>
+              <span>{note.data.title}</span>
+              <small>{note.data.category} / {note.data.status}</small>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="empty-state">No recent individual notes yet.</p>
+      )
+    }
   </section>
 
   <section class="section browse-section">
     <SectionHeading
-      eyebrow="Browse"
+      eyebrow="Filters"
       title="Explore by Topic"
-      description="Secondary filters for narrowing the same public notes by hierarchy, category, tag, path, type, or status."
+      description="Secondary taxonomy views for narrowing the same public notes by collection, module, category, path, tag, type, or status."
     />
     <div class="browse-grid">
       <BrowsePills label="Collections" items={collectionCounts} />
@@ -151,16 +157,16 @@ const allNotes = [...ordinaryNotes].sort((a, b) => {
 
   <section class="section" id="all-notes">
     <SectionHeading
-      eyebrow="Index"
-      title="All Notes"
-      description="Default ordinary-note index. Module and collection indexes and hidden archive branches are kept separate so this list stays focused on active individual notes."
+      eyebrow="Archive"
+      title="Individual Notes Archive"
+      description="Archive-style list of public individual notes. Collection and module index notes and hidden archive branches stay separate."
     />
-    <NoteList notes={allNotes} />
+    <NoteList notes={allNotes} emptyMessage="No public individual notes yet." />
 
     {
       hierarchyIndexNotes.length > 0 && (
         <div class="module-index-list" aria-labelledby="module-index-list-title">
-          <h3 id="module-index-list-title">Index Notes</h3>
+          <h3 id="module-index-list-title">Collection and Module Index Notes</h3>
           <div class="compact-note-list">
             {hierarchyIndexNotes.map((note) => (
               <a class="compact-note compact-note-muted" href={noteHref(note.id)}>

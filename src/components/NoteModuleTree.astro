@@ -7,7 +7,7 @@ interface Props {
   emptyMessage?: string;
 }
 
-const { nodes, emptyMessage = 'No hierarchy-backed note modules yet.' } = Astro.props;
+const { nodes, emptyMessage = 'No public collections or modules are available yet.' } = Astro.props;
 const formatDate = (date: Date | undefined) =>
   date
     ? new Intl.DateTimeFormat('en', {
@@ -44,7 +44,7 @@ const formatDate = (date: Date | undefined) =>
               </div>
               <div>
                 <dt>Updated</dt>
-                <dd>{latestDate ?? 'TBD'}</dd>
+                <dd>{latestDate ?? 'Not set'}</dd>
               </div>
             </dl>
 

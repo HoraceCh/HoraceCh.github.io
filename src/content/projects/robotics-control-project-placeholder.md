@@ -4,6 +4,18 @@ description: A placeholder for future robotics or control work once the scope, p
 date: 2026-06-27
 status: planned
 category: Robotics
+role: Future project placeholder
+timeframe: Planned
+portfolioArea: robotics
+maturity: planned
+visibility: hidden
+order: 100
+tools:
+  - robotics
+  - control systems
+problem: Robotics and control work should not be presented publicly until the project scope and shareable evidence are clear.
+contribution: Placeholder only; no implementation contribution is claimed.
+outcome: Hidden from public project surfaces until there is real inspectable work.
 tags:
   - robotics
   - control
@@ -19,7 +31,7 @@ Reserve a project entry for robotics and control work that can be documented pub
 
 ## Current Status
 
-Placeholder. No specific outcome is claimed here.
+Hidden placeholder. No specific implementation, control result, or project outcome is claimed here.
 
 ## Next Steps
 

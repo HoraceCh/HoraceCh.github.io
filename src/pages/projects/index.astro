@@ -1,13 +1,101 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 
 const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
-const projects = (await getCollection('projects')).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
+type ProjectEntry = CollectionEntry<'projects'>;
+const isPrimaryMaturity = (maturity: string) => !['planned', 'archive'].includes(maturity);
+const isPublicStatus = (status: string) => !['planned', 'archived'].includes(status);
+const sortProjects = (a: ProjectEntry, b: ProjectEntry) =>
+  (a.data.order ?? 999) - (b.data.order ?? 999) || b.data.date.valueOf() - a.data.date.valueOf();
+
+const visibleProjects = (await getCollection('projects'))
+  .filter((project) => project.data.visibility !== 'hidden')
+  .sort(sortProjects);
+const selectedProjectIds = new Set<string>();
+const selectProjects = (predicate: (project: ProjectEntry) => boolean) => {
+  const selectedProjects = visibleProjects.filter(
+    (project) => !selectedProjectIds.has(project.id) && predicate(project),
+  );
+  selectedProjects.forEach((project) => selectedProjectIds.add(project.id));
+  return selectedProjects;
+};
+
+const projectSections = [
+  {
+    id: 'featured',
+    eyebrow: 'Featured',
+    title: 'Featured',
+    description: 'Inspectable public work with concrete scope and evidence.',
+    projects: selectProjects(
+      (project) =>
+        project.data.visibility === 'public' &&
+        project.data.featured &&
+        isPrimaryMaturity(project.data.maturity) &&
+        isPublicStatus(project.data.status),
+    ),
+  },
+  {
+    id: 'ai-workflow',
+    eyebrow: 'Systems',
+    title: 'AI-assisted Workflow Systems',
+    description: 'Public tools and workflows that can be inspected directly.',
+    projects: selectProjects(
+      (project) =>
+        project.data.visibility === 'public' &&
+        project.data.portfolioArea === 'ai-workflow' &&
+        project.data.maturity !== 'learning-system' &&
+        isPrimaryMaturity(project.data.maturity) &&
+        isPublicStatus(project.data.status),
+    ),
+  },
+  {
+    id: 'learning',
+    eyebrow: 'Research',
+    title: 'Learning / Research Systems',
+    description: 'Structured learning systems and research organization work, not completed engineering claims.',
+    projects: selectProjects((project) => project.data.maturity === 'learning-system'),
+  },
+  {
+    id: 'engineering',
+    eyebrow: 'Engineering',
+    title: 'Engineering / Robotics',
+    description: 'Robotics, control, and embodied systems work with public technical evidence.',
+    projects: selectProjects(
+      (project) =>
+        project.data.visibility === 'public' &&
+        ['robotics', 'embodied-ai', 'course-project'].includes(project.data.portfolioArea) &&
+        project.data.maturity !== 'learning-system' &&
+        isPrimaryMaturity(project.data.maturity) &&
+        isPublicStatus(project.data.status),
+    ),
+  },
+  {
+    id: 'mechanical-design',
+    eyebrow: 'Design',
+    title: 'Mechanical Design',
+    description: 'Mechanical design work with shareable CAD, images, constraints, or engineering documentation.',
+    projects: selectProjects(
+      (project) =>
+        project.data.visibility === 'public' &&
+        project.data.portfolioArea === 'mechanical-design' &&
+        isPrimaryMaturity(project.data.maturity) &&
+        isPublicStatus(project.data.status),
+    ),
+  },
+  {
+    id: 'secondary',
+    eyebrow: 'Secondary',
+    title: 'Secondary / Archive',
+    description: 'De-emphasized entries, planned documentation areas, and supporting context.',
+    projects: selectProjects(
+      (project) =>
+        project.data.visibility === 'secondary' || ['planned', 'archive'].includes(project.data.maturity),
+    ),
+  },
+].filter((section) => section.projects.length > 0);
 ---
 
 <Layout title="Projects" description="A scan-friendly index of projects and engineering work.">
@@ -15,31 +103,35 @@ const projects = (await getCollection('projects')).sort(
     <p class="eyebrow">Projects</p>
     <h1>Project Index</h1>
     <p>
-      This page collects selected public projects, ongoing learning systems, and engineering work. Some entries are
-      complete repositories, while others are documented as ongoing, planned, or coursework-oriented project spaces.
+      This page collects selected public projects, ongoing learning systems, and engineering work. Hidden placeholders
+      are excluded, and planned or learning-system entries are labeled so they are not read as completed work.
     </p>
   </section>
 
-  <section class="section">
-    <SectionHeading
-      eyebrow="Index"
-      title="Selected and Ongoing Work"
-      description="Cards are intentionally short so projects can be scanned quickly."
-    />
-    <div class="card-grid" aria-label="Projects">
-      {
-        projects.map((project) => (
-          <ProjectCard
-            title={project.data.title}
-            description={project.data.description}
-            status={project.data.status}
-            category={project.data.category}
-            tags={project.data.tags}
-            href={`/projects/${toSlug(project.id)}/`}
-            links={project.data.links}
-          />
-        ))
-      }
-    </div>
-  </section>
+  {
+    projectSections.map((section) => (
+      <section class="section" aria-labelledby={`${section.id}-projects`}>
+        <SectionHeading
+          id={`${section.id}-projects`}
+          eyebrow={section.eyebrow}
+          title={section.title}
+          description={section.description}
+        />
+        <div class="card-grid" aria-label={section.title}>
+          {section.projects.map((project) => (
+            <ProjectCard
+              title={project.data.title}
+              description={project.data.description}
+              status={project.data.status}
+              category={project.data.category}
+              maturity={project.data.maturity}
+              tags={project.data.tags}
+              href={`/projects/${toSlug(project.id)}/`}
+              links={project.data.links}
+            />
+          ))}
+        </div>
+      </section>
+    ))
+  }
 </Layout>

@@ -57,6 +57,48 @@ const projects = defineCollection({
     date: z.coerce.date(),
     status: z.enum(['planned', 'in-progress', 'completed', 'archived']).default('planned'),
     category: z.string(),
+    role: z.string().optional(),
+    timeframe: z.string().optional(),
+    portfolioArea: z
+      .enum([
+        'ai-workflow',
+        'robotics',
+        'mechanical-design',
+        'embodied-ai',
+        'knowledge-system',
+        'course-project',
+        'other',
+      ])
+      .default('other'),
+    maturity: z
+      .enum(['portfolio-ready', 'in-progress', 'learning-system', 'planned', 'archive'])
+      .default('in-progress'),
+    visibility: z.enum(['public', 'secondary', 'hidden']).default('public'),
+    order: z.number().optional(),
+    stack: z.array(z.string()).default([]),
+    tools: z.array(z.string()).default([]),
+    problem: z.string().optional(),
+    contribution: z.string().optional(),
+    outcome: z.string().optional(),
+    evidence: z
+      .array(
+        z.object({
+          label: z.string(),
+          url: z.string(),
+          type: z
+            .enum(['repository', 'demo', 'documentation', 'image', 'note', 'other'])
+            .default('other'),
+        }),
+      )
+      .default([]),
+    images: z
+      .array(
+        z.object({
+          src: z.string(),
+          alt: z.string(),
+        }),
+      )
+      .default([]),
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     links: z

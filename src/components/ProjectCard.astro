@@ -13,12 +13,15 @@ interface Props {
   description: string;
   status: string;
   category: string;
+  maturity?: string;
   tags: string[];
   href: string;
   links?: ProjectLinks;
 }
 
-const { title, description, status, category, tags, href, links = {} } = Astro.props;
+const { title, description, status, category, maturity, tags, href, links = {} } = Astro.props;
+const formatLabel = (value?: string) => value?.replace(/-/g, ' ');
+const maturityLabel = formatLabel(maturity);
 const visibleLinks = [
   links.github && { href: links.github, label: 'GitHub', external: true },
   links.demo && { href: links.demo, label: 'Demo', external: true },
@@ -30,6 +33,7 @@ const visibleLinks = [
   <div class="card-meta">
     <StatusBadge status={status} />
     <span>{category}</span>
+    {maturityLabel && <span>{maturityLabel}</span>}
   </div>
   <h3><a href={href}>{title}</a></h3>
   <p>{description}</p>

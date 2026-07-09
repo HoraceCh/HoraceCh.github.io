@@ -7,8 +7,14 @@ const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '')
 const projects = await getCollection('projects');
 const publicNotes = await getCollection('notes', ({ data }) => !data.draft);
 const featuredProject = projects
-  .filter((project) => project.data.featured)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .filter(
+    (project) =>
+      project.data.visibility === 'public' &&
+      project.data.featured &&
+      !['planned', 'archive'].includes(project.data.maturity) &&
+      !['planned', 'archived'].includes(project.data.status),
+  )
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999) || b.data.date.valueOf() - a.data.date.valueOf())
   .at(0);
 const latestNote = publicNotes
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())

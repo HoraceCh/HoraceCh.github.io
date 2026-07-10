@@ -31,3 +31,14 @@ Implementation priorities:
 4. Keep components simple and reusable.
 5. Run build checks before finalizing.
 6. Do not fabricate personal achievements, publications, awards, or project outcomes.
+
+## Codex model and agent workflow
+
+This repository uses a ChatGPT Plus + Codex workflow. Picker availability is client- and rollout-dependent: use GPT-5.6 Sol only when it is visible, and do not assume Extra High or Pro options.
+
+- Default project model: GPT-5.6 Terra. Use High reasoning for cross-domain, pipeline, architecture, and release-risk work.
+- Fast low-risk path: GPT-5.6 Luna for short read-only checks, mechanical QA, and small copy audits.
+- GPT-5.5 is fast everyday assistance, not the default for complex repository changes. GPT-5.4 and GPT-5.4 Mini are fallbacks only.
+- Use only the six established agents. Default to a single-agent serial workflow; never fan out write-capable agents or delegate beyond depth 1.
+- Read the routing source of truth before planning or implementation: `docs/CODEX_MODEL_USAGE.md` and `docs/CODEX_AGENT_ROUTING.md`.
+- Respect the project-local `.codex/config.toml` limits: three threads, depth one, 30-minute jobs, and interrupt messages enabled.

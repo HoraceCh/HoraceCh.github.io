@@ -1,7 +1,7 @@
 ---
 title: "数组 (Array)"
 description: "每个元素都可以通过索引（通常是整数）直接访问"
-date: 2026-07-08
+date: 2026-07-11
 sourcePath: "CS Fundamentals/Data Structures/array.md"
 collection: "CS Fundamentals"
 modulePath:

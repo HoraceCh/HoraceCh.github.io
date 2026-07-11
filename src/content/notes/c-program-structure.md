@@ -1,7 +1,7 @@
 ---
 title: "C 程序结构与基础语法"
 description: "C程序主要包括一下部分："
-date: 2026-07-08
+date: 2026-07-11
 sourcePath: "Programming Languages/C/c-program-structure.md"
 collection: "Programming Languages"
 modulePath:

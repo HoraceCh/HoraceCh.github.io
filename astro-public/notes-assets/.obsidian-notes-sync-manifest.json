@@ -1,5 +1,9 @@
 {
   "assets": [
+    "astro-public/notes-assets/004/sciencedirect-elsevier-eur7ls.png",
+    "astro-public/notes-assets/004/sciencedirect-elsevier.png",
+    "astro-public/notes-assets/004/springer-nature-link-193xmr.png",
+    "astro-public/notes-assets/004/springer-nature-link.png",
     "astro-public/notes-assets/c-arrays/asset-12r131.png",
     "astro-public/notes-assets/c-constants-variables-storage/asset-avrsw3.png",
     "astro-public/notes-assets/c-constants-variables-storage/asset-ekliwx.png",
@@ -8,11 +12,6 @@
     "astro-public/notes-assets/c-control-flow/do-while.png",
     "astro-public/notes-assets/c-control-flow/for.png",
     "astro-public/notes-assets/c-control-flow/while.png",
-    "astro-public/notes-assets/c-pointers-archive/0.png",
-    "astro-public/notes-assets/c-pointers-archive/1-1nwffr.png",
-    "astro-public/notes-assets/c-pointers-archive/1.png",
-    "astro-public/notes-assets/c-pointers-archive/asset-1xd7hy.png",
-    "astro-public/notes-assets/c-pointers-archive/asset-dfeovp.png",
     "astro-public/notes-assets/gcd-lcm/asset-1nmagz.png",
     "astro-public/notes-assets/gcd-lcm/asset-1vv6cc.png",
     "astro-public/notes-assets/gcd-lcm/stein.png",
@@ -25,8 +24,92 @@
     "astro-public/notes-assets/tree-binary-tree/asset-1tycfh.png",
     "astro-public/notes-assets/tree-binary-tree/asset-cjdx96.png"
   ],
-  "generatedAt": "2026-07-08T03:58:48.719Z",
+  "generatedAt": "2026-07-11T14:16:11.780Z",
   "noteRecords": [
+    {
+      "output": "src/content/notes/000.md",
+      "slug": "000",
+      "sourcePath": "Information Retrieval/000 概论.md",
+      "collection": "Information Retrieval",
+      "modulePath": [
+        "Information Retrieval"
+      ],
+      "module": "Information Retrieval",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/001.md",
+      "slug": "001",
+      "sourcePath": "Information Retrieval/001 开放网络资源.md",
+      "collection": "Information Retrieval",
+      "modulePath": [
+        "Information Retrieval"
+      ],
+      "module": "Information Retrieval",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/002.md",
+      "slug": "002",
+      "sourcePath": "Information Retrieval/002 图书馆资源.md",
+      "collection": "Information Retrieval",
+      "modulePath": [
+        "Information Retrieval"
+      ],
+      "module": "Information Retrieval",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/003.md",
+      "slug": "003",
+      "sourcePath": "Information Retrieval/003 中文数据库检索与利用.md",
+      "collection": "Information Retrieval",
+      "modulePath": [
+        "Information Retrieval"
+      ],
+      "module": "Information Retrieval",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/004.md",
+      "slug": "004",
+      "sourcePath": "Information Retrieval/004 外文全文数据库检索与利用.md",
+      "collection": "Information Retrieval",
+      "modulePath": [
+        "Information Retrieval"
+      ],
+      "module": "Information Retrieval",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/005.md",
+      "slug": "005",
+      "sourcePath": "Information Retrieval/005 文摘索引数据库检索与利用.md",
+      "collection": "Information Retrieval",
+      "modulePath": [
+        "Information Retrieval"
+      ],
+      "module": "Information Retrieval",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/006.md",
+      "slug": "006",
+      "sourcePath": "Information Retrieval/006 知识产权文献检索与利用.md",
+      "collection": "Information Retrieval",
+      "modulePath": [
+        "Information Retrieval"
+      ],
+      "module": "Information Retrieval",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
     {
       "output": "src/content/notes/algorithms.md",
       "slug": "algorithms",
@@ -210,20 +293,6 @@
       "noteRole": "learning-note"
     },
     {
-      "output": "src/content/notes/c-pointers-archive.md",
-      "slug": "c-pointers-archive",
-      "sourcePath": "Programming Languages/C/_archive/c-pointers-archive.md",
-      "collection": "Programming Languages",
-      "modulePath": [
-        "Programming Languages",
-        "C",
-        "_archive"
-      ],
-      "module": "_archive",
-      "isIndex": false,
-      "noteRole": "learning-note"
-    },
-    {
       "output": "src/content/notes/c-pointers.md",
       "slug": "c-pointers",
       "sourcePath": "Programming Languages/C/c-pointers.md",
@@ -334,20 +403,6 @@
       "noteRole": "learning-note"
     },
     {
-      "output": "src/content/notes/python-lists-draft.md",
-      "slug": "python-lists-draft",
-      "sourcePath": "Programming Languages/Python/_archive/python-lists-draft.md",
-      "collection": "Programming Languages",
-      "modulePath": [
-        "Programming Languages",
-        "Python",
-        "_archive"
-      ],
-      "module": "_archive",
-      "isIndex": false,
-      "noteRole": "learning-note"
-    },
-    {
       "output": "src/content/notes/python-print.md",
       "slug": "python-print",
       "sourcePath": "Programming Languages/Python/python-print.md",
@@ -401,6 +456,13 @@
     }
   ],
   "notes": [
+    "src/content/notes/000.md",
+    "src/content/notes/001.md",
+    "src/content/notes/002.md",
+    "src/content/notes/003.md",
+    "src/content/notes/004.md",
+    "src/content/notes/005.md",
+    "src/content/notes/006.md",
     "src/content/notes/algorithms.md",
     "src/content/notes/array.md",
     "src/content/notes/c-arrays.md",
@@ -415,7 +477,6 @@
     "src/content/notes/c-language.md",
     "src/content/notes/c-linked-list.md",
     "src/content/notes/c-operators.md",
-    "src/content/notes/c-pointers-archive.md",
     "src/content/notes/c-pointers.md",
     "src/content/notes/c-program-structure.md",
     "src/content/notes/circular-linked-list.md",
@@ -425,7 +486,6 @@
     "src/content/notes/index.md",
     "src/content/notes/programming-languages.md",
     "src/content/notes/python-basics.md",
-    "src/content/notes/python-lists-draft.md",
     "src/content/notes/python-print.md",
     "src/content/notes/python-stdlib.md",
     "src/content/notes/python.md",

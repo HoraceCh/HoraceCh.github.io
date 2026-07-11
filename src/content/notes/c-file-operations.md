@@ -1,7 +1,7 @@
 ---
 title: "C 文件操作"
 description: ""
-date: 2026-07-08
+date: 2026-07-11
 sourcePath: "Programming Languages/C/c-file-operations.md"
 collection: "Programming Languages"
 modulePath:

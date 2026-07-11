@@ -1,7 +1,7 @@
 ---
 title: "C 数组"
 description: "C语言数组属于构造数据类型。"
-date: 2026-07-08
+date: 2026-07-11
 sourcePath: "Programming Languages/C/c-arrays.md"
 collection: "Programming Languages"
 modulePath:

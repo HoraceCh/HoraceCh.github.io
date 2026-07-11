@@ -1,7 +1,7 @@
 ---
 title: "C 自建数据类型"
 description: ""
-date: 2026-07-08
+date: 2026-07-11
 sourcePath: "Programming Languages/C/c-custom-types.md"
 collection: "Programming Languages"
 modulePath:

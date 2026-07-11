@@ -1,7 +1,7 @@
 ---
 title: "C Language"
 description: "A comprehensive guide to the C programming language, from basic syntax to advanced topics like pointers, data structures, and file operations."
-date: 2026-07-08
+date: 2026-07-11
 sourcePath: "Programming Languages/C/index.md"
 collection: "Programming Languages"
 modulePath:

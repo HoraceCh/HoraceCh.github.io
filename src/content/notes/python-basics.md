@@ -1,7 +1,7 @@
 ---
 title: "Python 基础知识"
 description: "1. 文件是存储在辅助存储器上的一组数据序列，可以包含任何数据内容。"
-date: 2026-07-08
+date: 2026-07-11
 sourcePath: "Programming Languages/Python/python-basics.md"
 collection: "Programming Languages"
 modulePath:

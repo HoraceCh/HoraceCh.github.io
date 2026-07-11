@@ -1,7 +1,7 @@
 ---
 title: "C 指针"
 description: ""
-date: 2026-07-08
+date: 2026-07-11
 sourcePath: "Programming Languages/C/c-pointers.md"
 collection: "Programming Languages"
 modulePath:
@@ -1010,4 +1010,4 @@ p = (int *)realloc(p, 100 * sizeof(int));  // 扩大到 100 个 int
 > - [c-arrays](/notes/c-arrays/) — 数组基础、字符数组与字符串
 > - [c-functions](/notes/c-functions/) — 函数定义、形参与实参、值传递
 > - [c-linked-list](/notes/c-linked-list/) — 指针在动态数据结构中的典型应用
-> - [旧版简要速查版](/notes/c-pointers-archive/)
+> - 历史版本保留在本地归档中，不随网站发布。

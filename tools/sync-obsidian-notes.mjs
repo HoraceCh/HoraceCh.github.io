@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { statSync } from 'node:fs';
+import { readdirSync, statSync } from 'node:fs';
 import { access, copyFile, mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
@@ -12,7 +12,7 @@ const DEFAULT_OUT = 'src/content/notes';
 const DEFAULT_PUBLIC_DIR = 'astro-public';
 const DEFAULT_ASSETS_DIR = 'notes-assets';
 const COMMON_ATTACHMENT_DIRS = ['attachments', 'Attachments', 'assets', 'Assets', '_attachments'];
-const DEFAULT_VAULT_ASSET_SEARCH_ROOTS = [
+  const DEFAULT_VAULT_ASSET_SEARCH_ROOTS = [
   '99 Settings/Reference/C Images',
   '99 Settings/Reference/Python Images',
 ];
@@ -102,6 +102,7 @@ const FRONTMATTER_ORDER = [
 
 main().catch((error) => {
   console.error(`notes sync failed: ${error.message}`);
+  console.error('Blocking errors: 1');
   process.exit(1);
 });
 
@@ -114,6 +115,8 @@ async function main() {
   }
 
   const cwd = process.cwd();
+  const config = await readPublishConfig(options.config, cwd);
+  applyConfig(options, config, cwd);
   const source = resolveRequiredPath(options.source || process.env.OBSIDIAN_PUBLISH_DIR, cwd, '--source');
   const vault = options.vault ? path.resolve(cwd, options.vault) : null;
   const outDir = path.resolve(cwd, options.out || DEFAULT_OUT);
@@ -122,11 +125,31 @@ async function main() {
   const warnings = [];
   const notices = [];
   const actions = [];
+  const skipped = [];
 
   await validateSource({ source, vault });
   validateOutputPaths({ source, vault, outDir, assetsDir, cwd });
+  const attachmentSearchRoots = resolveAttachmentSearchRoots({
+    vault,
+    paths: options.attachmentSearchPaths,
+  });
+  const assetResolver = {
+    attachmentSearchRoots,
+    stats: {
+      ambiguous: 0,
+      attachmentSearchPathResolved: 0,
+      missing: 0,
+      noteRelativeResolved: 0,
+      requested: 0,
+    },
+  };
 
-  const records = await readSourceNotes({ source, warnings });
+  const records = await readSourceNotes({
+    source,
+    warnings,
+    skipped,
+    requireReadyFrontmatter: options.requireReadyFrontmatter,
+  });
 
   if (records.length === 0) {
     throw new Error(`No Markdown files found in ${source}`);
@@ -150,6 +173,9 @@ async function main() {
       warnings,
       notices,
       assetPlan,
+      assetResolver,
+      copyAssets: options.copyAssets,
+      resolveWikilinksFromVaultRoot: options.resolveWikilinksFromVaultRoot,
     });
     writePlan.push(converted);
   }
@@ -159,10 +185,24 @@ async function main() {
   }
 
   await writeConvertedNotes({ writePlan, dryRun: options.dryRun, actions, warnings });
-  await copyAssets({ assetPlan, dryRun: options.dryRun, actions, warnings });
+  await copyAssets({ assetPlan, dryRun: options.dryRun, actions, warnings, copyAssets: options.copyAssets });
   await writeManifest({ writePlan, assetPlan, assetsDir, dryRun: options.dryRun, actions });
 
-  printSummary({ options, source, vault, outDir, assetsDir, records, assetPlan, actions, warnings, notices });
+  printSummary({
+    options,
+    source,
+    vault,
+    outDir,
+    assetsDir,
+    records,
+    assetPlan,
+    actions,
+    warnings,
+    notices,
+    skipped,
+    attachmentSearchRoots,
+    assetStats: assetResolver.stats,
+  });
 
   if (options.strict && warnings.length > 0) {
     process.exitCode = 1;
@@ -171,11 +211,17 @@ async function main() {
 
 function parseArgs(argv) {
   const options = {
+    attachmentSearchPaths: DEFAULT_VAULT_ASSET_SEARCH_ROOTS,
     assets: null,
     clean: false,
+    config: null,
+    copyAssets: true,
     dryRun: false,
     help: false,
+    mode: null,
     out: null,
+    requireReadyFrontmatter: false,
+    resolveWikilinksFromVaultRoot: true,
     source: null,
     strict: false,
     vault: null,
@@ -191,6 +237,9 @@ function parseArgs(argv) {
       case '--clean':
         options.clean = true;
         break;
+      case '--config':
+        options.config = readArgValue(argv, ++index, arg);
+        break;
       case '--dry-run':
         options.dryRun = true;
         break;
@@ -200,6 +249,9 @@ function parseArgs(argv) {
         break;
       case '--out':
         options.out = readArgValue(argv, ++index, arg);
+        break;
+      case '--mode':
+        options.mode = readArgValue(argv, ++index, arg);
         break;
       case '--source':
         options.source = readArgValue(argv, ++index, arg);
@@ -216,6 +268,97 @@ function parseArgs(argv) {
   }
 
   return options;
+}
+
+async function readPublishConfig(configPath, cwd) {
+  if (!configPath) {
+    return null;
+  }
+
+  const resolved = path.resolve(cwd, configPath);
+  let config;
+  try {
+    config = JSON.parse(await readFile(resolved, 'utf8'));
+  } catch (error) {
+    throw new Error(`Could not read config ${resolved}: ${error.message}`);
+  }
+  if (!config || Array.isArray(config) || typeof config !== 'object') {
+    throw new Error(`Config must be a JSON object: ${resolved}`);
+  }
+  return { ...config, __path: resolved };
+}
+
+function applyConfig(options, config, cwd) {
+  if (!config) {
+    return;
+  }
+
+  const supported = [
+    'vaultRoot',
+    'publishSource',
+    'mode',
+    'copyAssets',
+    'resolveWikilinksFromVaultRoot',
+    'requireReadyFrontmatter',
+    'attachmentSearchPaths',
+  ];
+  for (const key of Object.keys(config)) {
+    if (key !== '__path' && !supported.includes(key) && !key.startsWith('_') && key !== '$schema') {
+      throw new Error(`Unsupported config key "${key}" in ${config.__path}`);
+    }
+  }
+
+  if (config.publishSource !== undefined && typeof config.publishSource !== 'string') {
+    throw new Error('Config publishSource must be a string.');
+  }
+  if (config.vaultRoot !== undefined && typeof config.vaultRoot !== 'string') {
+    throw new Error('Config vaultRoot must be a string.');
+  }
+  for (const key of ['copyAssets', 'resolveWikilinksFromVaultRoot', 'requireReadyFrontmatter']) {
+    if (config[key] !== undefined && typeof config[key] !== 'boolean') {
+      throw new Error(`Config ${key} must be true or false.`);
+    }
+  }
+  if (config.attachmentSearchPaths !== undefined) {
+    options.attachmentSearchPaths = normalizeAttachmentSearchPaths(config.attachmentSearchPaths);
+  }
+
+  options.source ??= config.publishSource ? path.resolve(cwd, config.publishSource) : null;
+  options.vault ??= config.vaultRoot ? path.resolve(cwd, config.vaultRoot) : null;
+  options.copyAssets = config.copyAssets ?? options.copyAssets;
+  options.resolveWikilinksFromVaultRoot =
+    config.resolveWikilinksFromVaultRoot ?? options.resolveWikilinksFromVaultRoot;
+  options.requireReadyFrontmatter = config.requireReadyFrontmatter ?? options.requireReadyFrontmatter;
+  applyMode(options, options.mode || config.mode);
+  options.configPath = config.__path;
+}
+
+function normalizeAttachmentSearchPaths(value) {
+  if (!Array.isArray(value) || value.some((item) => typeof item !== 'string' || !item.trim())) {
+    throw new Error('Config attachmentSearchPaths must be an array of non-empty relative paths.');
+  }
+  return value.map((item) => {
+    const normalized = item.replace(/\\/g, '/').replace(/^\.\//, '').replace(/\/+$/, '');
+    if (!normalized || path.isAbsolute(normalized) || path.win32.isAbsolute(normalized) || normalized.split('/').includes('..')) {
+      throw new Error(`Config attachmentSearchPaths entry must stay below vaultRoot: ${item}`);
+    }
+    return normalized;
+  });
+}
+
+function applyMode(options, mode) {
+  if (!mode) {
+    return;
+  }
+  if (!['dry-run', 'publish', 'strict'].includes(mode)) {
+    throw new Error('Config mode must be "dry-run", "publish", or "strict".');
+  }
+  if (mode === 'dry-run') {
+    options.dryRun = true;
+  }
+  if (mode === 'strict') {
+    options.strict = true;
+  }
 }
 
 function readArgValue(argv, index, option) {
@@ -236,10 +379,13 @@ function resolveRequiredPath(value, cwd, option) {
 function printUsage() {
   console.log(`Usage:
   npm run notes:sync -- --source <publish-folder> [options]
+  npm run notes:publish:dry
 
 Options:
   --source <path>   Obsidian Publish folder to sync. Required unless OBSIDIAN_PUBLISH_DIR is set.
   --vault <path>    Optional Obsidian vault root for resolving referenced attachments only.
+  --config <path>   Local JSON config for publish-folder workflows.
+  --mode <mode>     dry-run, publish, or strict.
   --out <path>      Output directory for converted notes. Default: ${DEFAULT_OUT}
   --assets <path>   Output directory for copied attachments. Default: ${DEFAULT_PUBLIC_DIR}/${DEFAULT_ASSETS_DIR}
   --dry-run         Print planned writes and warnings without changing files.
@@ -272,6 +418,21 @@ async function validateSource({ source, vault }) {
   }
 }
 
+function resolveAttachmentSearchRoots({ vault, paths }) {
+  if (!vault) {
+    return [];
+  }
+
+  return paths.map((relativePath) => {
+    const root = path.resolve(vault, relativePath);
+    const rootStat = statSync(root, { throwIfNoEntry: false });
+    if (!isPathInside(root, vault) || samePath(root, vault)) {
+      throw new Error(`Configured attachmentSearchPaths root is outside vaultRoot: ${relativePath}`);
+    }
+    return rootStat?.isDirectory() ? { path: root, relativePath } : null;
+  }).filter(Boolean);
+}
+
 function validateOutputPaths({ source, vault, outDir, assetsDir, cwd }) {
   for (const [label, target] of [
     ['--out', outDir],
@@ -301,18 +462,35 @@ function publicBaseForAssets(assetsDir, cwd) {
   return `/${path.basename(assetsDir).replace(/\\/g, '/')}`;
 }
 
-async function readSourceNotes({ source, warnings }) {
-  const files = await collectMarkdownFiles(source);
+async function readSourceNotes({ source, warnings, skipped, requireReadyFrontmatter }) {
+  const files = await collectMarkdownFiles(source, skipped);
   const records = [];
 
   for (const file of files) {
     const raw = await readFile(file, 'utf8');
     const relativePath = slash(path.relative(source, file));
+    if (hasUnclosedFrontmatter(raw)) {
+      skipped.push({ file: relativePath, reason: 'ambiguous or unclosed frontmatter' });
+      continue;
+    }
     const { frontmatter, body } = splitFrontmatter(raw);
+    const parsedFrontmatter = parseFrontmatter(frontmatter, relativePath, warnings);
+    if (parsedFrontmatter.publish !== undefined && typeof parsedFrontmatter.publish !== 'boolean') {
+      skipped.push({ file: relativePath, reason: 'ambiguous publish frontmatter value' });
+      continue;
+    }
+    if (parsedFrontmatter.publish === false) {
+      skipped.push({ file: relativePath, reason: 'frontmatter publish: false' });
+      continue;
+    }
+    if (requireReadyFrontmatter && parsedFrontmatter.publish !== true) {
+      skipped.push({ file: relativePath, reason: 'requireReadyFrontmatter requires publish: true' });
+      continue;
+    }
     records.push({
       body,
       file,
-      frontmatter: parseFrontmatter(frontmatter, relativePath, warnings),
+      frontmatter: parsedFrontmatter,
       relativePath,
       slug: '',
       title: '',
@@ -322,7 +500,7 @@ async function readSourceNotes({ source, warnings }) {
   return records;
 }
 
-async function collectMarkdownFiles(root) {
+async function collectMarkdownFiles(root, skipped = []) {
   const results = [];
 
   async function walk(directory) {
@@ -330,7 +508,9 @@ async function collectMarkdownFiles(root) {
     entries.sort((a, b) => a.name.localeCompare(b.name));
 
     for (const entry of entries) {
-      if (shouldSkipEntry(entry.name)) {
+      const skipReason = skipReasonForEntry(entry.name, entry.isDirectory());
+      if (skipReason) {
+        skipped.push({ file: slash(path.relative(root, path.join(directory, entry.name))), reason: skipReason });
         continue;
       }
 
@@ -347,15 +527,24 @@ async function collectMarkdownFiles(root) {
   return results;
 }
 
-function shouldSkipEntry(name) {
-  return (
-    name === '.obsidian' ||
-    name === '.git' ||
-    name === 'node_modules' ||
-    name === '.trash' ||
-    name === '.DS_Store' ||
-    name.startsWith('~')
+function skipReasonForEntry(name, isDirectory) {
+  if (name.startsWith('_')) return 'private-looking name';
+  const privateLookingFile = /^(?:private|drafts?|templates?)(?:[\s._-]|$)/i.test(
+    path.basename(name, path.extname(name)),
   );
+  if (!isDirectory && privateLookingFile) return 'private, draft, or template-looking file';
+  if (isDirectory && ['private', 'draft', 'drafts', 'template', 'templates'].includes(name.toLowerCase())) {
+    return 'private, draft, or template folder';
+  }
+  if (['.obsidian', '.git', 'node_modules', '.trash', '.DS_Store'].includes(name) || name.startsWith('~')) {
+    return 'system or temporary entry';
+  }
+  return null;
+}
+
+function hasUnclosedFrontmatter(raw) {
+  const normalized = raw.replace(/^\uFEFF/, '');
+  return normalized.startsWith('---\n') && !/^---\r?\n[\s\S]*?\r?\n---\r?\n?/.test(normalized);
 }
 
 function splitFrontmatter(raw) {
@@ -554,6 +743,8 @@ async function convertRecord({
   warnings,
   notices,
   assetPlan,
+  assetResolver,
+  resolveWikilinksFromVaultRoot,
 }) {
   const frontmatter = normalizeFrontmatter({ record, warnings, noteIndex });
   const convertedBody = await convertBody({
@@ -567,6 +758,8 @@ async function convertRecord({
     warnings,
     notices,
     assetPlan,
+    assetResolver,
+    resolveWikilinksFromVaultRoot,
   });
   const content = `${formatFrontmatter(frontmatter)}\n${GENERATED_MARKER}\n\n${convertedBody.trim()}\n`;
 
@@ -701,6 +894,8 @@ async function convertBody({
   warnings,
   notices,
   assetPlan,
+  assetResolver,
+  resolveWikilinksFromVaultRoot,
 }) {
   let nextBody = body.replace(/\r\n/g, '\n');
   nextBody = removeDataviewBlocks(nextBody, record.relativePath, warnings).body;
@@ -723,6 +918,7 @@ async function convertBody({
         warnings,
         notices,
         assetPlan,
+        assetResolver,
         embed: true,
       });
     }
@@ -732,7 +928,7 @@ async function convertBody({
       message: `Converted embedded note "${target.path}" to a regular note link.`,
       type: 'wiki-link',
     });
-    return noteMarkdownLink({ target, record, noteIndex, warnings });
+    return noteMarkdownLink({ target, record, noteIndex, warnings, vault, resolveWikilinksFromVaultRoot });
   });
 
   nextBody = await replaceAsync(nextBody, /!\[([^\]]*)\]\(([^)\n]+)\)/g, async (match, alt, rawDestination) => {
@@ -744,7 +940,7 @@ async function convertBody({
     if (isMarkdownNoteReference(destination.path)) {
       const target = parseObsidianLink(destination.path);
       target.alias = alt || target.alias;
-      return noteMarkdownLink({ target, record, noteIndex, warnings });
+      return noteMarkdownLink({ target, record, noteIndex, warnings, vault, resolveWikilinksFromVaultRoot });
     }
 
     if (!isAssetReference(destination.path)) {
@@ -762,6 +958,7 @@ async function convertBody({
       warnings,
       notices,
       assetPlan,
+      assetResolver,
       embed: true,
     });
   });
@@ -779,9 +976,10 @@ async function convertBody({
         warnings,
         notices,
         assetPlan,
+        assetResolver,
       });
     }
-    return noteMarkdownLink({ target, record, noteIndex, warnings });
+    return noteMarkdownLink({ target, record, noteIndex, warnings, vault, resolveWikilinksFromVaultRoot });
   });
 
   nextBody = nextBody.replace(/(^|[^!])\[([^\]]+)\]\(([^)\n]+)\)/g, (match, prefix, label, rawDestination) => {
@@ -796,7 +994,7 @@ async function convertBody({
 
     const target = parseObsidianLink(destination.path);
     target.alias = label;
-    return `${prefix}${noteMarkdownLink({ target, record, noteIndex, warnings })}`;
+    return `${prefix}${noteMarkdownLink({ target, record, noteIndex, warnings, vault, resolveWikilinksFromVaultRoot })}`;
   });
 
   return nextBody;
@@ -916,7 +1114,7 @@ function parseObsidianLink(rawTarget) {
   };
 }
 
-function noteMarkdownLink({ target, record, noteIndex, warnings }) {
+function noteMarkdownLink({ target, record, noteIndex, warnings, vault, resolveWikilinksFromVaultRoot }) {
   const label = target.alias || target.heading || path.basename(target.path) || record.title;
 
   if (!target.path && target.heading) {
@@ -925,6 +1123,13 @@ function noteMarkdownLink({ target, record, noteIndex, warnings }) {
 
   const resolution = resolveNote(target.path, record, noteIndex);
   if (!resolution) {
+    if (resolveWikilinksFromVaultRoot && vault && vaultNoteExists(target.path, record, vault)) {
+      warnings.push({
+        file: record.relativePath,
+        message: `Wiki link "${target.path}" resolves in the vault but is outside the publish folder.`,
+        type: 'wiki-link',
+      });
+    }
     const guessedSlug = slugify(path.basename(target.path, path.extname(target.path))) || 'missing-note';
     warnings.push({
       file: record.relativePath,
@@ -954,6 +1159,17 @@ function noteMarkdownLink({ target, record, noteIndex, warnings }) {
   return `[${label}](/notes/${resolution.record.slug}/${anchor})`;
 }
 
+function vaultNoteExists(targetPath, record, vault) {
+  const target = stripMarkdownExtension(targetPath);
+  const candidates = [
+    path.resolve(vault, target),
+    path.resolve(vault, `${target}.md`),
+    path.resolve(vault, `${target}.mdx`),
+    path.resolve(vault, path.dirname(record.relativePath), `${target}.md`),
+  ];
+  return candidates.some((candidate) => isPathInside(candidate, vault) && firstExistingFile([candidate]));
+}
+
 function resolveNote(targetPath, record, noteIndex) {
   const target = stripMarkdownExtension(targetPath);
   const candidates = [
@@ -975,7 +1191,7 @@ function resolveNote(targetPath, record, noteIndex) {
   return null;
 }
 
-function assetTextLink({ target, record, source, vault, assetsDir, publicAssetBase, warnings, notices, assetPlan }) {
+function assetTextLink({ target, record, source, vault, assetsDir, publicAssetBase, warnings, notices, assetPlan, assetResolver }) {
   const plan = planAssetCopy({
     targetPath: target.path,
     record,
@@ -986,6 +1202,7 @@ function assetTextLink({ target, record, source, vault, assetsDir, publicAssetBa
     warnings,
     notices,
     assetPlan,
+    assetResolver,
   });
   const label = target.alias || assetAltText(target.path);
   return plan ? `[${label}](${plan.publicPath})` : label;
@@ -1002,6 +1219,7 @@ function copyAssetReference({
   warnings,
   notices,
   assetPlan,
+  assetResolver,
   embed,
 }) {
   const plan = planAssetCopy({
@@ -1014,6 +1232,7 @@ function copyAssetReference({
     warnings,
     notices,
     assetPlan,
+    assetResolver,
   });
 
   if (!plan) {
@@ -1027,15 +1246,44 @@ function copyAssetReference({
   return `[${escapeMarkdownText(alt)}](${plan.publicPath})`;
 }
 
-function planAssetCopy({ targetPath, record, source, vault, assetsDir, publicAssetBase, warnings, notices, assetPlan }) {
-  const resolved = resolveAssetPath({ targetPath, record, source, vault });
-  if (!resolved) {
+function planAssetCopy({ targetPath, record, source, vault, assetsDir, publicAssetBase, warnings, notices, assetPlan, assetResolver }) {
+  assetResolver.stats.requested += 1;
+  const resolution = resolveAssetPath({
+    targetPath,
+    record,
+    source,
+    vault,
+    attachmentSearchRoots: assetResolver.attachmentSearchRoots,
+  });
+  if (resolution.kind === 'ambiguous') {
+    assetResolver.stats.ambiguous += 1;
+    warnings.push({
+      file: record.relativePath,
+      message: `AMBIGUOUS_ASSET "${targetPath}": ${resolution.candidates.map(slash).join(', ')}`,
+      type: 'asset',
+    });
+    return null;
+  }
+  if (resolution.kind === 'missing') {
+    assetResolver.stats.missing += 1;
     warnings.push({
       file: record.relativePath,
       message: `Missing referenced asset "${targetPath}".`,
       type: 'asset',
     });
     return null;
+  }
+  const resolved = resolution.path;
+  if (resolution.kind === 'note-relative') {
+    assetResolver.stats.noteRelativeResolved += 1;
+  }
+  if (resolution.kind === 'attachment-search-path') {
+    assetResolver.stats.attachmentSearchPathResolved += 1;
+    notices.push({
+      file: record.relativePath,
+      message: `Attachment root resolved "${targetPath}" from ${resolution.root.relativePath}.`,
+      type: 'attachment-root',
+    });
   }
 
   const output = resolveAssetOutput({
@@ -1145,38 +1393,89 @@ function displayAssetSource(value) {
   return slash(value);
 }
 
-function resolveAssetPath({ targetPath, record, source, vault }) {
-  const cleanTarget = decodeUriPath(targetPath).replace(/^<|>$/g, '').split('#')[0];
-  const candidates = [];
+function resolveAssetPath({ targetPath, record, source, vault, attachmentSearchRoots }) {
+  const cleanTarget = decodeUriPath(targetPath)
+    .replace(/^<|>$/g, '')
+    .split(/[?#]/)[0]
+    .replace(/\\/g, '/');
+  const absoluteTarget = path.isAbsolute(cleanTarget) || path.win32.isAbsolute(cleanTarget);
 
-  if (path.isAbsolute(cleanTarget)) {
-    candidates.push(cleanTarget);
-  } else {
-    const recordDirectory = path.dirname(path.join(source, record.relativePath));
-    candidates.push(path.resolve(recordDirectory, cleanTarget));
-    candidates.push(path.resolve(source, cleanTarget));
-
-    for (const attachmentDir of COMMON_ATTACHMENT_DIRS) {
-      candidates.push(path.resolve(recordDirectory, attachmentDir, cleanTarget));
-      candidates.push(path.resolve(source, attachmentDir, cleanTarget));
-      candidates.push(path.resolve(recordDirectory, attachmentDir, path.basename(cleanTarget)));
-      candidates.push(path.resolve(source, attachmentDir, path.basename(cleanTarget)));
+  if (absoluteTarget) {
+    const absolute = path.resolve(cleanTarget);
+    const allowedRoots = [vault, ...attachmentSearchRoots.map((root) => root.path)].filter(Boolean);
+    if (!allowedRoots.some((root) => isPathInside(absolute, root))) {
+      return { kind: 'missing' };
     }
+    return firstExistingFile([absolute]) ? { kind: 'vault-explicit', path: absolute } : { kind: 'missing' };
+  }
 
-    if (vault) {
-      candidates.push(path.resolve(vault, cleanTarget));
-      for (const attachmentDir of COMMON_ATTACHMENT_DIRS) {
-        candidates.push(path.resolve(vault, attachmentDir, cleanTarget));
-        candidates.push(path.resolve(vault, attachmentDir, path.basename(cleanTarget)));
-      }
-      for (const assetSearchRoot of DEFAULT_VAULT_ASSET_SEARCH_ROOTS) {
-        candidates.push(path.resolve(vault, assetSearchRoot, cleanTarget));
-        candidates.push(path.resolve(vault, assetSearchRoot, path.basename(cleanTarget)));
+  const sourceOrVaultRoots = [source, vault].filter(Boolean);
+  const recordDirectory = path.dirname(path.join(source, record.relativePath));
+  const noteRelative = firstExistingFileInside(
+    [path.resolve(recordDirectory, cleanTarget)],
+    sourceOrVaultRoots,
+  );
+  if (noteRelative) {
+    return { kind: 'note-relative', path: noteRelative };
+  }
+
+  const publishExplicit = firstExistingFileInside([path.resolve(source, cleanTarget)], sourceOrVaultRoots);
+  if (publishExplicit) {
+    return { kind: 'publish-explicit', path: publishExplicit };
+  }
+
+  if (vault) {
+    const vaultExplicit = firstExistingFileInside([path.resolve(vault, cleanTarget)], [vault]);
+    if (vaultExplicit) {
+      return { kind: 'vault-explicit', path: vaultExplicit };
+    }
+  }
+
+  for (const root of attachmentSearchRoots) {
+    const explicit = firstExistingFileInside([path.resolve(root.path, cleanTarget)], [root.path]);
+    if (explicit) {
+      return { kind: 'attachment-search-path', path: explicit, root };
+    }
+  }
+
+  if (path.basename(cleanTarget) === cleanTarget) {
+    const matches = attachmentSearchRoots.flatMap((root) =>
+      findFilesByBasename(root.path, cleanTarget).map((candidate) => ({ candidate, root })),
+    );
+    if (matches.length === 1) {
+      return { kind: 'attachment-search-path', path: matches[0].candidate, root: matches[0].root };
+    }
+    if (matches.length > 1) {
+      return { kind: 'ambiguous', candidates: matches.map((match) => match.candidate) };
+    }
+  }
+
+  return { kind: 'missing' };
+}
+
+function firstExistingFileInside(candidates, allowedRoots) {
+  return firstExistingFile(
+    candidates.filter((candidate) => allowedRoots.some((root) => isPathInside(candidate, root))),
+  );
+}
+
+function findFilesByBasename(root, targetName) {
+  const matches = [];
+  const target = targetName.toLowerCase();
+
+  function walk(directory) {
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      const fullPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        walk(fullPath);
+      } else if (entry.isFile() && entry.name.toLowerCase() === target) {
+        matches.push(fullPath);
       }
     }
   }
 
-  return firstExistingFile(candidates);
+  walk(root);
+  return matches.sort((a, b) => slash(a).localeCompare(slash(b)));
 }
 
 function firstExistingFile(candidates) {
@@ -1216,7 +1515,17 @@ async function writeConvertedNotes({ writePlan, dryRun, actions, warnings }) {
   }
 }
 
-async function copyAssets({ assetPlan, dryRun, actions, warnings }) {
+async function copyAssets({ assetPlan, dryRun, actions, warnings, copyAssets = true }) {
+  if (!copyAssets) {
+    if (assetPlan.length > 0) {
+      warnings.push({
+        file: '(assets)',
+        message: `Asset copying is disabled; skipped ${assetPlan.length} referenced asset(s).`,
+        type: 'asset',
+      });
+    }
+    return;
+  }
   for (const plan of assetPlan) {
     const sourceStat = await stat(plan.source).catch(() => null);
     if (!sourceStat?.isFile()) {
@@ -1700,16 +2009,53 @@ async function replaceAsync(value, regex, replacer) {
   return parts.join('');
 }
 
-function printSummary({ options, source, vault, outDir, assetsDir, records, assetPlan, actions, warnings, notices }) {
+function printSummary({
+  options,
+  source,
+  vault,
+  outDir,
+  assetsDir,
+  records,
+  assetPlan,
+  actions,
+  warnings,
+  notices,
+  skipped,
+  attachmentSearchRoots,
+  assetStats,
+}) {
   const mode = options.dryRun ? 'dry run' : 'sync';
+  const unresolvedLinks = warnings.filter((warning) => warning.message.startsWith('Unresolved wiki link')).length;
+  const missingAssets = warnings.filter((warning) => warning.message.startsWith('Missing referenced asset')).length;
+  const ambiguousAssets = warnings.filter((warning) => warning.message.startsWith('AMBIGUOUS_ASSET')).length;
+  const slugConflicts = warnings.filter((warning) => warning.type === 'slug').length;
+  const skippedWrites = warnings.filter((warning) => warning.type === 'write').length;
   console.log(`\nObsidian notes ${mode} complete`);
-  console.log(`Source: ${source}`);
-  if (vault) {
-    console.log(`Vault:  ${vault}`);
-  }
+  console.log(`Config file used: ${options.configPath || 'none (command line or OBSIDIAN_PUBLISH_DIR)'}`);
+  console.log(`Publish folder used: ${source}`);
+  console.log(`Vault root used: ${vault || 'not configured'}`);
+  console.log(`Attachment roots: ${attachmentSearchRoots.length ? attachmentSearchRoots.map((root) => root.relativePath).join(', ') : 'none'}`);
   console.log(`Notes:  ${outDir}`);
   console.log(`Assets: ${assetsDir}`);
-  console.log(`Scanned ${records.length} note(s), planned ${assetPlan.length} asset copy operation(s).`);
+  console.log(`Notes found: ${records.length + skipped.length}`);
+  console.log(`Notes skipped: ${skipped.length + skippedWrites}`);
+  console.log(`Notes converted: ${records.length}`);
+  console.log(`Assets ${options.copyAssets ? (options.dryRun ? 'planned' : 'copied') : 'skipped'}: ${assetPlan.length}`);
+  console.log(`Unresolved links: ${unresolvedLinks}`);
+  console.log(`Missing assets: ${missingAssets}`);
+  console.log(`Ambiguous assets: ${ambiguousAssets}`);
+  console.log(`Assets requested: ${assetStats.requested}`);
+  console.log(`Note-relative assets resolved: ${assetStats.noteRelativeResolved}`);
+  console.log(`Attachment-search-path assets resolved: ${assetStats.attachmentSearchPathResolved}`);
+  console.log(`Slug conflicts: ${slugConflicts}`);
+  console.log(`Blocking errors: ${options.strict ? warnings.length : 0}`);
+
+  if (skipped.length > 0) {
+    console.log('\nSkipped source entries:');
+    for (const item of skipped) {
+      console.log(`- ${item.file}: ${item.reason}`);
+    }
+  }
 
   if (actions.length > 0) {
     console.log('\nActions:');

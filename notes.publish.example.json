@@ -1,0 +1,10 @@
+{
+  "_comment": "Copy this file to notes.publish.local.json, then edit the paths locally. Do not commit the local file.",
+  "vaultRoot": "F:/Path/To/ObsidianVault",
+  "publishSource": "F:/Path/To/ObsidianVault/98 Publish",
+  "mode": "publish",
+  "copyAssets": true,
+  "attachmentSearchPaths": ["99 Settings/Reference"],
+  "resolveWikilinksFromVaultRoot": true,
+  "requireReadyFrontmatter": false
+}

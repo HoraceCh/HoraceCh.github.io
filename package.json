@@ -9,7 +9,10 @@
     "preview": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "notes:sync": "node tools/sync-obsidian-notes.mjs",
     "notes:sync:dry": "node tools/sync-obsidian-notes.mjs --dry-run",
-    "notes:sync:strict": "node tools/sync-obsidian-notes.mjs --strict"
+    "notes:sync:strict": "node tools/sync-obsidian-notes.mjs --strict",
+    "notes:publish:dry": "node tools/sync-obsidian-notes.mjs --config notes.publish.local.json --mode dry-run",
+    "notes:publish": "node tools/sync-obsidian-notes.mjs --config notes.publish.local.json --mode publish",
+    "notes:publish:strict": "node tools/sync-obsidian-notes.mjs --config notes.publish.local.json --mode strict"
   },
   "dependencies": {},
   "devDependencies": {

@@ -34,6 +34,8 @@ Sync notes from an Obsidian Publish folder:
 npm run notes:sync:dry -- --source "D:\Path\To\Obsidian Publish" --vault "D:\Path\To\Obsidian Vault"
 ```
 
+For the configured local publish-folder workflow, copy `notes.publish.example.json` to the ignored `notes.publish.local.json`, set local paths, then run `npm run notes:publish:dry` before `npm run notes:publish`.
+
 See [Obsidian Notes Sync 使用说明](docs/OBSIDIAN_NOTES_SYNC.md) for the full workflow and safety notes.
 
 Preview the Astro build:

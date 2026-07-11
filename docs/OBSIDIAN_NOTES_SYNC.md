@@ -4,6 +4,24 @@
 
 这个脚本只会读取 `--source` 指定目录里的 Markdown 文件。`--vault` 不能作为发布来源，只能作为解析附件路径的辅助目录。脚本不会扫描整个 Obsidian vault 来发布 notes。
 
+## 本地 Publish 文件夹工作流
+
+复制仓库根目录的 `notes.publish.example.json` 为 `notes.publish.local.json`，并只在本机填写路径。该本地文件已被 `.gitignore` 忽略，不能提交。
+
+当前本机约定为：`vaultRoot = F:/Obsidian/Baukasten_Nexus`，`publishSource = F:/Obsidian/Baukasten_Nexus/98 Publish`。Publish 文件夹位于 vault 中，但它是唯一的公开 Markdown 扫描范围；vaultRoot 只用于对单个 wikilink、图片、附件和相对路径进行解析。
+
+`attachmentSearchPaths` 是相对于 `vaultRoot` 的附件目录列表，仅用于解析图片和附件（可递归查找文件），绝不会作为 Markdown 发布来源。推荐使用单个可移植根目录 `99 Settings/Reference`；它会覆盖当前的 C、Python、IR 图片子目录。对同名附件，脚本只在明确路径命中时选用；递归 basename 查找发现多个候选时会报告 `AMBIGUOUS_ASSET` 并在 strict 模式失败。
+
+```powershell
+npm run notes:publish:dry
+npm run notes:publish
+npm run notes:publish:strict
+```
+
+`notes:publish:dry` 不写入或删除文件。`notes:publish` 写入转换后的内容和必要附件。`notes:publish:strict` 会在 unresolved link、missing asset、slug conflict、frontmatter/schema warning 或其他 blocking warning 出现时失败。每次同步后运行 `npm run build`。
+
+Publish 扫描会跳过以下内容并报告：以下划线开头的文件或文件夹、私有 / 草稿 / 模板命名的 Markdown 文件、`private` / `draft` / `template` 文件夹、frontmatter 不完整或 `publish` 值不明确的 note，以及 frontmatter 中 `publish: false` 的 note。若配置 `requireReadyFrontmatter: true`，只有显式 `publish: true` 的 note 会同步。
+
 ## 输出位置
 
 默认输出：
@@ -85,6 +103,7 @@ npm.cmd run notes:sync:strict -- --source "D:\Path\To\Obsidian Publish" --vault 
 - 不要把整个 Obsidian vault 传给 `--source`。
 - `--source` 是唯一会被扫描并发布 Markdown 的目录。
 - `--vault` 不会被扫描成公开 notes。
+- 脚本不会在 Obsidian vault 内创建、修改或删除文件。
 - `--dry-run` 不会产生任何文件系统改动。
 - `--clean` 只清理配置的输出 notes 目录和附件目录中由脚本生成的内容。
 - 脚本不会修改 Obsidian source、vault、Astro 页面、布局或现有设计。

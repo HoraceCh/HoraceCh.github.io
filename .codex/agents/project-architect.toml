@@ -1,7 +1,7 @@
 name = "project_architect"
 description = "Repository-aware architect that decides where changes belong before implementation. Owns Astro/Hexo boundary, IA layout, and Obsidian pipeline placement. Read-only planner."
-# Recommended model: GPT-5.6 Terra at High reasoning. Upgrade to GPT-5.6 Sol High only if it is visible.
-# Fallback: Terra High when Sol is unavailable; do not route implementation to this agent by default.
+# Default model: GPT-5.6 Sol at High reasoning.
+# Reserve for cross-domain architecture, repo-wide planning, migrations, ownership boundaries, model-routing changes, and high-value technical tradeoffs.
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 
@@ -25,6 +25,7 @@ Output limit: 120 lines. If a request requires direct implementation, name the e
 - New feature spans 2+ layers (content, component, page, sync script, deploy).
 - Ambiguity about whether work goes in Astro vs Hexo.
 - Refactor that touches routing, content collections, or the sync pipeline.
+- Model-routing or repository-wide workflow-policy changes.
 - A downstream agent asks "where should this live?"
 
 ## When NOT to invoke this agent

@@ -4,6 +4,8 @@ This Astro site is a personal research portfolio and public knowledge garden. It
 
 Read [CODEX_MODEL_USAGE.md](CODEX_MODEL_USAGE.md) for the Plus-aware model defaults and [CODEX_AGENT_ROUTING.md](CODEX_AGENT_ROUTING.md) for agent boundaries, output limits, and reusable prompts.
 
+The normal root/default is GPT-5.6 Terra Medium. Sol is available and reserved for complex, high-risk, or high-value work; Luna is limited to explicit, repeatable, low-risk work with mechanically verifiable success criteria. Use the lowest reasoning effort that reliably completes the task.
+
 ## Entry flow
 
 1. Name one primary owner and an exact allowed-file list.
@@ -23,21 +25,25 @@ Read [CODEX_MODEL_USAGE.md](CODEX_MODEL_USAGE.md) for the Plus-aware model defau
 
 ## Risk flows
 
+### Level 0 — explanation only
+
+Do not use Codex. Answer in conversation.
+
 ### Level 1 — small single-file fix
 
-`frontend_implementer → qa_build_reviewer` (no subagents).
+Terra Medium implementation → Luna Low mechanical QA. No subagents.
 
-### Level 2 — single-domain spec
+### Level 2 — single-domain task
 
-`design_system_curator`, `content_ia_editor`, or `obsidian_notes_pipeline` returns only a spec, audit, or triage unless implementation is explicitly requested.
+Terra Medium with one relevant specialist. Request a spec or audit first where appropriate. `design_system_curator`, `content_ia_editor`, or `obsidian_notes_pipeline` returns only a spec, audit, or triage unless implementation is explicitly requested; pipeline work that exceeds the documented Terra exceptions remains Sol High.
 
 ### Level 3 — cross-domain site change
 
-`project_architect plan → relevant specialist spec → frontend_implementer → qa_build_reviewer`.
+Sol High `project_architect` plan → Terra Medium scoped implementation → Terra Medium/High semantic QA. Keep each phase in a separate round.
 
 ### Level 4 — pipeline or infrastructure change
 
-Keep phases strictly separate: Round 1 `project_architect` only → Round 2 relevant specialist only → Round 3 authorized implementation only → Round 4 `qa_build_reviewer` only. Never combine planning, implementation, and QA in one prompt.
+Keep phases strictly separate: Round 1 Sol High `project_architect` only → Round 2 Sol High specialist analysis → Round 3 Sol High or Terra High authorized implementation, depending on complexity → Round 4 Sol High critical `qa_build_reviewer` gate. Never combine planning, implementation, and QA in one prompt.
 
 ## Required validation
 

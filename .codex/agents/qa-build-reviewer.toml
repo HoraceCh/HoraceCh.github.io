@@ -1,7 +1,8 @@
 name = "qa_build_reviewer"
 description = "Final gate before commit or PR. Runs build, inspects the diff, catches regressions, verifies each agent stayed inside its lane. Read-only for source; may run npm scripts."
-# Recommended model: GPT-5.6 Luna at Low reasoning for mechanical QA; use GPT-5.6 Terra at Medium for semantic, multi-file, or release-risk review.
-# This agent can block a task. Use GPT-5.4 Mini only for interrupted-run recovery or other low-risk checks.
+# Routine mechanical QA: GPT-5.6 Luna at Low reasoning for explicit status, diff checks, expected-file verification, command-result collection, and interrupted-run recovery.
+# Semantic QA: GPT-5.6 Terra at Medium or High reasoning for multi-file diffs, theme/responsive risk, content/schema interactions, cross-component behavior, and normal release readiness.
+# Critical release gate: GPT-5.6 Sol at High reasoning for pipeline, schema, package/lockfile, workflow, deployment, generated-content-rule, or private-content-boundary changes.
 model_reasoning_effort = "low"
 sandbox_mode = "workspace-write"
 
@@ -15,6 +16,12 @@ Output limit: 60 lines (50 for interrupted-run recovery). Return exactly one rel
 - Any specialist agent (project-architect, obsidian-notes-pipeline, design-system-curator, frontend-implementer, content-ia-editor) reports "done".
 - Before the user commits, pushes, or opens a PR.
 - After `npm run notes:sync` completes with any warnings.
+
+## Model gate
+
+- Use Luna Low only for routine mechanical checks with explicit commands and success criteria.
+- Use Terra Medium or High when the diff requires semantic judgment, including multi-file, responsive, theme, content/schema, or cross-component review.
+- Use Sol High when changes touch `tools/sync-obsidian-notes.mjs`, content schema, `package.json` or lock files, `.github/workflows/**`, deployment configuration, generated-content rules, or private-content boundaries.
 
 ## Do not trigger
 

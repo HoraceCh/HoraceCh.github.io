@@ -6,18 +6,20 @@ Read `AGENTS.md` at the repo root first. It defines the project's IA, voice, and
 
 Model routing lives in `docs/CODEX_MODEL_USAGE.md`; agent routing and prompt templates live in `docs/CODEX_AGENT_ROUTING.md`; the project workflow is `docs/AGENT_WORKFLOW.md`. The project-local `.codex/config.toml` sets `max_threads = 3`, `max_depth = 1`, 30-minute jobs, and interrupt messages.
 
+The root/default is GPT-5.6 Terra Medium. Sol is available and reserved for complex, high-risk, or high-value work. Luna is only for bounded, explicit, mechanically verifiable work. Use the lowest reasoning effort that reliably completes the task; preserve serial-first orchestration and never run concurrent write-capable agents.
+
 Use one primary agent by default. Subagents are read-only and exceptional: independent exploration, risk review, or an architect/specialist second opinion only. Never use multiple write-capable agents in an implementation phase, and do not add agents for homepage, Notes UI, theme, animation, or graph work.
 
 ## The six agents
 
-| Agent | File | Owns | Never touches | Sandbox |
+| Agent | File | Default routing | Owns and boundary | Sandbox |
 |---|---|---|---|---|
-| `project_architect` | `project-architect.toml` | Astro/Hexo boundary, IA layout, cross-layer plans, `astro.config.mjs`, schema decisions | Visual styling, prose, direct code edits | read-only |
-| `obsidian_notes_pipeline` | `obsidian-notes-pipeline.toml` | `tools/sync-obsidian-notes.mjs`, generated notes, `notes-assets` convention, `content.config.ts` notes schema | UI, page templates, prose | workspace-write |
-| `design_system_curator` | `design-system-curator.toml` | Visual direction, tokens, motion spec, dark/light contract, hand-off spec to implementer | Writing CSS, Astro, sync script, prose | read-only |
-| `frontend_implementer` | `frontend-implementer.toml` | `src/components/**`, `src/layouts/**`, `src/pages/**`, `src/styles/global.css` | Sync script, content, config, workflows | workspace-write |
-| `content_ia_editor` | `content-ia-editor.toml` | Hand-written copy, page copy, project frontmatter, docs prose | Components, styles, generated notes, schema | workspace-write |
-| `qa_build_reviewer` | `qa-build-reviewer.toml` | Build gate, diff review, cross-agent boundary check | Feature implementation | workspace-write (for running scripts) |
+| `project_architect` | `project-architect.toml` | Sol High | Astro/Hexo boundary, IA layout, cross-layer plans, migrations, schema and routing decisions | read-only |
+| `obsidian_notes_pipeline` | `obsidian-notes-pipeline.toml` | Sol High | Sync behavior, links/assets, schema, generated-note and private-content safety | workspace-write |
+| `design_system_curator` | `design-system-curator.toml` | Terra Medium | Visual direction, tokens, motion spec, dark/light contract, hand-off spec | read-only |
+| `frontend_implementer` | `frontend-implementer.toml` | Terra Medium | Scoped Astro/UI implementation; no pipeline, schema, deploy, generated-note, or agent-rule changes without authorization | workspace-write |
+| `content_ia_editor` | `content-ia-editor.toml` | Terra Medium | Hand-written copy, page copy, project frontmatter, and docs prose | workspace-write |
+| `qa_build_reviewer` | `qa-build-reviewer.toml` | Luna Low / Terra Medium-High / Sol High | Mechanical QA / semantic QA / critical release gate | workspace-write (for running scripts) |
 
 ## Design references (locked)
 

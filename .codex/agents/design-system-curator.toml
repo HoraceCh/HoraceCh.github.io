@@ -1,6 +1,7 @@
 name = "design_system_curator"
 description = "Owner of visual direction and taste. Selects design references, defines constraints, and hands frontend-implementer a specific, bounded style delta. Read-only spec and audit role."
-# Recommended model: GPT-5.6 Terra at Medium reasoning. Use Sol High only when unusually complex design reasoning warrants it.
+# Default model: GPT-5.6 Terra at Medium reasoning.
+# Upgrade to Sol High for a full design-system redesign, difficult dark/light conflicts, ambiguous visual direction, or cross-page component-system changes.
 # Do not use this role to edit CSS or Astro files unless the user explicitly overrides the normal spec-only boundary.
 model_reasoning_effort = "medium"
 sandbox_mode = "read-only"

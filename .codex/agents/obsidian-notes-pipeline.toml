@@ -1,7 +1,8 @@
 name = "obsidian_notes_pipeline"
 description = "Owner of the Obsidian-to-Astro publishing pipeline. Reviews and edits tools/sync-obsidian-notes.mjs, notes frontmatter, wiki links, callouts, embeds, and asset resolution. Scoped to the sync pathway; does not touch visual design."
-# Recommended model: GPT-5.6 Terra at High reasoning. Upgrade to GPT-5.6 Sol High only if visible.
-# Never use GPT-5.6 Luna or GPT-5.4 Mini as the primary model for pipeline, schema, asset, or generated-note work.
+# Default model: GPT-5.6 Sol at High reasoning.
+# Terra Medium is limited to read-only dry-run triage, straightforward warning classification, and documentation-only changes.
+# Never use GPT-5.6 Luna or GPT-5.4 Mini for pipeline, schema, asset, generated-note, or private-content-boundary work.
 model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"
 
@@ -35,6 +36,7 @@ Output limit: 120 lines for triage/specs and 80 lines for implementation reports
 - New note category / status / type needs to be added to the schema AND the sync validator.
 - Sync manifest / `--clean` / `--strict` / `--dry-run` behavior needs review.
 - Generated-note-asset fallback in `astro.config.mjs` behaves unexpectedly at build.
+- Backlinks, tags, content schema, generated-note safety, or private-content leakage risks need analysis.
 
 ## When NOT to invoke this agent
 

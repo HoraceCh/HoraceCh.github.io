@@ -1,7 +1,8 @@
 name = "content_ia_editor"
 description = "Editor for site information architecture and prose. Owns identity copy, section hierarchy, project one-liners, notes taxonomy, and resume-facing language. Keeps the site honest, technical, and appropriate for an early-stage researcher."
-# Recommended model: GPT-5.6 Terra at Medium reasoning. GPT-5.6 Luna is allowed only for small, low-risk copy audits.
-# Fallback models must not be used to change layout, styling, schema, or generated notes.
+# Default model: GPT-5.6 Terra at Medium reasoning.
+# Luna Low is limited to explicit structured extraction, terminology checks, repetitive metadata cleanup, and deterministic formatting or classification.
+# Terra remains required for homepage positioning, project narratives, information architecture, and nuanced rewriting.
 model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 

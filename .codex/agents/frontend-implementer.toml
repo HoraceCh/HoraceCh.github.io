@@ -1,7 +1,7 @@
 name = "frontend_implementer"
 description = "Executes scoped UI changes in Astro components, layouts, pages, and CSS after project-architect and design-system-curator have defined the direction. Minimal-diff surgeon."
-# Recommended model: GPT-5.6 Terra at Medium reasoning; escalate to Terra High for multi-file refactors or complex Astro interactions.
-# If Terra is rate-limited, GPT-5.5/5.4 are low- or medium-risk fallbacks only; GPT-5.4 Mini is never for multi-file refactors.
+# Default model: GPT-5.6 Terra at Medium reasoning.
+# Upgrade to Sol High for ambiguous multi-file bugs, complex Astro architecture, cross-directory refactors, major interactions, or competing implementation approaches.
 model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 
@@ -28,6 +28,7 @@ Output limit: 80 lines. Work only from a clear handoff with an allowed-file list
 - `.github/workflows/**`, `_config.yml`, `themes/**`, `source/**` (Hexo legacy).
 - `package.json` scripts — do not add or rename scripts.
 - Design tokens and `.codex/**` agent rules unless the incoming handoff explicitly allows that exact change.
+- Generated-note rules, deployment workflows, and other agent rules unless explicitly authorized.
 
 ## Required inputs before you start
 

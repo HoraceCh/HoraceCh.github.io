@@ -1,51 +1,44 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import LinkButton from '../components/LinkButton.astro';
 
-const toSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
-const projects = await getCollection('projects');
-const publicNotes = await getCollection('notes', ({ data }) => !data.draft);
-const featuredProject = projects
-  .filter(
-    (project) =>
-      project.data.visibility === 'public' &&
-      project.data.featured &&
-      !['planned', 'archive'].includes(project.data.maturity) &&
-      !['planned', 'archived'].includes(project.data.status),
-  )
-  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999) || b.data.date.valueOf() - a.data.date.valueOf())
-  .at(0);
-const latestNote = publicNotes
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .at(0);
+const selectedWork = [
+  {
+    status: 'In progress',
+    type: 'AI Workflow',
+    title: 'Academic Retrieval Query Builder',
+    description:
+      'AI_RETRIEVAL_X / Information-Retrieval-Tool drafts database-specific Boolean queries from a research question.',
+    href: '/projects/ai-retrieval-tool/',
+  },
+  {
+    status: 'Learning system',
+    type: 'Embodied AI',
+    title: 'VLA / Embodied AI Learning System',
+    description:
+      'A structured study system for connecting VLA papers, robotics concepts, and future implementation work.',
+    href: '/projects/vla-embodied-ai-learning-system/',
+  },
+  {
+    status: 'Learning system',
+    type: 'AI Workflow',
+    title: 'AI-assisted Literature Workflow',
+    description:
+      'A cautious process for query generation, paper triage, source checking, and technical note organization.',
+    href: '/notes/ai-assisted-literature-workflow/',
+  },
+];
 
 const hubLinks = [
   {
     href: '/projects/',
     label: 'Projects',
-    description: 'Scan active work in robotics, VLA learning, mechanical design, and AI-assisted tooling.',
+    description: 'Scan active engineering work, research systems, and public tools.',
   },
   {
     href: '/notes/',
     label: 'Notes',
-    description: 'Read the research notes, learning paths, paper templates, and project logs behind the work.',
-  },
-  {
-    href: '/resume/',
-    label: 'Resume',
-    description: 'See the recruiter-facing academic and engineering summary.',
-  },
-  {
-    href: 'https://github.com/HoraceCh',
-    label: 'GitHub',
-    description: 'Follow repositories, experiments, documentation, and public code.',
-    external: true,
-  },
-  {
-    href: '/contact/',
-    label: 'Contact',
-    description: 'Start a project discussion, research-learning exchange, or collaboration thread.',
+    description: 'Read structured study notes, learning paths, and workflow records.',
   },
 ];
 
@@ -61,7 +54,7 @@ const focusAreas = [
 
 <Layout
   title="Horace Chan"
-  description="Mechanical Engineering student exploring Robotics, Embodied AI, and AI-assisted workflows."
+  description="Mechanical Engineering student building and documenting robotics, Embodied AI, and AI-assisted research workflows."
 >
   <div class="home-page">
     <section class="home-entry" aria-labelledby="home-title">
@@ -75,22 +68,26 @@ const focusAreas = [
             </h1>
           </div>
           <div class="name-portrait" aria-hidden="true">
-            <img class="portrait-mark" src="/assets/profile-mark.png" alt="" loading="eager" />
+            <span class="portrait-monogram">HC</span>
           </div>
         </div>
         <p class="home-thesis">
-          Mechanical Engineering student exploring Robotics, Embodied AI, and AI-assisted workflows.
+          Mechanical Engineering student building and documenting robotics, Embodied AI, and AI-assisted research
+          workflows.
         </p>
         <p class="home-summary">
-          I focus on the intersection of mechanical systems, robot control, and emerging AI models for embodied
+          I connect mechanical systems and robot control with practical study systems for VLA-based embodied
           intelligence.
         </p>
         <nav class="link-row home-primary-links" aria-label="Primary homepage links">
-          <LinkButton href="/projects/" label="View Projects" />
-          <LinkButton href="/notes/" label="Read Notes" />
-          <LinkButton href="/resume/" label="Resume" />
-          <LinkButton href="https://github.com/HoraceCh" label="GitHub" external />
+          <LinkButton href="/projects/" label="View Projects" variant="primary" />
+          <LinkButton href="/notes/" label="Read Notes" variant="secondary" />
+          <LinkButton href="/resume/" label="Resume" variant="text" />
+          <LinkButton href="https://github.com/HoraceCh" label="GitHub" variant="text" external />
         </nav>
+        <ul class="focus-strip" aria-label="Current focus areas">
+          {focusAreas.map((area) => <li>{area}</li>)}
+        </ul>
       </div>
 
       <aside class="identity-plate" aria-label="Profile snapshot">
@@ -105,47 +102,53 @@ const focusAreas = [
             <dd>Robotics + Embodied AI</dd>
           </div>
           <div>
-            <dt>Building</dt>
-            <dd>Projects, notes, reproducible workflows</dd>
-          </div>
-          <div>
-            <dt>Status</dt>
-            <dd>Early-stage, public, and deliberately documented.</dd>
+            <dt>Current Work</dt>
+            <dd>AI-assisted research workflows</dd>
           </div>
         </dl>
       </aside>
     </section>
 
-    <section class="home-section home-focus-section" aria-labelledby="home-focus">
+    <section class="home-section home-selected-work" aria-labelledby="home-selected-work">
       <div class="home-section-head">
-        <p class="eyebrow">Focus</p>
-        <h2 id="home-focus">What I work on</h2>
+        <p class="eyebrow">Selected work</p>
+        <h2 id="home-selected-work">Current projects and learning systems</h2>
       </div>
-      <ul class="focus-strip" aria-label="Current focus areas">
-        {focusAreas.map((area) => <li>{area}</li>)}
-      </ul>
+      <div class="work-grid">
+        {selectedWork.map((item) => (
+          <a class="work-card" href={item.href}>
+            <div class="work-card-meta">
+              <span>{item.status}</span>
+              <span>{item.type}</span>
+            </div>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+            <span class="card-action">View project <span aria-hidden="true">→</span></span>
+          </a>
+        ))}
+      </div>
     </section>
 
-    <section class="home-section home-credibility-section" aria-labelledby="home-credibility">
+    <section class="home-section home-approach" aria-labelledby="home-approach">
       <div class="home-section-head">
-        <p class="eyebrow">Credibility</p>
-        <h2 id="home-credibility">Why this direction is grounded</h2>
+        <p class="eyebrow">Approach</p>
+        <h2 id="home-approach">How I approach the work</h2>
       </div>
-      <div class="credibility-grid">
+      <div class="approach-grid">
         <article>
           <p class="proof-mark">ME</p>
           <h3>Engineering foundation</h3>
-          <p>Mechanical design, systems thinking, control fundamentals, and documentation are the base layer.</p>
+          <p>Mechanical systems, design practice, and control fundamentals provide the base for technical decisions.</p>
         </article>
         <article>
-          <p class="proof-mark">AI</p>
-          <h3>Research direction</h3>
-          <p>Embodied AI and VLA models are explored through reading notes, templates, and small applied projects.</p>
+          <p class="proof-mark">VLA</p>
+          <h3>Embodied AI research</h3>
+          <p>Structured reading connects models, robot-learning concepts, and questions for future implementation.</p>
         </article>
         <article>
           <p class="proof-mark">LOG</p>
-          <h3>Public work trail</h3>
-          <p>Projects and notes are kept visible so the learning path can be inspected instead of merely claimed.</p>
+          <h3>Public documentation</h3>
+          <p>Notes and workflow records preserve limitations, revisions, and the reasoning behind each direction.</p>
         </article>
       </div>
     </section>
@@ -153,44 +156,22 @@ const focusAreas = [
     <section class="home-section home-hub" aria-labelledby="home-explore">
       <div class="home-section-head">
         <p class="eyebrow">Explore</p>
-        <h2 id="home-explore">Where to go next</h2>
+        <h2 id="home-explore">Continue through the portfolio</h2>
       </div>
       <div class="hub-grid">
         {hubLinks.map((link) => (
-          <a
-            class="hub-link"
-            href={link.href}
-            target={link.external ? '_blank' : undefined}
-            rel={link.external ? 'noopener noreferrer' : undefined}
-          >
+          <a class="hub-link" href={link.href}>
             <span>{link.label}</span>
             <small>{link.description}</small>
+            <span class="card-action" aria-hidden="true">Explore →</span>
           </a>
         ))}
       </div>
+      <nav class="hub-secondary-links" aria-label="Additional homepage links">
+        <a href="/resume/">Resume</a>
+        <a href="https://github.com/HoraceCh" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="/contact/">Contact</a>
+      </nav>
     </section>
-
-    {(featuredProject || latestNote) && (
-      <section class="home-section home-trail" aria-labelledby="home-trail">
-        <div class="home-section-head">
-          <p class="eyebrow">Evidence trail</p>
-          <h2 id="home-trail">Recent public work</h2>
-        </div>
-        <div class="trail-list">
-          {featuredProject && (
-            <a href={`/projects/${toSlug(featuredProject.id)}/`}>
-              <strong>Featured project</strong>
-              <span>{featuredProject.data.title}</span>
-            </a>
-          )}
-          {latestNote && (
-            <a href={`/notes/${toSlug(latestNote.id)}/`}>
-              <strong>Latest note</strong>
-              <span>{latestNote.data.title}</span>
-            </a>
-          )}
-        </div>
-      </section>
-    )}
   </div>
 </Layout>

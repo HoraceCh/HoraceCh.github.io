@@ -1,24 +1,47 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import LinkButton from '../components/LinkButton.astro';
+import {
+  loadProjectPublicationModel,
+  projectHref,
+  selectHomepageProjects,
+} from '../utils/projectPublication';
 
-const selectedWork = [
+const curatedProjectCards = [
   {
+    projectId: 'ai-retrieval-tool',
     status: 'In progress',
     type: 'AI Workflow',
     title: 'Academic Retrieval Query Builder',
     description:
       'AI_RETRIEVAL_X / Information-Retrieval-Tool drafts database-specific Boolean queries from a research question.',
-    href: '/projects/ai-retrieval-tool/',
   },
   {
+    projectId: 'vla-embodied-ai-learning-system',
     status: 'Learning system',
     type: 'Embodied AI',
     title: 'VLA / Embodied AI Learning System',
     description:
       'A structured study system for connecting VLA papers, robotics concepts, and future implementation work.',
-    href: '/projects/vla-embodied-ai-learning-system/',
   },
+];
+const curatedProjectIds = curatedProjectCards.map((project) => project.projectId);
+const projectModel = await loadProjectPublicationModel();
+const missingCuratedProjectIds = curatedProjectIds.filter((id) => !projectModel.byId.has(id));
+
+if (missingCuratedProjectIds.length > 0) {
+  throw new Error(`Homepage Project IDs do not resolve: ${missingCuratedProjectIds.join(', ')}`);
+}
+
+const selectedProjectCards = selectHomepageProjects(projectModel, curatedProjectIds).map((project) => {
+  const card = curatedProjectCards.find((item) => item.projectId === project.id);
+  if (!card) {
+    throw new Error(`Homepage Project metadata is missing for resolved ID: ${project.id}`);
+  }
+  return { ...card, href: projectHref(project) };
+});
+const selectedWork = [
+  ...selectedProjectCards,
   {
     status: 'Learning system',
     type: 'AI Workflow',

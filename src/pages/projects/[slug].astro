@@ -1,14 +1,15 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import TagList from '../../components/TagList.astro';
+import { loadProjectPublicationModel } from '../../utils/projectPublication';
 
 export async function getStaticPaths() {
-  const projects = await getCollection('projects');
-  return projects.map((project) => ({
-    params: { slug: project.id.replace(/\.mdx?$/, '').replace(/\/index$/, '') },
-    props: { project },
+  const projectModel = await loadProjectPublicationModel();
+  return projectModel.routable.map((project) => ({
+    params: { slug: project.slug },
+    props: { project: project.entry },
   }));
 }
 

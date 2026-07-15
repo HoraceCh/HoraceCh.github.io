@@ -1,11 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
 import NoteModuleTree from '../../../components/NoteModuleTree.astro';
 import SectionHeading from '../../../components/SectionHeading.astro';
 import { buildNoteModuleTree, isOrdinaryNote, isPublicBrowseNote } from '../../../utils/noteModules';
+import { loadNotePublicationModel } from '../../../utils/notePublication';
 
-const notes = await getCollection('notes', ({ data }) => !data.draft);
+const model = await loadNotePublicationModel();
+const notes = model.discoverable;
 const publicBrowseNotes = notes.filter(isPublicBrowseNote);
 const noteModules = buildNoteModuleTree(publicBrowseNotes);
 const ordinaryNoteCount = publicBrowseNotes.filter(isOrdinaryNote).length;

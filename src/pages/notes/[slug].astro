@@ -1,38 +1,46 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import NoteProperties from '../../components/notes/NoteProperties.astro';
 import NoteSidepane from '../../components/notes/NoteSidepane.astro';
+import type { BacklinksIndex } from '../../utils/noteBacklinks';
 import { buildNoteBacklinksIndex } from '../../utils/noteBacklinks';
-import { buildNoteBreadcrumbs, noteHref } from '../../utils/noteModules';
-import { noteSlug } from '../../utils/slugify';
+import { buildNoteBreadcrumbs } from '../../utils/noteModules';
 import { slugify } from '../../utils/slugify';
+import { loadNotePublicationModel, noteHref, type EffectiveNote, type NotePublicationModel } from '../../utils/notePublication';
 
 export async function getStaticPaths() {
-  const notes = await getCollection('notes', ({ data }) => !data.draft);
-  return notes.map((note) => ({
-    params: { slug: noteSlug(note.id) },
-    props: { note },
+  const model = await loadNotePublicationModel();
+  const knownTargets = new Map(model.all.map((item) => [item.slug, { slug: item.slug, title: item.data.title }]));
+  const routableTargets = new Map(model.routable.map((item) => [item.slug, { slug: item.slug, title: item.data.title }]));
+  const backlinks = buildNoteBacklinksIndex({
+    sources: model.routable.map((item) => item.source),
+    knownTargets,
+    routableTargets,
+  });
+
+  if (backlinks.issues.length > 0) {
+    throw new Error(`Unsafe published Note links:\n${backlinks.issues.map((issue) => `- ${issue.sourceSlug} -> ${issue.targetSlug} (${issue.rawLink})`).join('\n')}`);
+  }
+
+  return model.routable.map((note) => ({
+    params: { slug: note.slug },
+    props: { note, routableBySlug: model.routableBySlug, backlinksBySlug: backlinks.backlinksBySlug },
   }));
 }
 
-const { note } = Astro.props;
-const allNotes = await getCollection('notes', ({ data }) => !data.draft);
-const notesBySlug = new Map(allNotes.map((entry) => [noteSlug(entry.id), entry]));
-const backlinksIndex = buildNoteBacklinksIndex(allNotes);
-const currentSlug = noteSlug(note.id);
-const incomingBacklinks = backlinksIndex.backlinksBySlug[currentSlug] ?? [];
-const { Content, headings } = await render(note);
+const { note, routableBySlug, backlinksBySlug } = Astro.props as { note: EffectiveNote; routableBySlug: NotePublicationModel['routableBySlug']; backlinksBySlug: BacklinksIndex };
+const incomingBacklinks = backlinksBySlug[note.slug] ?? [];
+const { Content, headings } = await render(note.source);
 const outlineItems = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const breadcrumbs = buildNoteBreadcrumbs(note);
 const relatedNotes = note.data.related.map((slug: string) => ({
   slug,
-  note: notesBySlug.get(slug),
-}));
-const prerequisiteItems = note.data.prerequisites.map((item: string) => ({
-  label: item,
-  note: notesBySlug.get(item),
-}));
+  note: routableBySlug.get(slug),
+})).filter((item): item is { slug: string; note: EffectiveNote } => Boolean(item.note));
+const prerequisiteItems = note.data.prerequisites
+  .map((slug: string) => routableBySlug.get(slug))
+  .filter((item): item is EffectiveNote => Boolean(item));
 const propertyItems = [
   {
     label: 'Category',
@@ -71,16 +79,16 @@ const propertyItems = [
   },
 ];
 const prerequisiteLinks = prerequisiteItems.map((item) => ({
-  label: item.note ? item.note.data.title : item.label,
-  href: item.note ? noteHref(item.note.id) : undefined,
+  label: item.data.title,
+  href: noteHref(item),
 }));
 const relatedLinks = relatedNotes.map((item) => ({
-  label: item.note ? item.note.data.title : item.slug,
-  href: item.note ? noteHref(item.note.id) : undefined,
+  label: item.note.data.title,
+  href: noteHref(item.note),
 }));
 ---
 
-<Layout title={note.data.title} description={note.data.description}>
+<Layout title={note.data.title} description={note.data.publicSummary}>
   <article class="article note-article">
     <div class="note-header">
       <nav class="note-breadcrumbs" aria-label="Note breadcrumb">
@@ -95,7 +103,7 @@ const relatedLinks = relatedNotes.map((item) => ({
         </ol>
       </nav>
       <h1>{note.data.title}</h1>
-      <p class="lead">{note.data.description}</p>
+      <p class="lead">{note.data.publicSummary}</p>
     </div>
 
     <div class="note-reading-layout">

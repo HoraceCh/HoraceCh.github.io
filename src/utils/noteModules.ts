@@ -1,7 +1,7 @@
-import type { CollectionEntry } from 'astro:content';
-import { noteSlug, slugify } from './slugify';
+import { slugify } from './slugify';
+import { noteHref, type EffectiveNote } from './notePublication';
 
-export type NoteEntry = CollectionEntry<'notes'>;
+export type NoteEntry = EffectiveNote;
 
 export interface NoteModuleNode {
   title: string;
@@ -29,9 +29,7 @@ interface MutableNoteModuleNode extends NoteModuleNode {
 const indexRoles = new Set(['collection-index', 'module-index']);
 const archiveSegment = '_archive';
 
-export function noteHref(id: string) {
-  return `/notes/${noteSlug(id)}/`;
-}
+export { noteHref };
 
 export function isNoteIndexEntry(note: NoteEntry) {
   return note.data.isIndex || indexRoles.has(note.data.noteRole);

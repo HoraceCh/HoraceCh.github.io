@@ -1,6 +1,7 @@
 ---
 import type { NoteModuleNode } from '../utils/noteModules';
-import { flattenNoteModuleTree, noteHref } from '../utils/noteModules';
+import { flattenNoteModuleTree } from '../utils/noteModules';
+import { noteHref } from '../utils/notePublication';
 
 interface Props {
   nodes: NoteModuleNode[];
@@ -30,7 +31,7 @@ const formatDate = (date: Date | undefined) =>
             <div class="module-card__header">
               <p class="eyebrow">{node.segments.length === 1 ? 'Collection' : 'Module'}</p>
               <h3><a href={node.href}>{node.title}</a></h3>
-              {node.indexNote?.data.description && <p>{node.indexNote.data.description}</p>}
+              {node.indexNote?.data.publicSummary && <p>{node.indexNote.data.publicSummary}</p>}
             </div>
 
             <dl class="module-card__stats" aria-label={`${node.title} summary`}>
@@ -50,7 +51,7 @@ const formatDate = (date: Date | undefined) =>
 
             <div class="module-card__actions">
               <a href={node.href}>{node.segments.length === 1 ? 'Browse collection' : 'Browse module'}</a>
-              {node.indexNote && <a href={noteHref(node.indexNote.id)}>Index note</a>}
+              {node.indexNote && <a href={noteHref(node.indexNote)}>Index note</a>}
             </div>
 
             {childModules.length > 0 && (

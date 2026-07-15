@@ -1,28 +1,13 @@
 ---
 import NoteCard from './NoteCard.astro';
-
-interface NoteData {
-  title: string;
-  description: string;
-  date: Date;
-  category: string;
-  status: string;
-  type: string;
-  tags: string[];
-}
-
-interface NoteItem {
-  id: string;
-  data: NoteData;
-}
+import { noteHref, type EffectiveNote } from '../utils/notePublication';
 
 interface Props {
-  notes: NoteItem[];
+  notes: EffectiveNote[];
   emptyMessage?: string;
 }
 
 const { notes, emptyMessage = 'No public notes here yet.' } = Astro.props;
-const noteSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '');
 ---
 
 {
@@ -31,13 +16,13 @@ const noteSlug = (id: string) => id.replace(/\.mdx?$/, '').replace(/\/index$/, '
       {notes.map((note) => (
         <NoteCard
           title={note.data.title}
-          description={note.data.description}
+          description={note.data.publicSummary}
           date={note.data.date}
           category={note.data.category}
           status={note.data.status}
           type={note.data.type}
           tags={note.data.tags}
-          href={`/notes/${noteSlug(note.id)}/`}
+          href={noteHref(note)}
         />
       ))}
     </div>

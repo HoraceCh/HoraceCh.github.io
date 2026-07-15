@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
 import BrowsePills from '../../../components/BrowsePills.astro';
 import Layout from '../../../layouts/Layout.astro';
 import NoteList from '../../../components/NoteList.astro';
@@ -9,14 +8,15 @@ import {
   buildNoteModuleTree,
   flattenNoteModuleTree,
   isPublicBrowseNote,
-  noteHref,
   noteModuleHref,
   sortNotesForHierarchy,
   type NoteModuleNode,
 } from '../../../utils/noteModules';
+import { loadNotePublicationModel, noteHref } from '../../../utils/notePublication';
 
 export async function getStaticPaths() {
-  const notes = await getCollection('notes', ({ data }) => !data.draft);
+  const model = await loadNotePublicationModel();
+  const notes = model.discoverable;
   const noteModules = buildNoteModuleTree(notes.filter(isPublicBrowseNote));
 
   return flattenNoteModuleTree(noteModules).map((node) => ({
@@ -32,7 +32,7 @@ const childModuleItems = node.childModules.map((child) => ({
   label: child.title,
   href: child.href,
   count: child.ordinaryNoteCount,
-  description: child.indexNote?.data.description,
+  description: child.indexNote?.data.publicSummary,
 }));
 const breadcrumbs = [
   { label: 'Notes', href: '/notes/' },
@@ -43,7 +43,7 @@ const breadcrumbs = [
   })),
 ];
 const description =
-  node.indexNote?.data.description ??
+  node.indexNote?.data.publicSummary ??
   `${node.title} groups ${node.ordinaryNoteCount} ordinary note${node.ordinaryNoteCount === 1 ? '' : 's'}.`;
 ---
 
@@ -79,8 +79,8 @@ const description =
           description="The readable index note for this branch stays at its flat canonical URL."
         />
         <article class="module-summary-card">
-          <h3><a href={noteHref(node.indexNote.id)}>{node.indexNote.data.title}</a></h3>
-          <p>{node.indexNote.data.description}</p>
+          <h3><a href={noteHref(node.indexNote)}>{node.indexNote.data.title}</a></h3>
+          <p>{node.indexNote.data.publicSummary}</p>
           <p class="meta">{node.indexNote.data.noteRole}</p>
         </article>
       </section>

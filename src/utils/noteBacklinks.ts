@@ -1,4 +1,4 @@
-import { noteSlug, slugify } from './slugify';
+import { noteSlug, slugify } from './slugify.ts';
 
 export type NoteBacklink = {
   sourceSlug: string;
@@ -28,6 +28,19 @@ export type NoteBacklinksResult = {
   backlinksBySlug: BacklinksIndex;
   outgoingLinksBySlug: OutgoingLinksIndex;
   unresolvedLinks: UnresolvedNoteLink[];
+  issues: NoteBacklinkIssue[];
+};
+
+export type NoteBacklinkIssue = {
+  severity: 'error';
+  code: 'published-link-to-unpublished-note';
+  source: string;
+  sourceSlug: string;
+  targetSlug: string;
+  message: string;
+  rawTarget: string;
+  rawLink: string;
+  context?: string;
 };
 
 type AliasValue = string | readonly string[] | undefined;
@@ -42,10 +55,21 @@ export type NoteBacklinkEntry = {
   };
 };
 
+export type NoteBacklinkTarget = {
+  slug: string;
+  title: string;
+  aliases?: AliasValue;
+};
+
+export type NoteBacklinkIndexInput = {
+  sources: readonly NoteBacklinkEntry[];
+  knownTargets: ReadonlyMap<string, NoteBacklinkTarget>;
+  routableTargets: ReadonlyMap<string, NoteBacklinkTarget>;
+};
+
 type IndexedNote = {
   slug: string;
   title: string;
-  aliases: string[];
   body: string;
 };
 
@@ -66,27 +90,32 @@ const WIKILINK_PATTERN = /(!?)\[\[([^\]\n]+)\]\]/g;
 const MARKDOWN_NOTE_LINK_PATTERN = /\[([^\]\n]+)\]\((\/notes\/[^)\s]+)\)/g;
 const FILE_EXTENSION_PATTERN = /\.[a-z0-9]{2,8}$/i;
 
-export function buildNoteBacklinksIndex(entries: readonly NoteBacklinkEntry[]): NoteBacklinksResult {
-  const notes = entries
-    .map((entry) => {
+export function buildNoteBacklinksIndex({ sources, knownTargets, routableTargets }: NoteBacklinkIndexInput): NoteBacklinksResult {
+  const notes = sources
+    .flatMap((entry) => {
+      const slug = noteSlug(entry.id);
+
+      if (!routableTargets.has(slug)) {
+        return [];
+      }
+
       if (typeof entry.body !== 'string') {
         throw new Error(`Note backlink extraction requires raw Markdown body text for ${entry.id}.`);
       }
 
-      return {
-        slug: noteSlug(entry.id),
+      return [{
+        slug,
         title: entry.data.title,
-        aliases: normalizeAliases(entry.data.aliases, entry.data.alias),
         body: entry.body,
-      };
+      }];
     })
     .sort((left, right) => compareText(left.slug, right.slug));
 
-  const notesBySlug = new Map(notes.map((note) => [note.slug, note]));
-  const lookup = buildNoteLookup(notes);
-  const backlinksBySlug = Object.fromEntries(notes.map((note) => [note.slug, []])) as BacklinksIndex;
+  const lookup = buildNoteLookup(knownTargets.values());
+  const backlinksBySlug = Object.fromEntries([...routableTargets.keys()].map((slug) => [slug, []])) as BacklinksIndex;
   const outgoingLinksBySlug = Object.fromEntries(notes.map((note) => [note.slug, []])) as OutgoingLinksIndex;
   const unresolvedLinks: UnresolvedNoteLink[] = [];
+  const issues: NoteBacklinkIssue[] = [];
 
   for (const sourceNote of notes) {
     for (const parsedLink of extractNoteLinks(sourceNote.body)) {
@@ -110,9 +139,20 @@ export function buildNoteBacklinksIndex(entries: readonly NoteBacklinkEntry[]): 
         continue;
       }
 
-      const targetNote = notesBySlug.get(resolvedTarget.slug);
+      const targetNote = routableTargets.get(resolvedTarget.slug);
 
       if (!targetNote) {
+        issues.push({
+          severity: 'error',
+          code: 'published-link-to-unpublished-note',
+          source: sourceNote.slug,
+          sourceSlug: sourceNote.slug,
+          targetSlug: resolvedTarget.slug,
+          message: `Published Note ${sourceNote.slug} links to unavailable Note ${resolvedTarget.slug}.`,
+          rawTarget: parsedLink.target,
+          rawLink: parsedLink.rawLink,
+          context: parsedLink.context,
+        });
         continue;
       }
 
@@ -140,25 +180,43 @@ export function buildNoteBacklinksIndex(entries: readonly NoteBacklinkEntry[]): 
   }
 
   unresolvedLinks.sort(compareUnresolvedLinks);
+  issues.sort((left, right) => compareText(left.sourceSlug, right.sourceSlug) || compareText(left.targetSlug, right.targetSlug) || compareText(left.rawLink, right.rawLink));
 
   return {
     backlinksBySlug,
     outgoingLinksBySlug,
     unresolvedLinks,
+    issues,
   };
 }
 
 export function extractNoteLinks(markdown: string): ParsedNoteLink[] {
   const links: ParsedNoteLink[] = [];
   let inFence = false;
+  let inFrontmatter = markdown.startsWith('---\n') || markdown.startsWith('---\r\n');
+  let isFirstLine = true;
 
   for (const line of markdown.split(/\r?\n/)) {
+    if (inFrontmatter) {
+      if (!isFirstLine && line.trim() === '---') {
+        inFrontmatter = false;
+      }
+      isFirstLine = false;
+      continue;
+    }
+
+    isFirstLine = false;
+
     if (/^\s*(```|~~~)/.test(line)) {
       inFence = !inFence;
       continue;
     }
 
     if (inFence) {
+      continue;
+    }
+
+    if (/^\s*<!--.*-->\s*$/.test(line)) {
       continue;
     }
 
@@ -172,6 +230,9 @@ function extractWikilinks(line: string): ParsedNoteLink[] {
   const links: ParsedNoteLink[] = [];
 
   for (const match of line.matchAll(WIKILINK_PATTERN)) {
+    if (isIgnoredLinkPosition(line, match.index ?? 0)) {
+      continue;
+    }
     const rawLink = match[0];
     const isEmbed = match[1] === '!';
     const inner = match[2].trim();
@@ -198,7 +259,7 @@ function extractMarkdownNoteLinks(line: string): ParsedNoteLink[] {
   const links: ParsedNoteLink[] = [];
 
   for (const match of line.matchAll(MARKDOWN_NOTE_LINK_PATTERN)) {
-    if (match.index && line[match.index - 1] === '!') {
+    if ((match.index && line[match.index - 1] === '!') || isIgnoredLinkPosition(line, match.index ?? 0)) {
       continue;
     }
 
@@ -222,14 +283,12 @@ function extractMarkdownNoteLinks(line: string): ParsedNoteLink[] {
   return links;
 }
 
-function buildNoteLookup(notes: readonly IndexedNote[]) {
+function buildNoteLookup(notes: Iterable<NoteBacklinkTarget>) {
   const lookup = new Map<string, Set<string>>();
 
   for (const note of notes) {
     addLookupValue(lookup, note.slug, note.slug);
-    addLookupValue(lookup, note.title, note.slug);
-
-    for (const alias of note.aliases) {
+    for (const alias of normalizeAliases(note.aliases)) {
       addLookupValue(lookup, alias, note.slug);
     }
   }
@@ -303,7 +362,7 @@ function noteTargetFromHref(href: string) {
 }
 
 function stripFragment(value: string) {
-  return value.split('#')[0].trim();
+  return value.split(/[?#]/)[0].trim();
 }
 
 function splitAlias(value: string) {
@@ -332,6 +391,40 @@ function normalizeAliases(...values: AliasValue[]) {
 function cleanContext(line: string) {
   const context = line.trim().replace(/\s+/g, ' ');
   return context.length > 220 ? `${context.slice(0, 217)}...` : context;
+}
+
+function isIgnoredLinkPosition(line: string, index: number) {
+  if (isEscaped(line, index)) {
+    return true;
+  }
+
+  let cursor = 0;
+  while (cursor < index) {
+    if (line[cursor] !== '`') {
+      cursor += 1;
+      continue;
+    }
+
+    const delimiter = line.slice(cursor).match(/^`+/)?.[0] ?? '`';
+    const closing = line.indexOf(delimiter, cursor + delimiter.length);
+    if (closing === -1) {
+      return false;
+    }
+    if (index > cursor && index < closing + delimiter.length) {
+      return true;
+    }
+    cursor = closing + delimiter.length;
+  }
+
+  return false;
+}
+
+function isEscaped(value: string, index: number) {
+  let slashCount = 0;
+  for (let cursor = index - 1; cursor >= 0 && value[cursor] === '\\'; cursor -= 1) {
+    slashCount += 1;
+  }
+  return slashCount % 2 === 1;
 }
 
 function looksLikeFileTarget(target: string) {

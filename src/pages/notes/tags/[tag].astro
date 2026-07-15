@@ -1,13 +1,14 @@
 ---
-import { getCollection } from 'astro:content';
 import BrowsePills from '../../../components/BrowsePills.astro';
 import Layout from '../../../layouts/Layout.astro';
 import NoteList from '../../../components/NoteList.astro';
 import SectionHeading from '../../../components/SectionHeading.astro';
 import { slugify } from '../../../utils/slugify';
+import { loadNotePublicationModel } from '../../../utils/notePublication';
 
 export async function getStaticPaths() {
-  const notes = await getCollection('notes', ({ data }) => !data.draft);
+  const model = await loadNotePublicationModel();
+  const notes = model.discoverable;
   const tagsBySlug = new Map<string, Set<string>>();
 
   for (const tag of notes.flatMap((note) => note.data.tags)) {
@@ -25,7 +26,8 @@ export async function getStaticPaths() {
 
 const { tagSlug, sourceTags } = Astro.props;
 const tagLabel = sourceTags.length === 1 ? sourceTags[0] : tagSlug;
-const notes = (await getCollection('notes', ({ data }) => !data.draft))
+const model = await loadNotePublicationModel();
+const notes = model.discoverable
   .filter((note) => note.data.tags.some((tag: string) => sourceTags.includes(tag)))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const relatedCategories = [...new Set(notes.map((note) => note.data.category))]

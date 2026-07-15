@@ -1,11 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
 import BrowsePills from '../../../components/BrowsePills.astro';
 import Layout from '../../../layouts/Layout.astro';
 import NoteList from '../../../components/NoteList.astro';
 import SectionHeading from '../../../components/SectionHeading.astro';
 import { pathDefinitions } from '../../../utils/notes';
 import { slugify } from '../../../utils/slugify';
+import { loadNotePublicationModel } from '../../../utils/notePublication';
 
 export async function getStaticPaths() {
   return pathDefinitions.map((path) => ({
@@ -15,7 +15,8 @@ export async function getStaticPaths() {
 }
 
 const { path } = Astro.props;
-const notes = (await getCollection('notes', ({ data }) => !data.draft))
+const model = await loadNotePublicationModel();
+const notes = model.discoverable
   .filter((note) => note.data.path === path.title)
   .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999) || b.data.date.valueOf() - a.data.date.valueOf());
 const relatedCategories = [...new Set(notes.map((note) => note.data.category))]

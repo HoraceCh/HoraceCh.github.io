@@ -6,6 +6,7 @@ import {
   projectHref,
   selectHomepageProjects,
 } from '../utils/projectPublication';
+import { loadNotePublicationModel, noteHref, selectHomepageNotes } from '../utils/notePublication';
 
 const curatedProjectCards = [
   {
@@ -40,16 +41,24 @@ const selectedProjectCards = selectHomepageProjects(projectModel, curatedProject
   }
   return { ...card, href: projectHref(project) };
 });
+const noteModel = await loadNotePublicationModel();
+const selectedWorkNote = selectHomepageNotes(noteModel).find((note) => note.data.homepageSlot === 'selected-work-03');
+
+if (!selectedWorkNote) {
+  console.warn('Homepage Note slot selected-work-03 did not resolve to a homepage-eligible Note.');
+}
+
 const selectedWork = [
   ...selectedProjectCards,
-  {
-    status: 'Learning system',
-    type: 'AI Workflow',
-    title: 'AI-assisted Literature Workflow',
-    description:
-      'A cautious process for query generation, paper triage, source checking, and technical note organization.',
-    href: '/notes/ai-assisted-literature-workflow/',
-  },
+  ...(selectedWorkNote
+    ? [{
+        status: selectedWorkNote.data.status,
+        type: selectedWorkNote.data.type,
+        title: selectedWorkNote.data.title,
+        description: selectedWorkNote.data.publicSummary,
+        href: noteHref(selectedWorkNote),
+      }]
+    : []),
 ];
 
 const hubLinks = [

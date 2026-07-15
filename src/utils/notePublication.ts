@@ -1,18 +1,11 @@
 import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import type { CollectionEntry } from 'astro:content';
 import { noteSlug } from './slugify.ts';
 
-type NoteData = {
-  draft?: boolean;
-  featured?: boolean;
-  order?: number;
-  description?: string;
-  date?: Date;
-  updated?: Date;
-};
+type NoteData = CollectionEntry<'notes'>['data'];
 
-export type NoteEntry = { id: string; data: NoteData };
+export type NoteEntry = CollectionEntry<'notes'>;
 export type NoteVisibility = 'public' | 'secondary' | 'hidden';
 export type NotePublicationRecord = {
   slug: string;
@@ -34,7 +27,7 @@ export type PublicationIssue = {
 };
 export type ParsedNotePublicationOverrides = { artifact: NotePublicationArtifact; issues: PublicationIssue[] };
 export type EffectiveNote = {
-  entry: NoteEntry;
+  source: NoteEntry;
   slug: string;
   data: NoteData & {
     published: boolean;
@@ -113,7 +106,7 @@ export function parseNotePublicationOverrides(rawText: string): ParsedNotePublic
 }
 
 export async function loadNotePublicationOverrides() {
-  const path = fileURLToPath(new URL('../data/note-publication-overrides.json', import.meta.url));
+  const path = resolve(process.cwd(), 'src/data/note-publication-overrides.json');
   try {
     return parseNotePublicationOverrides(await readFile(path, 'utf8'));
   } catch (caught) {
@@ -136,7 +129,7 @@ export function createNotePublicationModel(entries: readonly NoteEntry[], input:
 
   const bySlug = new Map<string, EffectiveNote>();
   for (const note of all) {
-    if (bySlug.has(note.slug)) issues.push(issue('error', 'duplicate-note-slug', `Duplicate generated Note slug: ${note.slug}.`, note.entry.id, note.slug));
+    if (bySlug.has(note.slug)) issues.push(issue('error', 'duplicate-note-slug', `Duplicate generated Note slug: ${note.slug}.`, note.source.id, note.slug));
     else bySlug.set(note.slug, note);
   }
   const routable = all.filter((note) => note.data.published && !hasNoteError(note, issues));
@@ -183,7 +176,7 @@ function createEffectiveNote(entry: NoteEntry, override: NotePublicationRecord |
     publicSummary: override?.publicSummary ?? entry.data.description ?? '',
     homepageSlot: override?.homepageSlot,
   };
-  return { entry, slug, data, validationIssues: [] };
+  return { source: entry, slug, data, validationIssues: [] };
 }
 
 function validateRecord(value: Record<string, unknown>, source: string, issues: PublicationIssue[]) {
@@ -220,7 +213,7 @@ function validateRecord(value: Record<string, unknown>, source: string, issues: 
 
 function emptyArtifact(): NotePublicationArtifact { return { formatVersion: 1, records: [] }; }
 function isRecord(value: unknown): value is Record<string, unknown> { return typeof value === 'object' && value !== null && !Array.isArray(value); }
-function hasNoteError(note: EffectiveNote, issues: PublicationIssue[]) { return issues.some((item) => item.severity === 'error' && item.source === note.entry.id); }
+function hasNoteError(note: EffectiveNote, issues: PublicationIssue[]) { return issues.some((item) => item.severity === 'error' && item.source === note.source.id); }
 function compareHomepageSlots(a: EffectiveNote, b: EffectiveNote) { return (a.data.homepageSlot ?? '').localeCompare(b.data.homepageSlot ?? '', 'en') || a.slug.localeCompare(b.slug, 'en'); }
 function dateValue(value: Date | undefined) { return value instanceof Date && !Number.isNaN(value.valueOf()) ? value.valueOf() : 0; }
 function issue(severity: 'warning' | 'error', code: string, message: string, source: string, slug?: string, field?: string): PublicationIssue { return { severity, code, message, source, slug, field }; }

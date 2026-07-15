@@ -14,10 +14,9 @@ export type PublicationIssue = {
 
 export type EffectiveProject = {
   entry: ProjectEntry;
-  id?: string;
-  slug?: string;
+  id: string;
+  slug: string;
   published: boolean;
-  identitySource: { id: 'explicit' | 'filename' | 'unresolved'; slug: 'explicit' | 'filename' | 'unresolved' };
   validationIssues: PublicationIssue[];
 };
 
@@ -34,7 +33,10 @@ const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export function createProjectPublicationModel(entries: readonly ProjectEntry[]): ProjectPublicationModel {
   const issues: PublicationIssue[] = [];
-  const all = entries.map((entry) => createEffectiveProject(entry, issues));
+  const candidates = entries.map((entry) => createEffectiveProject(entry, issues));
+  if (issues.length > 0) throw new ProjectPublicationContractError(issues);
+  const all = candidates.filter((project): project is EffectiveProject => project !== undefined);
+
   const byId = new Map<string, EffectiveProject>();
   const bySlug = new Map<string, EffectiveProject>();
 
@@ -44,11 +46,11 @@ export function createProjectPublicationModel(entries: readonly ProjectEntry[]):
   }
 
   const routes = new Map<string, EffectiveProject>();
-  for (const project of all.filter((item) => item.published && item.slug)) {
+  for (const project of all.filter((item) => item.published)) {
     addUnique(routes, projectHref(project), project, 'duplicate-project-route', 'slug', issues);
   }
 
-  const validRoutable = all.filter((project) => project.published && project.slug && !hasError(project, issues));
+  const validRoutable = all.filter((project) => project.published && !hasError(project, issues));
   const routable = [...validRoutable].sort(compareProjectsForPublication);
   const listed = routable.filter((project) => project.entry.data.visibility !== 'hidden');
 
@@ -61,7 +63,7 @@ export async function loadProjectPublicationModel() {
 }
 
 export function projectHref(project: Pick<EffectiveProject, 'slug'>) {
-  return project.slug ? `/projects/${project.slug}/` : '';
+  return `/projects/${project.slug}/`;
 }
 
 export function compareProjectsForPublication(a: EffectiveProject, b: EffectiveProject) {
@@ -71,7 +73,7 @@ export function compareProjectsForPublication(a: EffectiveProject, b: EffectiveP
   const date = dateValue(b.entry.data.date) - dateValue(a.entry.data.date);
   if (date !== 0) return date;
 
-  return (a.slug ?? '').localeCompare(b.slug ?? '', 'en');
+  return a.slug.localeCompare(b.slug, 'en');
 }
 
 export function selectHomepageProjects(model: ProjectPublicationModel, ids: readonly string[]) {
@@ -81,69 +83,53 @@ export function selectHomepageProjects(model: ProjectPublicationModel, ids: read
   });
 }
 
-function createEffectiveProject(entry: ProjectEntry, issues: PublicationIssue[]): EffectiveProject {
-  const validationIssues: PublicationIssue[] = [];
-  const addIssue = (issue: PublicationIssue) => {
-    issues.push(issue);
-    validationIssues.push(issue);
-  };
-  const fallback = safeFilenameSlug(entry.id);
-  const explicitId = entry.data.id;
-  const explicitSlug = entry.data.slug;
+function createEffectiveProject(entry: ProjectEntry, issues: PublicationIssue[]): EffectiveProject | undefined {
+  const identity = entry.data as { id?: unknown; slug?: unknown; published?: unknown };
+  const id = validateExplicitIdentity(entry, identity.id, 'id', issues);
+  const slug = validateExplicitIdentity(entry, identity.slug, 'slug', issues);
+  const published = validateExplicitPublished(entry, identity.published, issues);
 
-  if (explicitId === undefined) addIssue(warning(entry, 'missing-project-id', 'Project uses a filename-derived compatibility ID.', 'id'));
-  if (explicitSlug === undefined) addIssue(warning(entry, 'missing-project-slug', 'Project uses a filename-derived compatibility slug.', 'slug'));
-  if (entry.data.published === undefined) addIssue(warning(entry, 'missing-project-published', 'Project defaults to published for compatibility.', 'published'));
-
-  const id = resolveIdentity(entry, explicitId, fallback, 'id', addIssue);
-  const slug = resolveIdentity(entry, explicitSlug, fallback, 'slug', addIssue);
-  const project: EffectiveProject = {
-    entry,
-    id,
-    slug,
-    published: entry.data.published ?? true,
-    identitySource: { id: explicitId === undefined ? (id ? 'filename' : 'unresolved') : 'explicit', slug: explicitSlug === undefined ? (slug ? 'filename' : 'unresolved') : 'explicit' },
-    validationIssues,
-  };
-
-  if (project.published && !project.slug) {
-    addIssue(error(entry, 'unroutable-published-project', 'A published Project requires a resolvable slug.', 'slug', project));
+  if (id === undefined || slug === undefined || published === undefined) {
+    return undefined;
   }
 
-  return project;
+  return { entry, id, slug, published, validationIssues: [] };
 }
 
-function resolveIdentity(entry: ProjectEntry, explicit: string | undefined, fallback: string | undefined, field: 'id' | 'slug', addIssue: (issue: PublicationIssue) => void) {
-  if (explicit !== undefined) {
-    if (!isValidIdentity(explicit, field === 'id' ? 64 : 80)) {
-      addIssue(error(entry, `invalid-project-${field}`, `Project ${field} must be lowercase kebab case.`, field));
-      return undefined;
-    }
-    return explicit;
+function validateExplicitIdentity(entry: ProjectEntry, value: unknown, field: 'id' | 'slug', issues: PublicationIssue[]) {
+  if (value === undefined) {
+    const code = field === 'id' ? 'missing-project-id' : 'missing-project-slug';
+    issues.push(error(entry, code, `Project ${field} is required.`, field));
+    return undefined;
   }
-
-  if (!fallback) {
-    addIssue(error(entry, `unresolvable-project-${field}`, `Project ${field} cannot be derived from a nested or unsafe filename.`, field));
+  if (typeof value !== 'string' || !isValidIdentity(value, field === 'id' ? 64 : 80)) {
+    issues.push(error(entry, `invalid-project-${field}`, `Project ${field} must be lowercase kebab case.`, field));
+    return undefined;
   }
-  return fallback;
+  return value;
 }
 
-function safeFilenameSlug(id: string) {
-  if (id.includes('/') || id.includes('\\')) return undefined;
-  const name = id.replace(/\.mdx?$/i, '');
-  return isValidIdentity(name, 80) ? name : undefined;
+function validateExplicitPublished(entry: ProjectEntry, value: unknown, issues: PublicationIssue[]) {
+  if (value === undefined) {
+    issues.push(error(entry, 'missing-project-published', 'Project published is required.', 'published'));
+    return undefined;
+  }
+  if (typeof value !== 'boolean') {
+    issues.push(error(entry, 'invalid-project-published', 'Project published must be a boolean.', 'published'));
+    return undefined;
+  }
+  return value;
 }
 
 function isValidIdentity(value: string, maxLength: number) {
   return value.length >= 1 && value.length <= maxLength && ID_PATTERN.test(value) && !value.includes('/');
 }
 
-function addUnique(map: Map<string, EffectiveProject>, key: string | undefined, project: EffectiveProject, code: string, field: string, issues: PublicationIssue[]) {
-  if (!key) return;
+function addUnique(map: Map<string, EffectiveProject>, key: string, project: EffectiveProject, code: string, field: string, issues: PublicationIssue[]) {
   const existing = map.get(key);
   if (existing) {
-    issues.push(error(project.entry, code, `Duplicate Project ${field}: ${key}.`, field, project));
-    issues.push(error(existing.entry, code, `Duplicate Project ${field}: ${key}.`, field, existing));
+    addProjectIssue(project, error(project.entry, code, `Duplicate Project ${field}: ${key}.`, field, project), issues);
+    addProjectIssue(existing, error(existing.entry, code, `Duplicate Project ${field}: ${key}.`, field, existing), issues);
     return;
   }
   map.set(key, project);
@@ -153,8 +139,9 @@ function hasError(project: EffectiveProject, issues: PublicationIssue[]) {
   return issues.some((issue) => issue.severity === 'error' && issue.source === project.entry.id);
 }
 
-function warning(entry: ProjectEntry, code: string, message: string, field: string): PublicationIssue {
-  return { severity: 'warning', code, message, source: entry.id, field };
+function addProjectIssue(project: EffectiveProject, issue: PublicationIssue, issues: PublicationIssue[]) {
+  issues.push(issue);
+  project.validationIssues.push(issue);
 }
 
 function error(entry: ProjectEntry, code: string, message: string, field: string, project?: EffectiveProject): PublicationIssue {
@@ -163,4 +150,14 @@ function error(entry: ProjectEntry, code: string, message: string, field: string
 
 function dateValue(value: Date | undefined) {
   return value instanceof Date && !Number.isNaN(value.valueOf()) ? value.valueOf() : 0;
+}
+
+export class ProjectPublicationContractError extends Error {
+  readonly issues: readonly PublicationIssue[];
+
+  constructor(issues: readonly PublicationIssue[]) {
+    super(issues.map((issue) => issue.code).join(', '));
+    this.name = 'ProjectPublicationContractError';
+    this.issues = issues;
+  }
 }

@@ -1,6 +1,9 @@
 ---
 title: AI-assisted Learning Workflow
 description: A documented learning and research workflow for paper reading, technical notes, and knowledge organization with AI tools.
+id: ai-assisted-learning-workflow
+slug: ai-assisted-learning-workflow
+published: true
 date: 2026-06-24
 status: in-progress
 category: AI Workflow

@@ -1,6 +1,9 @@
 ---
 title: VLA / Embodied AI Learning System
 description: A structured study system around Vision-Language-Action models, embodied AI, robot learning, papers, datasets, benchmarks, and implementation notes.
+id: vla-embodied-ai-learning-system
+slug: vla-embodied-ai-learning-system
+published: true
 date: 2026-06-25
 status: in-progress
 category: Embodied AI / VLA

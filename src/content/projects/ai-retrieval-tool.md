@@ -1,6 +1,9 @@
 ---
 title: AI_RETRIEVAL_X / Information-Retrieval-Tool
 description: A TypeScript/Vite tool that drafts Boolean search queries for academic databases such as CNKI, Web of Science, PubMed, and Ei Compendex.
+id: ai-retrieval-tool
+slug: ai-retrieval-tool
+published: true
 date: 2026-06-23
 status: in-progress
 category: AI Workflow

@@ -1,6 +1,9 @@
 ---
 title: Mechanical Design Portfolio
 description: A planned documentation area for SolidWorks-based mechanical design work and shareable CAD cases.
+id: mechanical-design-portfolio
+slug: mechanical-design-portfolio
+published: true
 date: 2026-06-26
 status: planned
 category: Mechanical Design

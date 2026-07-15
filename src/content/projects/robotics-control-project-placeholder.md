@@ -1,6 +1,9 @@
 ---
 title: Robotics / Control Project Placeholder
 description: A placeholder for future robotics or control work once the scope, public materials, and technical details are ready.
+id: robotics-control-project-placeholder
+slug: robotics-control-project-placeholder
+published: false
 date: 2026-06-27
 status: planned
 category: Robotics

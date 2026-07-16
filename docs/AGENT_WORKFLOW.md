@@ -1,58 +1,30 @@
 # HoraceCh Agent Workflow
 
-This Astro site is a personal research portfolio and public knowledge garden. Its fixed IA is Home / About / Projects / Notes / Resume / Contact; Notes are published through the Obsidian pipeline. Keep changes static-build friendly, minimal, technical, and honest.
+This Astro site is a personal research portfolio and public knowledge garden. Its fixed IA is Home / About / Projects / Notes / Resume / Contact; Notes publish through the Obsidian pipeline. Keep work static-build friendly, minimal, technical, and honest.
 
-Read [CODEX_MODEL_USAGE.md](CODEX_MODEL_USAGE.md) for the Plus-aware model defaults and [CODEX_AGENT_ROUTING.md](CODEX_AGENT_ROUTING.md) for agent boundaries, output limits, and reusable prompts.
+Read [CODEX_MODEL_USAGE.md](CODEX_MODEL_USAGE.md) for model selection and [CODEX_AGENT_ROUTING.md](CODEX_AGENT_ROUTING.md) for prompt structure and handoffs.
 
-The normal root/default is GPT-5.6 Terra Medium. Sol is available and reserved for complex, high-risk, or high-value work; Luna is limited to explicit, repeatable, low-risk work with mechanically verifiable success criteria. Use the lowest reasoning effort that reliably completes the task.
+## Operating flow
 
-## Entry flow
+1. State the outcome, success criteria, relevant evidence, authorized scope, and validation.
+2. Choose one owner using the routing rules. Start at Terra Medium and escalate only for material risk, ambiguity, or measured failure.
+3. The owner makes the smallest authorized change, or produces the required spec or plan.
+4. Hand off when another ownership lane, an unauthorized file, or a product decision is required.
+5. Send multi-file, pipeline, or pre-commit work to `qa_build_reviewer`; do not commit before its required gate passes.
 
-1. Name one primary owner and an exact allowed-file list.
-2. For Level 2 work, request a specialist spec/audit before editing. For Level 3 or 4 work, begin with `project_architect`.
-3. Let the authorized implementer make the scoped change.
-4. Send every multi-file change, pipeline change, or pre-commit diff to `qa_build_reviewer`.
-5. Do not commit before the required QA gate passes.
+## Ownership and risk
 
-## Project-specific ownership
+- `project_architect`: plans cross-layer boundaries, IA, migrations, and routing.
+- `obsidian_notes_pipeline`: owns sync, notes schema, assets, generated-note safety, and private-content boundaries. Use a supplied `notes:sync:dry` result when available; the publish source—not the full vault—is the input boundary.
+- `design_system_curator`: owns visual direction and an implementable spec; it reads `docs/design/UI_DESIGN.md` before visual work.
+- `content_ia_editor`: owns honest copy and IA; it does not change styling or layout.
+- `frontend_implementer`: makes scoped Astro/UI changes from a clear handoff and preserves the documented design system.
+- `qa_build_reviewer`: validates ownership, behavior, and release readiness.
 
-- `project_architect`: Astro/Hexo boundary, IA, schema/migration plans, and cross-domain scope. It plans by default.
-- `obsidian_notes_pipeline`: publish sync, slugs, backlinks, tags, assets, notes schema, and generated-note safety. Start from `npm run notes:sync:dry` output when available; never scan the whole vault.
-- `design_system_curator`: Vercel-light / Linear-dark visual contract. It reads `docs/design/UI_DESIGN.md` and returns an implementable spec, not CSS.
-- `content_ia_editor`: precise, non-hyped copy and information architecture. It never changes styling or layout.
-- `frontend_implementer`: Astro/UI implementation after a clear handoff. It must not alter sync scripts, schemas, generated notes, deploy workflows, design tokens, or agent rules unless explicitly allowed.
-- `qa_build_reviewer`: release gate and boundary reviewer. It can block.
+For a Level 1 explicit single-file change, use Terra Medium implementation and Luna Low mechanical QA. For a Level 2 single-domain task, use the relevant specialist where a spec or audit materially reduces risk. For Levels 3–4 cross-domain, pipeline, schema, or infrastructure work, separate Sol High planning, authorized implementation, and QA into distinct rounds.
 
-## Risk flows
+## Validation and reporting
 
-### Level 0 — explanation only
+QA verifies the diff surface and whitespace, then runs `npm run build`. It additionally runs `npm run hexo:build` for Hexo-related work and `npm run notes:sync:dry` for pipeline work when a source path is available. UI changes also receive rendered light/dark, mobile, and UI-reference review when practical. A required but unverified build is `BLOCKED: build not verified`.
 
-Do not use Codex. Answer in conversation.
-
-### Level 1 — small single-file fix
-
-Terra Medium implementation → Luna Low mechanical QA. No subagents.
-
-### Level 2 — single-domain task
-
-Terra Medium with one relevant specialist. Request a spec or audit first where appropriate. `design_system_curator`, `content_ia_editor`, or `obsidian_notes_pipeline` returns only a spec, audit, or triage unless implementation is explicitly requested; pipeline work that exceeds the documented Terra exceptions remains Sol High.
-
-### Level 3 — cross-domain site change
-
-Sol High `project_architect` plan → Terra Medium scoped implementation → Terra Medium/High semantic QA. Keep each phase in a separate round.
-
-### Level 4 — pipeline or infrastructure change
-
-Keep phases strictly separate: Round 1 Sol High `project_architect` only → Round 2 Sol High specialist analysis → Round 3 Sol High or Terra High authorized implementation, depending on complexity → Round 4 Sol High critical `qa_build_reviewer` gate. Never combine planning, implementation, and QA in one prompt.
-
-## Required validation
-
-QA must verify `git status --short`, `git diff --check`, a diff summary, and `npm run build`. It also runs `npm run hexo:build` for Hexo-related changes and `npm run notes:sync:dry` for pipeline work when a source path is available. If a required build is missing, the result is `BLOCKED: build not verified`.
-
-## Non-negotiable boundaries
-
-- Do not create overlapping specialist agents.
-- Do not run multiple write-capable agents concurrently.
-- Do not edit generated notes directly or widen the Obsidian publish scope beyond the configured source.
-- Do not invent author achievements, outcomes, awards, publications, or metrics.
-- Do not run formatters that can touch unrelated files.
+Reports preserve decisions, material risks, blockers, validation, and next actions. They omit routine tool narration. Do not create overlapping agents, edit generated notes directly, widen the Obsidian publish scope, fabricate personal claims, or run formatters that touch unrelated files.

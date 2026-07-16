@@ -34,12 +34,6 @@ Implementation priorities:
 
 ## Codex model and agent workflow
 
-This repository uses a ChatGPT Plus + Codex workflow. GPT-5.6 Sol is available and reserved for complex, high-risk, or high-value work; its availability does not make it the default. Do not assume Extra High or Pro options.
+Before planning or implementing, read `docs/CODEX_MODEL_USAGE.md` and `docs/CODEX_AGENT_ROUTING.md`. They are the source of truth for the six agents, Sol/Terra/Luna routing, prompt structure, permissions, and handoffs.
 
-- Normal root/default model: GPT-5.6 Terra at Medium reasoning for everyday implementation, specialist work, and semantic review.
-- Deliberate reasoning tier: GPT-5.6 Sol at High reasoning for complex, ambiguous, high-risk, high-value, architectural, or polished work.
-- Bounded mechanical tier: GPT-5.6 Luna at Low reasoning only when instructions and success criteria are explicit, repeatable, low-risk, read-only, or mechanically verifiable.
-- Use the lowest reasoning effort that reliably completes the task. GPT-5.5, GPT-5.4, and GPT-5.4 Mini are compatibility fallbacks, not normal defaults.
-- Use only the six established agents. Default to a single-agent serial workflow; never fan out write-capable agents or delegate beyond depth 1.
-- Read the routing source of truth before planning or implementation: `docs/CODEX_MODEL_USAGE.md` and `docs/CODEX_AGENT_ROUTING.md`.
-- Respect the project-local `.codex/config.toml` limits: three threads, depth one, 30-minute jobs, and interrupt messages enabled.
+Start at Terra Medium; escalate to Sol High only for material complexity, ambiguity, risk, or polish. Use Luna Low only for explicit, low-risk, mechanically verifiable work. Respect `.codex/config.toml`: three threads, depth one, 30-minute jobs, and interrupt messages enabled.

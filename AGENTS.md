@@ -34,6 +34,6 @@ Implementation priorities:
 
 ## Codex model and agent workflow
 
-Before planning or implementing, read `docs/CODEX_MODEL_USAGE.md` and `docs/CODEX_AGENT_ROUTING.md`. They are the source of truth for the six agents, Sol/Terra/Luna routing, prompt structure, permissions, and handoffs.
+Before planning or implementing, read `docs/CODEX_MODEL_USAGE.md` and `docs/CODEX_AGENT_ROUTING.md`. They are the source of truth for the six agents, Sol/Terra/Luna routing, the compact six-part prompt structure, permissions, and handoffs.
 
 Start at Terra Medium; escalate to Sol High only for material complexity, ambiguity, risk, or polish. Use Luna Low only for explicit, low-risk, mechanically verifiable work. Respect `.codex/config.toml`: three threads, depth one, 30-minute jobs, and interrupt messages enabled.

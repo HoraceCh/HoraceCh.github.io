@@ -8,46 +8,43 @@ Use the six existing agents only: `project_architect`, `obsidian_notes_pipeline`
 - Default to one owner and serial handoffs. Parallel work is allowed only for independent, read-only exploration or risk review; implementation remains single-writer and depth one.
 - `project_architect` plans cross-domain, routing, migration, and ownership work. `obsidian_notes_pipeline` owns sync, notes schema, generated content, assets, and privacy boundaries. `design_system_curator` supplies visual specs. `content_ia_editor` owns content and IA. `frontend_implementer` makes scoped UI changes. `qa_build_reviewer` is the only release gate.
 - Use an agent only within its documented lane. A request outside that lane is a handoff, not an expanded scope.
+- Repository reads, authorized local edits, and non-destructive validation may proceed without additional approval. Commit, push, publish, deploy, destructive actions, external messages, and work outside the authorized file scope require explicit user authorization. `qa_build_reviewer` reports readiness but does not perform release actions.
 
 ## Default prompt structure
 
-Use this structure for new work. Keep it outcome-first; include only information that changes the decision or execution.
+Use these six sections for new work. Keep them outcome-first and include only information that changes the decision, execution, or completion bar.
 
 ```text
-Role
-[owner and responsibility]
-
-Goal
-[single user-visible outcome]
+Role and goal
+[owner, responsibility, and single user-visible outcome]
 
 Success criteria
-- [observable completion bar]
+[observable completion bar]
 
 Context and evidence
-- [relevant files, current behavior, supplied facts, or prior handoff]
+[relevant files, current behavior, supplied facts, or prior handoff]
 
 Constraints and permissions
-- [file scope, ownership/security boundaries, approvals, and invariants]
+[file scope, ownership/security boundaries, approvals, and true invariants]
 
 Tools and validation
-- [only relevant inspection, fallback, and validation steps]
+[relevant inspection, one or two meaningful fallbacks, and behavior-matched validation]
 
 Output and stop rules
-- Report decisions, material risks, blockers, validation, and next action.
-- Stop and hand off if the task needs another owner, an unauthorized file, or a product decision.
+[required report shape, completion condition, handoff condition, and blockers]
 ```
 
-Decision rules belong in the relevant agent prompt. Use `MUST`, `NEVER`, and `ONLY` for invariants, not preferences. Prefer success criteria to prescribed reasoning. When a result is empty or suspicious, use one or two meaningful fallbacks before reporting a blocker.
+Prefer success criteria to prescribed reasoning. Use `MUST`, `NEVER`, and `ONLY` for true invariants; use decision rules for contextual choices. Parallelize independent reads, keep dependent work sequential, and try one or two meaningful fallbacks when a result is empty or suspicious. Reports preserve decisions, material risks, blockers, validation, and next actions while omitting routine tool narration.
 
 ## Task patterns
 
 ### Implementation
 
-Name the implementation owner, the exact allowed files, user-visible acceptance criteria, and the relevant checks. For frontend work, include `docs/design/UI_DESIGN.md` as evidence and inspect rendered output when practical. Do not include routine command narration in the final report.
+Name the implementation owner, exact allowed files, user-visible acceptance criteria, and behavior-matched checks. For frontend work, use `docs/design/UI_DESIGN.md` as evidence, preserve existing patterns, and inspect rendered output when practical.
 
 ### Specialist spec or triage
 
-Name the specialist and requested decision. A design spec identifies the visual contract and implementation handoff; content work identifies approved claims and editable files; pipeline triage identifies the reproduction, root cause, safe fix, and validation.
+Name the specialist and requested decision. A design spec identifies the visual contract and handoff; content work identifies approved claims and editable files; pipeline triage identifies the reproduction, root cause, safe fix, and validation.
 
 ### QA gate
 

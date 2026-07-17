@@ -34,9 +34,9 @@ This is the model-routing source of truth for the HoraceCh Astro website. It ass
 | Level | Work | Model and owner | Required flow |
 | --- | --- | --- | --- |
 | 0 | Explanation only | No Codex | Answer in conversation. |
-| 1 | Small explicit single-file task | Terra Medium implementation; Luna Low mechanical QA | No subagents. |
+| 1 | Small explicit single-file task | Terra Medium implementation; Luna Low mechanical QA | One owner; hand off only if a boundary is crossed. |
 | 2 | Single-domain task | Terra Medium; one specialist | Spec or audit first where appropriate. |
 | 3 | Cross-domain or ambiguous task | Sol High architecture; Terra Medium implementation; Terra Medium/High semantic QA | Use separate planning, implementation, and QA rounds. |
 | 4 | High-risk infrastructure or pipeline task | Sol High planning and specialist analysis; Sol High or Terra High implementation; Sol High critical gate | Planning, implementation, and QA must use separate prompts. |
 
-For agent boundaries, subagent policy, and prompt templates, see [CODEX_AGENT_ROUTING.md](CODEX_AGENT_ROUTING.md). For the project workflow, see [AGENT_WORKFLOW.md](AGENT_WORKFLOW.md).
+For ownership, permissions, handoffs, and prompt structure, see [CODEX_AGENT_ROUTING.md](CODEX_AGENT_ROUTING.md). For the project workflow, see [AGENT_WORKFLOW.md](AGENT_WORKFLOW.md).

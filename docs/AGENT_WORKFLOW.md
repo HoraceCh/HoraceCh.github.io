@@ -6,11 +6,10 @@ Read [CODEX_MODEL_USAGE.md](CODEX_MODEL_USAGE.md) for model selection and [CODEX
 
 ## Operating flow
 
-1. State the outcome, success criteria, relevant evidence, authorized scope, and validation.
-2. Choose one owner using the routing rules. Start at Terra Medium and escalate only for material risk, ambiguity, or measured failure.
-3. The owner makes the smallest authorized change, or produces the required spec or plan.
-4. Hand off when another ownership lane, an unauthorized file, or a product decision is required.
-5. Send multi-file, pipeline, or pre-commit work to `qa_build_reviewer`; do not commit before its required gate passes.
+1. Define the outcome, completion bar, evidence, authorized scope, and behavior-matched validation using the six-part prompt in `CODEX_AGENT_ROUTING.md`.
+2. Choose one owner and the lowest reliable reasoning tier. Escalate only for material risk, ambiguity, or measured failure.
+3. Make the smallest authorized change or produce the required spec; hand off when another ownership lane, unauthorized file, or product decision is required.
+4. Send multi-file, pipeline, and pre-release work to `qa_build_reviewer` before any authorized release action.
 
 ## Ownership and risk
 
@@ -21,10 +20,10 @@ Read [CODEX_MODEL_USAGE.md](CODEX_MODEL_USAGE.md) for model selection and [CODEX
 - `frontend_implementer`: makes scoped Astro/UI changes from a clear handoff and preserves the documented design system.
 - `qa_build_reviewer`: validates ownership, behavior, and release readiness.
 
-For a Level 1 explicit single-file change, use Terra Medium implementation and Luna Low mechanical QA. For a Level 2 single-domain task, use the relevant specialist where a spec or audit materially reduces risk. For Levels 3–4 cross-domain, pipeline, schema, or infrastructure work, separate Sol High planning, authorized implementation, and QA into distinct rounds.
+For a Level 1 explicit single-file change, use Terra Medium implementation and Luna Low mechanical QA. For a Level 2 single-domain task, use the relevant specialist when a spec or audit materially reduces risk. For Levels 3–4 cross-domain, pipeline, schema, or infrastructure work, separate Sol High planning, authorized implementation, and QA into distinct rounds.
 
 ## Validation and reporting
 
-QA verifies the diff surface and whitespace, then runs `npm run build`. It additionally runs `npm run hexo:build` for Hexo-related work and `npm run notes:sync:dry` for pipeline work when a source path is available. UI changes also receive rendered light/dark, mobile, and UI-reference review when practical. A required but unverified build is `BLOCKED: build not verified`.
+QA always verifies the diff surface, whitespace, and ownership, then selects checks for the changed behavior. Website source or build changes require `npm run build`; Hexo work requires `npm run hexo:build`; pipeline work uses `npm run notes:sync:dry` when a source path is available. UI changes receive rendered light/dark, mobile, accessibility, and UI-reference review when practical. Documentation and agent-rule changes use parsing, contradiction, path/secret, link, and diff checks appropriate to their formats. A required but unverified build is `BLOCKED: build not verified`.
 
-Reports preserve decisions, material risks, blockers, validation, and next actions. They omit routine tool narration. Do not create overlapping agents, edit generated notes directly, widen the Obsidian publish scope, fabricate personal claims, or run formatters that touch unrelated files.
+Reports preserve decisions, material risks, blockers, validation, and next actions while omitting routine tool narration. Ownership, privacy, release permissions, and stop rules are centralized in `CODEX_AGENT_ROUTING.md`; agent TOMLs add only lane-specific boundaries.

@@ -19,6 +19,7 @@
     const storageKey = 'theme';
     const root = document.documentElement;
     const toggle = document.querySelector('[data-theme-toggle]');
+    const themeColor = document.querySelector('meta[name="theme-color"]');
     const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
     if (!toggle) return;
 
@@ -38,6 +39,9 @@
     const applyTheme = (theme) => {
       root.classList.toggle('dark', theme === 'dark');
       root.style.colorScheme = theme;
+      if (themeColor) {
+        themeColor.content = theme === 'dark' ? themeColor.dataset.themeColorDark : themeColor.dataset.themeColorLight;
+      }
       toggle.dataset.themeEffective = theme;
       const label = theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
       toggle.setAttribute('aria-label', label);

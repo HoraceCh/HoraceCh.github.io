@@ -14,6 +14,7 @@ const curatedProjectCards = [
     status: 'In progress',
     type: 'AI Workflow',
     title: 'Academic Retrieval Query Builder',
+    actionLabel: 'View project',
     description:
       'AI_RETRIEVAL_X / Information-Retrieval-Tool drafts database-specific Boolean queries from a research question.',
   },
@@ -22,6 +23,7 @@ const curatedProjectCards = [
     status: 'Learning system',
     type: 'Embodied AI',
     title: 'VLA / Embodied AI Learning System',
+    actionLabel: 'View project',
     description:
       'A structured study system for connecting VLA papers, robotics concepts, and future implementation work.',
   },
@@ -55,6 +57,7 @@ const selectedWork = [
         status: selectedWorkNote.data.status,
         type: selectedWorkNote.data.type,
         title: selectedWorkNote.data.title,
+        actionLabel: 'Read note',
         description: selectedWorkNote.data.publicSummary,
         href: noteHref(selectedWorkNote),
       }]
@@ -163,7 +166,7 @@ const focusAreas = [
             </div>
             <h3>{item.title}</h3>
             <p>{item.description}</p>
-            <span class="card-action">View project <span aria-hidden="true">→</span></span>
+            <span class="card-action">{item.actionLabel} <span aria-hidden="true">→</span></span>
           </a>
         ))}
       </div>

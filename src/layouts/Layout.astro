@@ -24,10 +24,17 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="theme-color"
+      content="#f5f5f5"
+      data-theme-color-light="#f5f5f5"
+      data-theme-color-dark="#08090a"
+    />
     <script is:inline>
       (() => {
         const storageKey = 'theme';
         const root = document.documentElement;
+        const themeColor = document.querySelector('meta[name="theme-color"]');
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         let theme = systemPrefersDark ? 'dark' : 'light';
 
@@ -42,6 +49,9 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 
         root.classList.toggle('dark', theme === 'dark');
         root.style.colorScheme = theme;
+        if (themeColor) {
+          themeColor.content = theme === 'dark' ? themeColor.dataset.themeColorDark : themeColor.dataset.themeColorLight;
+        }
       })();
     </script>
     <title>{pageTitle}</title>
@@ -50,7 +60,6 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" media="(prefers-color-scheme: light)" />
     <link rel="icon" type="image/png" sizes="64x64" href="/favicon-dark.png" media="(prefers-color-scheme: dark)" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#f7f7f4" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />

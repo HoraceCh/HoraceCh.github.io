@@ -32,6 +32,8 @@ Round 2A (2026-07-18) repaired the four P1 findings in the local worktree. Their
 
 Round 2B (2026-07-19) repaired all eight P2 findings in the local worktree. WEB-005 through WEB-012 are recorded as `FIXED`; the five P3 findings remain open, and production confirmation remains `PENDING_DEPLOY` until deployment.
 
+Round 2C (2026-07-19) repaired all five P3 findings in the local worktree. WEB-013 through WEB-017 are recorded as `FIXED`; production confirmation remains `PENDING_DEPLOY` until deployment.
+
 ## 3. Coverage matrix
 
 ### Routes and content
@@ -352,7 +354,7 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 
 | Field | Value |
 | --- | --- |
-| Severity / confidence / status | **P3 Low** / High / `OPEN` |
+| Severity / confidence / status | **P3 Low** / High / `FIXED` |
 | Category | Theme integration / presentation |
 | Route | All routes |
 | Environment | Chrome, Firefox, WebKit; production and local |
@@ -367,12 +369,13 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 - **Suspected files/components:** `src/layouts/Layout.astro`, theme initialization/switch script.
 - **Smallest safe repair:** Provide media-aware theme-color tags or update the tag in the existing theme state transition.
 - **Regression checks:** System light/dark, manual override, reload, page navigation, and mobile browser chrome screenshots where available.
+- **Round 2C resolution:** The shared layout now emits one early light/dark theme-color contract (`#f5f5f5` / `#08090a`), and both initialization and manual switching synchronize it with the effective theme. Chromium, Firefox, and WebKit confirmed dark initialization, light switching, and cross-route persistence at 390×844 and 1366×768. Local status: `FIXED`; production: `PENDING_DEPLOY`.
 
 ### WEB-014 — Homepage Note CTA is labelled “View project”
 
 | Field | Value |
 | --- | --- |
-| Severity / confidence / status | **P3 Low** / High / `OPEN` |
+| Severity / confidence / status | **P3 Low** / High / `FIXED` |
 | Category | Content / CTA clarity |
 | Route | Home selected Note card |
 | Environment | All engines; production and local |
@@ -387,12 +390,13 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 - **Suspected files/components:** `src/pages/index.astro` selected-work/Note card markup.
 - **Smallest safe repair:** Derive the label from content type or change this instance to “Read note.”
 - **Regression checks:** Verify every homepage CTA label matches its route and accessible name.
+- **Round 2C resolution:** Homepage selected-work entries now carry content-specific action labels: both Project cards retain “View project,” while the selected Note reads “Read note.” Route targets and whole-card accessible names are unchanged and were verified in all three browser engines. Local status: `FIXED`; production: `PENDING_DEPLOY`.
 
 ### WEB-015 — Production 404 page says the Astro site is still being prepared
 
 | Field | Value |
 | --- | --- |
-| Severity / confidence / status | **P3 Low** / High / `OPEN` |
+| Severity / confidence / status | **P3 Low** / High / `FIXED` |
 | Category | Content / credibility |
 | Route | Invalid route / 404 |
 | Environment | All engines; production and local |
@@ -407,12 +411,13 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 - **Suspected files/components:** `src/pages/404.astro`.
 - **Smallest safe repair:** Replace the preparation language with durable not-found copy while retaining Home/Projects/Notes recovery links.
 - **Regression checks:** Direct invalid route on production preview, keyboard navigation, correct HTTP 404 status, and no internal dead-end.
+- **Round 2C resolution:** The launch-era sentence was replaced with durable not-found guidance while preserving the Home, Projects, and Notes recovery links. Direct invalid local-preview requests returned HTTP 404 in Chromium, Firefox, and WebKit without the stale phrase. Local status: `FIXED`; production: `PENDING_DEPLOY`.
 
 ### WEB-016 — Links page exposes placeholder-only sections
 
 | Field | Value |
 | --- | --- |
-| Severity / confidence / status | **P3 Low** / High / `OPEN` |
+| Severity / confidence / status | **P3 Low** / High / `FIXED` |
 | Category | Content / completeness |
 | Route | `/links/` |
 | Environment | All engines; production and local |
@@ -427,12 +432,13 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 - **Suspected files/components:** `src/pages/links.astro` or its content source.
 - **Smallest safe repair:** Add the intended curated links or remove/de-emphasize the route until it has reader value.
 - **Regression checks:** Review navigation discoverability, link validity, external-link labelling, and empty-state wording.
+- **Round 2C resolution:** The two placeholder-only sections were removed, while the verified Friends, Link Exchange, Link Format, and Link Notes content and external-link semantics remain. Page description and lead now match the actual content. All three engines showed no placeholder text or horizontal overflow at the sampled mobile and desktop widths. Local status: `FIXED`; production: `PENDING_DEPLOY`.
 
 ### WEB-017 — Discoverable taxonomy pills lead to zero-result pages
 
 | Field | Value |
 | --- | --- |
-| Severity / confidence / status | **P3 Low** / High / `OPEN` |
+| Severity / confidence / status | **P3 Low** / High / `FIXED` |
 | Category | Information architecture / empty states |
 | Route | Multiple Note category/type/status pages |
 | Environment | All engines; production and local |
@@ -447,6 +453,7 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 - **Suspected files/components:** Notes index taxonomy rendering, `src/utils/notes.ts` definitions, taxonomy page empty state.
 - **Smallest safe repair:** Hide zero-count taxonomy links from primary discovery or show counts/disabled semantics and a deliberate empty-state explanation.
 - **Regression checks:** Verify counts against published Notes, keyboard semantics for disabled/hidden options, and direct empty-route behavior.
+- **Round 2C resolution:** Primary Notes discovery now filters computed category, learning-path, type, and status entries to positive counts without changing route generation. Every visible pill has a positive count, canonical `C` remains `15`, and all seven direct empty routes still return 200 with their deliberate empty-state messages in Chromium, Firefox, and WebKit. Local status: `FIXED`; production: `PENDING_DEPLOY`.
 
 ## 5. Non-issues and limitations
 

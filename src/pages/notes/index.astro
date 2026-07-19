@@ -65,6 +65,10 @@ const statusCounts = Object.entries(statusDescriptions).map(([status, descriptio
   description,
 }));
 
+function primaryDiscoveryItems<T extends { count: number }>(items: T[]) {
+  return items.filter((item) => item.count > 0);
+}
+
 const collectionCounts = noteModules.map((collection) => ({
   label: collection.title,
   href: collection.href,
@@ -147,17 +151,17 @@ const allNotes = [...ordinaryNotes].sort((a, b) => {
       <BrowsePills label="Modules" items={moduleCounts} />
       <BrowsePills
         label="Categories"
-        items={categories.map((category) => ({
+        items={primaryDiscoveryItems(categories).map((category) => ({
           label: category.name,
           href: `/notes/categories/${slugify(category.name)}/`,
           count: category.count,
           description: category.description,
         }))}
       />
-      <BrowsePills label="Learning paths" items={pathCounts} />
+      <BrowsePills label="Learning paths" items={primaryDiscoveryItems(pathCounts)} />
       <BrowsePills label="Tags" items={tagCounts} />
-      <BrowsePills label="Note types" items={typeCounts} />
-      <BrowsePills label="Statuses" items={statusCounts} />
+      <BrowsePills label="Note types" items={primaryDiscoveryItems(typeCounts)} />
+      <BrowsePills label="Statuses" items={primaryDiscoveryItems(statusCounts)} />
     </div>
   </section>
 

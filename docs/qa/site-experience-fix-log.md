@@ -281,3 +281,109 @@ Independent `qa_build_reviewer` verdict: **PASS WITH WARNINGS**.
 The reviewer found no blocker, scope violation, accidental P3 expansion, undocumented P1/P2 regression, or audit-to-fix inconsistency. It independently passed all 14 publication/UI contract files, the 131-page production build, and `git diff --check`; it also confirmed that the build introduced no unexpected worktree changes and that all 34 generated Notes retain the sync marker.
 
 Warnings are limited to environment and deployment boundaries: production remains `PENDING_DEPLOY`; Firefox/WebKit are browser-engine runs and narrow viewports are emulated rather than physical-device tests; real Safari, physical high-DPR devices, screen-reader pronunciation, and social-platform metadata scrapers were unavailable. The reviewer did not rerun write-capable Notes strict mode, relying on the recorded successful final strict run, idempotent final dry run, generated markers, targeted tests, and its independent production build.
+
+## Round 2C planning
+
+Baseline: clean `main` at `a35f7c4dc3fcac4dfe145fa753a4564ed4589dfb`. WEB-001 through WEB-012 remain `FIXED`; exactly five P3 findings remain `OPEN`. `project_architect` confirmed that all five originate in Astro presentation/content and require no Notes pipeline, generated Note, schema, publication-contract, dependency, workflow, Agent, Admin, or Vault change.
+
+| Order | Issue and title | Reproduction environment | Likely root cause | Primary owner | Expected files | Required validation |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | WEB-013 — Browser theme metadata stays light after switching to dark mode | All routes; Chromium, Firefox, WebKit; production and local | One hard-coded light `theme-color` tag is outside the effective-theme transition | `design_system_curator` read-only, then `frontend_implementer` | `src/layouts/Layout.astro`, `src/components/ThemeToggle.astro`, focused UI test | System/manual light and dark, invalid/no storage, reload/navigation, system change, 390×844 and desktop, three engines, focus/reduced motion, console/network |
+| 2 | WEB-014 — Homepage Note CTA is labelled “View project” | Home; all engines; production and local | Heterogeneous Project/Note cards share one fixed project-specific action label | `content_ia_editor` read-only, then `frontend_implementer` | `src/pages/index.astro`, focused content test | Project cards retain `View project`; selected Note uses `Read note`; href, accessible name, focus, themes, mobile/desktop, three engines |
+| 3 | WEB-015 — Production 404 page says the Astro site is still being prepared | Invalid route; all engines; production and local | Launch-era scaffold sentence remains in the custom 404 | `content_ia_editor` read-only, then `frontend_implementer` | `src/pages/404.astro`, focused content/route test | HTTP 404, durable copy, Home/Projects/Notes recovery links, keyboard, themes, mobile/desktop, three engines |
+| 4 | WEB-016 — Links page exposes placeholder-only sections | `/links/`; all engines; production and local | Two headings contain only repeated future-content placeholder copy | `content_ia_editor` read-only, then `frontend_implementer` | `src/pages/links.astro`, focused content test | Placeholder sections absent; verified friend/link-exchange content, headings, external semantics, keyboard, themes, mobile/desktop, console/network remain valid |
+| 5 | WEB-017 — Discoverable taxonomy pills lead to zero-result pages | Notes index and seven direct empty taxonomy routes; all engines; production and local | Primary discovery maps complete category/type/status registries without filtering computed zero counts | `frontend_implementer` | `src/pages/notes/index.astro`, focused discovery test | Every visible pill has a positive exact count; canonical `C` remains; seven direct routes still return 200 with deliberate empty states; keyboard and three-engine mobile/desktop checks |
+
+Dependency order is retained as listed: stabilize the shared theme transition first, then apply the three content/IA corrections, then constrain taxonomy discovery without changing route generation. The exact maximum source scope is the six Astro files above plus focused tests and the two QA documents. Zero-count taxonomy routes remain generated; `/links/` remains discoverable; no new links, features, redesign, global CSS/token change, or factual claims are authorized. Notes strict/dry-run are not required unless the protected Notes pipeline or generated Notes unexpectedly change.
+
+## Round 2C execution
+
+Date: 2026-07-19 (Asia/Shanghai). Starting baseline was clean `main` at `a35f7c4dc3fcac4dfe145fa753a4564ed4589dfb`. All five `OPEN P3` findings were reproduced on the baseline local production preview before source edits. The deployed site is unchanged, so production confirmation for every item is `PENDING_DEPLOY`.
+
+### WEB-013 — Browser theme metadata stays light after switching to dark mode
+
+| Field | Result |
+| --- | --- |
+| Original severity / final status | P3 Low / `FIXED` |
+| Reproduction result | Dark class, canvas, toggle label, and persistence changed, but `meta[name="theme-color"]` remained the light `#f7f7f4`. |
+| Owner | `design_system_curator` read-only decision; `frontend_implementer` implementation |
+| Confirmed root cause | The shared layout emitted one hard-coded light theme color outside the existing effective-theme initialization and transition. |
+| Files changed | `src/layouts/Layout.astro`; `src/components/ThemeToggle.astro`; `tests/ui/themeMetadataContract.test.mjs` |
+| Repair | Emit one early metadata element with canonical light/dark values (`#f5f5f5` / `#08090a`) and synchronize it in both the pre-paint initializer and manual `applyTheme` path. |
+| Tests and browser evidence | Contract test passes. Chromium, Firefox, and WebKit confirmed system-dark initialization, manual light switching, reload/cross-route persistence, and no overflow at 390×844 and 1366×768; reduced-motion matching was preserved in engine runs. |
+| Limitations / production | Physical mobile browser chrome was not available. `PENDING_DEPLOY`. |
+
+### WEB-014 — Homepage Note CTA is labelled “View project”
+
+| Field | Result |
+| --- | --- |
+| Original severity / final status | P3 Low / `FIXED` |
+| Reproduction result | The selected Note linked to `/notes/ai-assisted-literature-workflow/` but its whole-card name ended with “View project.” |
+| Owner | `content_ia_editor` read-only decision; `frontend_implementer` implementation |
+| Confirmed root cause | Heterogeneous Project and Note cards shared one fixed project-specific action string. |
+| Files changed | `src/pages/index.astro`; `tests/ui/homepageActionLabelContract.test.mjs` |
+| Repair | Give selected-work entries explicit content-specific labels: Project cards retain “View project”; the Note uses “Read note.” |
+| Tests and browser evidence | Contract test verifies two Project labels and one Note label. Chromium, Firefox, and WebKit showed the correct labels and unchanged destinations at 390×844 and 1366×768 in light/dark theme flows; the Note card retained a visible focus ring and keyboard Enter opened `/notes/ai-assisted-literature-workflow/` in every engine. |
+| Limitations / production | None locally; `PENDING_DEPLOY`. |
+
+### WEB-015 — Production 404 page says the Astro site is still being prepared
+
+| Field | Result |
+| --- | --- |
+| Original severity / final status | P3 Low / `FIXED` |
+| Reproduction result | An invalid route displayed the launch-era “site is being prepared” sentence. |
+| Owner | `content_ia_editor` read-only decision; `frontend_implementer` implementation |
+| Confirmed root cause | Initial scaffold copy survived after the portfolio was deployed. |
+| Files changed | `src/pages/404.astro`; `tests/ui/notFoundContentContract.test.mjs` |
+| Repair | Replace only the stale sentence with durable missing/moved/address guidance; preserve Home, Projects, and Notes recovery controls. |
+| Tests and browser evidence | Content contract passes. Direct invalid requests returned HTTP 404 in Chromium, Firefox, and WebKit; the stale phrase was absent. Home, Projects, and Notes each retained a visible focus ring and keyboard Enter reached the expected route in every engine. |
+| Limitations / production | Intentional 404 console entries in WebKit during the assertion are expected response diagnostics, not failed site assets. `PENDING_DEPLOY`. |
+
+### WEB-016 — Links page exposes placeholder-only sections
+
+| Field | Result |
+| --- | --- |
+| Original severity / final status | P3 Low / `FIXED` |
+| Reproduction result | Research / Learning Communities and Tools & Resources each contained only the repeated future-content placeholder. |
+| Owner | `content_ia_editor` read-only decision; `frontend_implementer` implementation |
+| Confirmed root cause | Two unpopulated scaffold sections remained on the published route despite the page already having useful link-exchange content. |
+| Files changed | `src/pages/links.astro`; `tests/ui/linksContentContract.test.mjs` |
+| Repair | Remove only the two placeholder-only sections and align the description/lead to the remaining Friends and link-exchange content. |
+| Tests and browser evidence | Content contract preserves all four useful headings and external-link semantics. Chromium, Firefox, and WebKit found zero placeholder text and zero page overflow at 390×844 and 1366×768. |
+| Limitations / production | No new external links were added. `PENDING_DEPLOY`. |
+
+### WEB-017 — Discoverable taxonomy pills lead to zero-result pages
+
+| Field | Result |
+| --- | --- |
+| Original severity / final status | P3 Low / `FIXED` |
+| Reproduction result | Seven prominent category/type/status pills displayed count 0 and led to deliberate but unfinished-looking empty listings. |
+| Owner | `frontend_implementer` |
+| Confirmed root cause | Primary discovery rendered full registries without filtering their computed published counts. |
+| Files changed | `src/pages/notes/index.astro`; `tests/ui/noteTaxonomyDiscoveryContract.test.mjs` |
+| Repair | Filter category, learning-path, type, and status discovery to `count > 0`; keep tag behavior and every direct taxonomy route unchanged. |
+| Tests and browser evidence | Contract and taxonomy tests pass. Chromium, Firefox, and WebKit found no visible zero-count pills, retained canonical `C 15`, and confirmed all seven direct empty routes return 200 with deliberate empty messages at 390×844 and 1366×768. |
+| Limitations / production | Direct empty routes intentionally remain available for stable route contracts. `PENDING_DEPLOY`. |
+
+## Round 2C combined regression
+
+| Check | Result |
+| --- | --- |
+| Targeted and prior-round tests | PASS — 19 publication/UI contract files, zero failures |
+| Notes pipeline | Not run: no pipeline, generated Note, schema, or asset change occurred, so write-capable strict/dry-run validation was out of scope by the Round 2C gate. |
+| Production build | PASS — Astro generated 131 static pages |
+| Routes and fragments | PASS — 131 HTML files, 5,484 internal references and 621 fragments checked; zero missing route, asset, or fragment targets |
+| Chromium local preview | PASS — 390×844 and 1366×768; themes/persistence, CTAs, 404, Links, discovery, responsive overflow, visible focus, keyboard activation, console/network |
+| Firefox browser engine | PASS — 390×844 and 1366×768; light/dark transition, persistence, reduced motion, visible focus/keyboard activation, affected routes, empty routes, Round 2A route guards; `BROWSER_ENGINE`, narrow width also `EMULATED_DEVICE` |
+| WebKit browser engine | PASS — same matrix and classifications as Firefox; link controls were explicitly focused and activated with keyboard Enter because platform-default sequential Tab policy differs |
+| Console/network | PASS — no unexpected page exception or failed first-party request; WebKit 404 console responses were produced only by intentional invalid/stale-route assertions, and one Firefox icon request was navigation-aborted during rapid route checks |
+| WEB-001–WEB-004 | PASS — stale route 404, Information Retrieval 200, publication/heading/fragment tests, and responsive Note-sidepane guards remain intact |
+| WEB-005–WEB-012 | PASS — description/body/fragment/language/taxonomy/header/contrast/image contract suites and the 131-page build remain green |
+| Protected boundaries | PASS — no Notes pipeline/generated content, publication contract, dependency, workflow, Agent, Admin, Vault, or unrelated redesign file changed |
+| Production | Not changed; WEB-013 through WEB-017 are `PENDING_DEPLOY` |
+
+## Round 2C independent QA
+
+Independent `qa_build_reviewer` verdict: **PASS WITH WARNINGS**.
+
+The reviewer found no blocker, material defect, ownership violation, protected-boundary change, feature/redesign expansion, or WEB-001–WEB-012 regression. It independently passed all 19 publication/UI contract files, `git diff --check`, and the 131-page production build, and confirmed issue-to-diff traceability plus audit/fix-log consistency. Warnings are limited to deployment and environment boundaries: production remains `PENDING_DEPLOY`; Firefox/WebKit and narrow widths are browser-engine/emulation evidence rather than physical-device testing. A temporary `.pnpm-store/` created by an initial incorrect reviewer command was identified as QA-generated and removed before final status; the subsequent npm production build passed.

@@ -5,6 +5,11 @@ export const categoryDefinitions = [
       'Reading records for papers, surveys, models, datasets, and benchmarks related to robotics, embodied AI, and VLA.',
   },
   {
+    name: 'Information Retrieval',
+    description:
+      'Notes about search concepts, library resources, indexes, databases, and intellectual property literature.',
+  },
+  {
     name: 'Robotics & Control',
     description:
       'Notes about robot systems, kinematics, dynamics, control, simulation, and engineering foundations.',

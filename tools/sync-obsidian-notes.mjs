@@ -180,9 +180,16 @@ async function main() {
     writePlan.push(converted);
   }
 
-  if (options.clean) {
-    await cleanGeneratedOutputs({ outDir, assetsDir, dryRun: options.dryRun, actions, warnings });
-  }
+  await reconcileGeneratedOutputs({
+    outDir,
+    assetsDir,
+    writePlan,
+    assetPlan,
+    removeAll: options.clean,
+    dryRun: options.dryRun,
+    actions,
+    warnings,
+  });
 
   await writeConvertedNotes({ writePlan, dryRun: options.dryRun, actions, warnings });
   await copyAssets({ assetPlan, dryRun: options.dryRun, actions, warnings, copyAssets: options.copyAssets });
@@ -529,6 +536,8 @@ async function collectMarkdownFiles(root, skipped = []) {
 
 function skipReasonForEntry(name, isDirectory) {
   if (name.startsWith('_')) return 'private-looking name';
+  if (!isDirectory && /^AGENTS(?:\.override)?\.md$/i.test(name)) return 'agent instruction file';
+  if (!isDirectory && /^00 RAW LIST\.md$/i.test(name)) return 'publication control file';
   const privateLookingFile = /^(?:private|drafts?|templates?)(?:[\s._-]|$)/i.test(
     path.basename(name, path.extname(name)),
   );
@@ -903,6 +912,7 @@ async function convertBody({
   nextBody = convertCallouts(nextBody);
   nextBody = convertHighlights(nextBody);
   nextBody = normalizeCodeFenceInfoStrings(nextBody);
+  nextBody = normalizeBodyHeadingDepth(nextBody, record.relativePath, warnings);
 
   nextBody = await replaceAsync(nextBody, /!\[\[([^\]]+)\]\]/g, async (_match, rawTarget) => {
     const target = parseObsidianLink(rawTarget);
@@ -1047,6 +1057,65 @@ function normalizeCodeFenceInfoStrings(body) {
       return normalizeOpeningFenceLine(opening, lineEnding) ?? line;
     })
     .join('\n');
+}
+
+function normalizeBodyHeadingDepth(body, file, warnings) {
+  const lines = body.split('\n');
+  const headings = [];
+  let activeFence = null;
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    const opening = line.match(CODE_FENCE_OPENING_PATTERN);
+
+    if (activeFence?.blockquoteDepth > blockquoteDepth(line)) {
+      activeFence = null;
+    }
+
+    if (activeFence) {
+      if (isClosingFence(line, activeFence)) {
+        activeFence = null;
+      }
+      continue;
+    }
+
+    if (opening) {
+      activeFence = {
+        char: opening[2][0],
+        length: opening[2].length,
+        blockquoteDepth: blockquoteDepth(opening[1]),
+      };
+      continue;
+    }
+
+    const heading = line.match(/^((?:(?:[ \t]{0,3}>[ \t]?)+)?[ \t]{0,3})(#{1,6})([ \t]+.*)$/);
+    if (heading) {
+      headings.push({ index, prefix: heading[1], marker: heading[2], remainder: heading[3] });
+    }
+  }
+
+  if (!headings.some((heading) => heading.marker.length === 1)) {
+    return body;
+  }
+
+  for (const heading of headings) {
+    if (heading.marker.length === 6) {
+      warnings.push({
+        file,
+        message: `Could not demote H6 heading without exceeding Markdown's heading range: "${heading.remainder.trim()}".`,
+        type: 'heading',
+      });
+      continue;
+    }
+    lines[heading.index] = `${heading.prefix}#${heading.marker}${heading.remainder}`;
+  }
+
+  return lines.join('\n');
+}
+
+function blockquoteDepth(line) {
+  const prefix = line.match(/^(?:(?:[ \t]{0,3}>[ \t]?)+)/)?.[0] || '';
+  return (prefix.match(/>/g) || []).length;
 }
 
 function normalizeOpeningFenceLine(opening, lineEnding) {
@@ -1506,6 +1575,11 @@ async function writeConvertedNotes({ writePlan, dryRun, actions, warnings }) {
       continue;
     }
 
+    if (existing === item.content) {
+      actions.push(`unchanged ${relativeOut}`);
+      continue;
+    }
+
     actions.push(`${dryRun ? 'would write' : 'wrote'} ${relativeOut}`);
 
     if (!dryRun) {
@@ -1548,46 +1622,77 @@ async function copyAssets({ assetPlan, dryRun, actions, warnings, copyAssets = t
 
 async function writeManifest({ writePlan, assetPlan, assetsDir, dryRun, actions }) {
   const manifestPath = path.join(assetsDir, MANIFEST_FILE);
-  actions.push(`${dryRun ? 'would write' : 'wrote'} ${slash(path.relative(process.cwd(), manifestPath))}`);
+  const relativeManifest = slash(path.relative(process.cwd(), manifestPath));
+  const existingManifest = await readJson(manifestPath);
+  const nextState = {
+    assets: assetPlan.map((plan) => slash(path.relative(process.cwd(), plan.destination))).sort(),
+    noteRecords: writePlan
+      .map((item) => ({
+        output: slash(path.relative(process.cwd(), item.outFile)),
+        slug: item.record.slug,
+        sourcePath: item.frontmatter.sourcePath,
+        collection: item.frontmatter.collection,
+        modulePath: item.frontmatter.modulePath,
+        module: item.frontmatter.module,
+        isIndex: item.frontmatter.isIndex,
+        noteRole: item.frontmatter.noteRole,
+      }))
+      .sort((a, b) => a.output.localeCompare(b.output)),
+    notes: writePlan.map((item) => slash(path.relative(process.cwd(), item.outFile))).sort(),
+  };
+  const existingState = existingManifest
+    ? {
+        assets: existingManifest.assets,
+        noteRecords: existingManifest.noteRecords,
+        notes: existingManifest.notes,
+      }
+    : null;
+  const generatedAt =
+    existingState && JSON.stringify(existingState) === JSON.stringify(nextState) && typeof existingManifest.generatedAt === 'string'
+      ? existingManifest.generatedAt
+      : new Date().toISOString();
+  const content = `${JSON.stringify(
+    {
+      assets: nextState.assets,
+      generatedAt,
+      noteRecords: nextState.noteRecords,
+      notes: nextState.notes,
+    },
+    null,
+    2,
+  )}\n`;
+  const existingContent = await readFile(manifestPath, 'utf8').catch(() => null);
 
-  if (dryRun) {
+  if (existingContent === content) {
+    actions.push(`unchanged ${relativeManifest}`);
     return;
   }
 
-  await mkdir(assetsDir, { recursive: true });
-  await writeFile(
-    manifestPath,
-    `${JSON.stringify(
-      {
-        assets: assetPlan.map((plan) => slash(path.relative(process.cwd(), plan.destination))).sort(),
-        generatedAt: new Date().toISOString(),
-        noteRecords: writePlan
-          .map((item) => ({
-            output: slash(path.relative(process.cwd(), item.outFile)),
-            slug: item.record.slug,
-            sourcePath: item.frontmatter.sourcePath,
-            collection: item.frontmatter.collection,
-            modulePath: item.frontmatter.modulePath,
-            module: item.frontmatter.module,
-            isIndex: item.frontmatter.isIndex,
-            noteRole: item.frontmatter.noteRole,
-          }))
-          .sort((a, b) => a.output.localeCompare(b.output)),
-        notes: writePlan.map((item) => slash(path.relative(process.cwd(), item.outFile))).sort(),
-      },
-      null,
-      2,
-    )}\n`,
-    'utf8',
-  );
+  actions.push(`${dryRun ? 'would write' : 'wrote'} ${relativeManifest}`);
+  if (!dryRun) {
+    await mkdir(assetsDir, { recursive: true });
+    await writeFile(manifestPath, content, 'utf8');
+  }
 }
 
-async function cleanGeneratedOutputs({ outDir, assetsDir, dryRun, actions, warnings }) {
+async function reconcileGeneratedOutputs({
+  outDir,
+  assetsDir,
+  writePlan,
+  assetPlan,
+  removeAll,
+  dryRun,
+  actions,
+  warnings,
+}) {
   const noteFiles = await collectMarkdownFiles(outDir).catch(() => []);
+  const desiredNotes = new Set(removeAll ? [] : writePlan.map((item) => pathKey(item.outFile)));
+  const desiredAssets = new Set(removeAll ? [] : assetPlan.map((item) => pathKey(item.destination)));
+  const staleAssetDirs = [];
 
   for (const noteFile of noteFiles) {
     const content = await readFile(noteFile, 'utf8').catch(() => '');
-    if (!content.includes(GENERATED_MARKER)) {
+    if (!content.includes(GENERATED_MARKER) || desiredNotes.has(pathKey(noteFile))) {
       continue;
     }
 
@@ -1596,16 +1701,19 @@ async function cleanGeneratedOutputs({ outDir, assetsDir, dryRun, actions, warni
     if (!dryRun) {
       await rm(noteFile, { force: true });
     }
+
+    const slugAssetDir = path.join(assetsDir, path.basename(noteFile, path.extname(noteFile)));
+    const assetDirStat = await stat(slugAssetDir).catch(() => null);
+    const hasDesiredAsset = Array.from(desiredAssets).some((assetPath) => isPathInside(assetPath, slugAssetDir));
+    if (assetDirStat?.isDirectory() && isPathInside(slugAssetDir, assetsDir) && !samePath(slugAssetDir, assetsDir) && !hasDesiredAsset) {
+      staleAssetDirs.push(slugAssetDir);
+    }
   }
 
   const manifestPath = path.join(assetsDir, MANIFEST_FILE);
   const manifest = await readJson(manifestPath);
 
-  if (!manifest?.assets?.length) {
-    return;
-  }
-
-  for (const relativeAsset of manifest.assets) {
+  for (const relativeAsset of manifest?.assets || []) {
     const assetPath = path.resolve(process.cwd(), relativeAsset);
     if (!isPathInside(assetPath, assetsDir)) {
       warnings.push({
@@ -1616,9 +1724,21 @@ async function cleanGeneratedOutputs({ outDir, assetsDir, dryRun, actions, warni
       continue;
     }
 
+    if (desiredAssets.has(pathKey(assetPath)) || staleAssetDirs.some((directory) => isPathInside(assetPath, directory))) {
+      continue;
+    }
+
     actions.push(`${dryRun ? 'would remove' : 'removed'} ${relativeAsset}`);
     if (!dryRun) {
       await rm(assetPath, { force: true });
+    }
+  }
+
+  for (const staleAssetDir of unique(staleAssetDirs.map((directory) => pathKey(directory)))) {
+    const relativeDir = slash(path.relative(process.cwd(), staleAssetDir));
+    actions.push(`${dryRun ? 'would remove' : 'removed'} ${relativeDir}/`);
+    if (!dryRun) {
+      await rm(staleAssetDir, { recursive: true, force: true });
     }
   }
 }
@@ -1958,6 +2078,11 @@ function unique(values) {
 
 function samePath(a, b) {
   return path.resolve(a).toLowerCase() === path.resolve(b).toLowerCase();
+}
+
+function pathKey(value) {
+  const resolved = path.resolve(value);
+  return process.platform === 'win32' ? resolved.toLowerCase() : resolved;
 }
 
 function isPathInside(child, parent) {

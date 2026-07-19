@@ -49,13 +49,13 @@ concepts:
 10. fo.writelines(x)是指直接将列表类型的各元素连接起来写入文件。
 11. CSV文件的格式是每个元素之间以逗号进行分隔,所以需要 用到join()方法;split()是在读取CSV文件时用到的方法;strip()方法是去除字符串左右两侧指定的字符;exists()是判断文件路径是否存在的方法。
 
-# 字典
+## 字典
 dict.get(key[, value])
 - key -- 字典中要查找的键。
 - value -- 可选，如果指定键的值不存在时，返回该默认值。
 
 
-# 列表
+## 列表
 | 序号  | 函数                                                                                  |
 | --- | ----------------------------------------------------------------------------------- |
 | 1   | [cmp(list1, list2)](https://www.runoob.com/python/att-list-cmp.html)  <br>比较两个列表的元素 |
@@ -65,31 +65,31 @@ dict.get(key[, value])
 | 5   | [list(seq)](https://www.runoob.com/python/att-list-list.html)  <br>将元组转换为列表         |
 
 
-# str.strip([chars]);
+## str.strip([chars]);
 参数
 
 - chars -- 移除字符串头尾指定的字符序列。
 
-# Python join()方法
+## Python join()方法
 
  [![Python 字符串](https://www.runoob.com/images/up.gif) Python 字符串](https://www.runoob.com/python/python-strings.html)
 
 ---
 
-## 描述
+### 描述
 
 Python join() 方法用于将序列中的元素以指定的字符连接生成一个新的字符串。
 
-## 语法
+### 语法
 
 join()方法语法：
 
 str.join(sequence)
 
-## 参数
+### 参数
 
 - sequence -- 要连接的元素序列。
 
-## 返回值
+### 返回值
 
 返回通过指定字符连接序列中元素后生成的新字符串。

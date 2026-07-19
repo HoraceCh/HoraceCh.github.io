@@ -2621,9 +2621,15 @@ li {
     border-top: 1px solid var(--note-pane-line);
     border-left: 0;
     height: auto;
+    max-height: none;
     overflow: visible;
     padding-top: 16px;
     padding-left: 0;
+  }
+
+  .note-sidepane-inner:has(.note-backlinks-section[open]):has(.note-outline-section[open]),
+  .note-sidepane-inner:has(.note-backlinks-section[open]):not(:has(.note-outline-section[open])) {
+    height: auto;
   }
 
   .note-sidepane-section[open] {

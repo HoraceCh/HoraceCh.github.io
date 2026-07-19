@@ -1,6 +1,7 @@
 ---
 title: "C 函数"
 description: "函数（Function） 是一段可以重复使用的代码，用来独立地完成某个功能。"
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "Programming Languages/C/c-functions.md"
 collection: "Programming Languages"
@@ -71,7 +72,8 @@ int main(){
 
 >函数不能嵌套定义，main 也是一个函数定义，所以要将 sum 放在 main 外面。函数必须先定义后使用，所以 sum 要放在 main 前面。
 
-> **ATTENTION: >main 是**函数定义**，不是函数调用。当可执行文件加载到内存后，系统从 main 函数开始执行，也就是说，系统会调用我们定义的 main 函数。**
+> **ATTENTION**
+>main 是**函数定义**，不是函数调用。当可执行文件加载到内存后，系统从 main 函数开始执行，也就是说，系统会调用我们定义的 main 函数。
 
 #### 无返回值函数
 有的函数不需要返回值，或者返回值类型不确定（很少见），那么可以用 **void** 表示。如：
@@ -114,7 +116,8 @@ int main(){
 ```
 
 ### 函数不能嵌套定义
-> **ATTENTION: > C语言不允许函数嵌套定义**
+> **ATTENTION**
+> C语言不允许函数嵌套定义
 > ---
 > 也就是说不能在一个函数中定义另外一个函数，必须在所有函数之外定义另外一个函数。main() 也是一个函数定义，也不能在 main() 函数内部定义新函数。
 

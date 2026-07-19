@@ -1,6 +1,7 @@
 ---
 title: "C 格式化输入输出与字符读写"
-description: "语法：int printf(const char format, ...);"
+description: "将格式化的数据发送到标准输出设备 语法：int printf(const char format, ...); 参数： format：格式化字符串，指定输出的格式。 ...：可变参数列表，根据格式化字符串中的格式说明符，提供要输出的数据。 printf() 可以在输出文本中指定占位符 占位符的含义指的是：这个位置可以用其他的值代入 C printf(\"%s will be better\",\"tomorrow\");"
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "Programming Languages/C/c-io.md"
 collection: "Programming Languages"
@@ -42,7 +43,8 @@ concepts:
 ## printf 的占位符
 **printf()** 可以在输出文本中指定<mark>占位符</mark>
 占位符的含义指的是：这个位置可以用其他的值代入
-> **EXAMPLE: >```C**
+> **EXAMPLE**
+>```c
 >printf("%s will be better","tomorrow");
 >```
 
@@ -110,7 +112,7 @@ concepts:
 ## 定制占位符的输出格式
 ### 限定宽度
 _限定占位符的**最小宽度。**_
-```c
+```C
 #include <stdio.h>
 int main()
 {
@@ -279,7 +281,7 @@ printf() 函数也支持变长参数列表，可以使用省略号 ... 来表�
 putchar() 函数接受一个 int 类型的参数，但实际上它会被转换为一个无符号字符（范围 0~255），这意味着：
 - 虽然参数类型是 int，但只有低 8 位会被使用；
 - 可以直接传入字符字面量，如 'A'；
-- 可以传入 [ASCII](/notes/c-data-types/#ascii) 码值，如 65（对应 'A'）。
+- 可以传入 [ASCII](/notes/c-data-types/#ascii码表) 码值，如 65（对应 'A'）。
 
 putchar() 函数的返回值也是 int 类型：
 - 如果字符成功输出，返回该字符的 ASCII 码值。
@@ -306,7 +308,7 @@ putchar('\x41');       ////输出A，\x41是十六进制
 
 尽管 getchar() 用于读取字符，但它的返回值类型是 int 而不是 char。这是因为 getchar() 需要能够表示所有可能的字符值（0 到 255）以及一个额外的值 EOF（通常定义为 -1）来表示输入结束。
 
-- 如果成功读取到字符，getchar() 返回该字符的 [ASCII](/notes/c-data-types/#ascii) 值。
+- 如果成功读取到字符，getchar() 返回该字符的 [ASCII](/notes/c-data-types/#ascii码表) 值。
 - 如果到达文件末尾或发生读取错误，getchar() 返回 EOF。
 
 ```c

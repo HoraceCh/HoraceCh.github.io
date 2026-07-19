@@ -1,6 +1,7 @@
 ---
 title: "Python Notes"
 description: "This section organizes my public notes on Python fundamentals."
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "Programming Languages/Python/index.md"
 collection: "Programming Languages"

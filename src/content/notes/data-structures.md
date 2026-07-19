@@ -1,6 +1,7 @@
 ---
 title: "Data Structures"
 description: "Fundamental data structures and their implementations."
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "CS Fundamentals/Data Structures/index.md"
 collection: "CS Fundamentals"

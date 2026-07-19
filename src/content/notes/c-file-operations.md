@@ -1,6 +1,7 @@
 ---
 title: "C 文件操作"
-description: ""
+description: "本章导览 程序运行时数据存放在内存中，程序结束后数据就消失了。要想持久化保存数据，必须将数据写入文件。本章讲解 C 语言中文件操作的完整流程。 本章涵盖：文件基本知识 → 打开与关闭文件 → 顺序读写（字符、字符串、格式化、二进制） → 随机读写 → 出错检测 核心流程：定义文件指针 → fopen 打开 → 读写操作 → fclose 关闭 相关基础：c-io、c-pointers、c-custom-types"
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "Programming Languages/C/c-file-operations.md"
 collection: "Programming Languages"

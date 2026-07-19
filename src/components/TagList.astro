@@ -4,17 +4,21 @@ interface Props {
   linkBase?: string;
 }
 
+import { buildPublicTagConcepts } from '../utils/notes';
 import { slugify } from '../utils/slugify';
 
 const { tags, linkBase } = Astro.props;
+const displayTags = linkBase === '/notes/tags'
+  ? buildPublicTagConcepts(tags, slugify)
+  : tags.map((tag) => ({ label: tag, slug: slugify(tag) }));
 ---
 
 {
-  tags.length > 0 && (
+  displayTags.length > 0 && (
     <ul class="tag-list" aria-label="Tags">
-      {tags.map((tag) => (
+      {displayTags.map((tag) => (
         <li>
-          {linkBase ? <a href={`${linkBase}/${slugify(tag)}/`}>{tag}</a> : tag}
+          {linkBase ? <a href={`${linkBase}/${tag.slug}/`}>{tag.label}</a> : tag.label}
         </li>
       ))}
     </ul>

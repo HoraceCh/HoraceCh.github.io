@@ -3,7 +3,7 @@ import BrowsePills from '../../../components/BrowsePills.astro';
 import Layout from '../../../layouts/Layout.astro';
 import NoteList from '../../../components/NoteList.astro';
 import SectionHeading from '../../../components/SectionHeading.astro';
-import { pathDefinitions } from '../../../utils/notes';
+import { buildPublicTagConcepts, noteHasPublicTag, pathDefinitions } from '../../../utils/notes';
 import { slugify } from '../../../utils/slugify';
 import { loadNotePublicationModel } from '../../../utils/notePublication';
 
@@ -26,12 +26,11 @@ const relatedCategories = [...new Set(notes.map((note) => note.data.category))]
     href: `/notes/categories/${slugify(category)}/`,
     count: notes.filter((note) => note.data.category === category).length,
   }));
-const relatedTags = [...new Set(notes.flatMap((note) => note.data.tags))]
-  .sort((a, b) => a.localeCompare(b))
+const relatedTags = buildPublicTagConcepts(notes.flatMap((note) => note.data.tags), slugify)
   .map((tag) => ({
-    label: tag,
-    href: `/notes/tags/${slugify(tag)}/`,
-    count: notes.filter((note) => note.data.tags.includes(tag)).length,
+    label: tag.label,
+    href: `/notes/tags/${tag.slug}/`,
+    count: notes.filter((note) => noteHasPublicTag(note.data.tags, tag.label)).length,
   }));
 ---
 

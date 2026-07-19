@@ -1,6 +1,7 @@
 ---
 title: "Baukasten Nexus - Published Notes"
 description: "Welcome to the published knowledge base. This vault contains notes on computer science, programming languages, and related topics."
+language: "en"
 date: 2026-07-11
 sourcePath: "index.md"
 modulePath: []

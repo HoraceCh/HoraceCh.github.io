@@ -1,6 +1,7 @@
 ---
 title: "C 程序结构与基础语法"
-description: "C程序主要包括一下部分："
+description: "C程序主要包括一下部分： 预处理器指令 函数 变量 语句&表达式 注释"
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "Programming Languages/C/c-program-structure.md"
 collection: "Programming Languages"
@@ -189,7 +190,7 @@ const char NEWLINE = '\n';  // 字符常量
 
 ---
 ## 关键字
-下表列出了 C 中的保留字。这些保留字不能作为[常量](#)名、[变量](#)名或其他标识符名称。
+下表列出了 C 中的保留字。这些保留字不能作为[常量](#常量)名、[变量](#变量声明)名或其他标识符名称。
 ### 常用
 
 | 关键字      | 说明                                 |

@@ -30,6 +30,8 @@ Seventeen reproducible issues met the reporting threshold: **0 P0, 4 P1, 8 P2, a
 
 Round 2A (2026-07-18) repaired the four P1 findings in the local worktree. Their original reproduction evidence is preserved below; production confirmation remains `PENDING_DEPLOY` until these changes are deployed.
 
+Round 2B (2026-07-19) repaired all eight P2 findings in the local worktree. WEB-005 through WEB-012 are recorded as `FIXED`; the five P3 findings remain open, and production confirmation remains `PENDING_DEPLOY` until deployment.
+
 ## 3. Coverage matrix
 
 ### Routes and content
@@ -174,7 +176,7 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 
 | Field | Value |
 | --- | --- |
-| Severity / confidence / status | **P2 Medium** / High / `OPEN` |
+| Severity / confidence / status | **P2 Medium** / High / `FIXED` |
 | Category | Content rendering / metadata |
 | Route | `/notes/004/`, Notes index card, Open Graph/Twitter metadata |
 | Environment | All engines; production and local |
@@ -190,11 +192,13 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 - **Smallest safe repair:** Apply one Obsidian-aware plain-text sanitizer to every description source, with a prose fallback when the result is empty.
 - **Regression checks:** Snapshot card, detail, description meta, OG, and Twitter fields for embed-only and mixed prose/embed descriptions.
 
+- **Round 2B resolution:** The publisher now applies one Obsidian/Markdown-aware plain-text and readable-math normalizer to explicit and fallback descriptions, removes blockquote/table remnants, and falls through empty embed-only candidates to prose. Note `004` card/detail/meta/OG/Twitter output and additional callout/table/math fixtures contain no source markup. Local status: `FIXED`; production: `PENDING_DEPLOY`.
+
 ### WEB-006 — Unconverted callout, fence, and LaTeX syntax appears as reader-facing text
 
 | Field | Value |
 | --- | --- |
-| Severity / confidence / status | **P2 Medium** / High / `OPEN` |
+| Severity / confidence / status | **P2 Medium** / High / `FIXED` |
 | Category | Notes publishing / content rendering |
 | Route | Multiple Notes, including C and data-structure learning Notes |
 | Environment | All engines; production and local |
@@ -210,11 +214,13 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 - **Smallest safe repair:** Normalize callouts/fences during sync and either add static math rendering or convert the limited notation set to readable Unicode/plain text.
 - **Regression checks:** Fixture-test nested callouts, adjacent fences, inline/display math, dark mode, copy behavior, and no raw delimiter leakage.
 
+- **Round 2B resolution:** Sync-time body normalization now handles nested/malformed callouts and fence boundaries without rewriting fenced/inline code, degrades the supported notation set to readable Unicode/plain text, and makes unknown TeX a strict-mode warning/blocker instead of silently publishing it. Static and browser checks across five structurally different Notes found none of the audited remnants. Local status: `FIXED`; production: `PENDING_DEPLOY`.
+
 ### WEB-007 — Several visible Note links point to nonexistent fragments
 
 | Field | Value |
 | --- | --- |
-| Severity / confidence / status | **P2 Medium** / High / `OPEN` |
+| Severity / confidence / status | **P2 Medium** / High / `FIXED` |
 | Category | Navigation / anchors |
 | Route | `/notes/tree-binary-tree/`, `/notes/c-arrays/`, `/notes/c-io/`, `/notes/c-conditional-loop-control/` |
 | Environment | All engines; production and local |
@@ -230,11 +236,13 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 - **Smallest safe repair:** Resolve Note fragments from the final heading-slug map during conversion and turn unresolved placeholders into non-link text or valid anchors.
 - **Regression checks:** Crawl every internal fragment after build; click/back/forward/reload each repaired link; verify unique IDs and focus placement.
 
+- **Round 2B resolution:** The publisher builds a renderer-compatible final heading/ID registry, preserves inline-code characters in heading slugs, rewrites self/cross-Note fragments to final IDs, and fails strict mode for unresolved published fragments. Build-wide fragment tests and Chromium click/back/forward/hash checks pass; the same invariant also repaired six additional literal `#` placeholders. Local status: `FIXED`; production: `PENDING_DEPLOY`.
+
 ### WEB-008 — `c` and `C语言` tags collide on one slug and show inconsistent counts
 
 | Field | Value |
 | --- | --- |
-| Severity / confidence / status | **P2 Medium** / High / `OPEN` |
+| Severity / confidence / status | **P2 Medium** / High / `FIXED` |
 | Category | Taxonomy / information architecture |
 | Route | Notes index tag pills and `/notes/tags/c/` |
 | Environment | All engines; production and local |
@@ -250,11 +258,13 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 - **Smallest safe repair:** Define canonical tag IDs/aliases and aggregate before presenting links and counts; fail the build on unexpected slug collisions.
 - **Regression checks:** Assert one visible taxonomy concept per URL, stable aliases, correct counts, and no duplicate route generation.
 
+- **Round 2B resolution:** Public tag identity now declares canonical `C` with `c` and `C语言` aliases, aggregates before link/count/path presentation, and fails on undeclared slug collisions. The index shows one `C 15` concept and `/notes/tags/c/` contains the same 15 Notes in Chromium, Firefox, and WebKit. Local status: `FIXED`; production: `PENDING_DEPLOY`.
+
 ### WEB-009 — Chinese Note pages declare the document language as English
 
 | Field | Value |
 | --- | --- |
-| Severity / confidence / status | **P2 Medium** / High / `OPEN` |
+| Severity / confidence / status | **P2 Medium** / High / `FIXED` |
 | Category | Accessibility / internationalization |
 | Route | Chinese-language Notes such as `/notes/c-pointers/` |
 | Environment | Chrome, Firefox, WebKit; production and local |
@@ -270,11 +280,13 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 - **Smallest safe repair:** Add explicit content language metadata with a conservative default and pass it to the document or article language attribute.
 - **Regression checks:** Accessibility-tree/screen-reader spot checks for English and Chinese pages; verify title/meta and code spans are unaffected.
 
+- **Round 2B resolution:** Notes now carry constrained `en`/`zh-CN` metadata, explicit values win, and conservative inference compares Han characters with Latin word/identifier segments after excluding code/assets/URLs. Layout and Note article semantics consume the value. Representative Chinese, code-heavy Chinese, and English Notes report matching `html`/`article` language. Local status: `FIXED`; production: `PENDING_DEPLOY`.
+
 ### WEB-010 — Mobile header scrolls the active item and keyboard focus off-screen
 
 | Field | Value |
 | --- | --- |
-| Severity / confidence / status | **P2 Medium** / High / `OPEN` |
+| Severity / confidence / status | **P2 Medium** / High / `FIXED` |
 | Category | Responsive navigation / keyboard accessibility |
 | Route | Shared header, clearest on `/contact/` and `/resume/` |
 | Environment | Chromium 360/390; WebKit mobile emulation 390×844 |
@@ -290,11 +302,13 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 - **Smallest safe repair:** Use a compact mobile navigation pattern or scroll the active/focused item into view while preserving a visible scroll affordance.
 - **Regression checks:** Keyboard and touch test every nav item at 320–390 px; verify active state, focus ring, RTL safety, and no page-level horizontal overflow.
 
+- **Round 2B resolution:** The header immediately reveals the current link and reveals focused descendants with logical nearest alignment, restores document scroll if the browser attempts collateral movement, and retains the single-line horizontal scroller plus focus ring. Chromium 360/390/768, Firefox 360, and WebKit 390 checks pass in both themes, reduced motion, and temporary RTL. Local status: `FIXED`; production: `PENDING_DEPLOY`.
+
 ### WEB-011 — Muted text color misses normal-text AA contrast in light mode
 
 | Field | Value |
 | --- | --- |
-| Severity / confidence / status | **P2 Medium** / High / `OPEN` |
+| Severity / confidence / status | **P2 Medium** / High / `FIXED` |
 | Category | Accessibility / color contrast |
 | Route | Shared header and canvas-muted copy in light theme |
 | Environment | All engines; production and local |
@@ -310,11 +324,13 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 - **Smallest safe repair:** Darken the light-theme muted token enough to clear 4.5:1 on every surface where it is used.
 - **Regression checks:** Automated contrast checks for normal text in both themes and all surface tokens; visual check disabled/muted semantics remain distinct.
 
+- **Round 2B resolution:** The canonical light `--muted` and `--notes-muted` value is now `#707070`; dark tokens, borders, and decorative opacity exceptions are unchanged. It measures 4.542:1 on `#f5f5f5`, 4.744:1 on `#fafafa`, and 4.952:1 on white, with the canonical UI specification updated to match. Local status: `FIXED`; production: `PENDING_DEPLOY`.
+
 ### WEB-012 — Home downloads duplicate oversized PNGs for favicon and profile artwork
 
 | Field | Value |
 | --- | --- |
-| Severity / confidence / status | **P2 Medium** / High / `OPEN` |
+| Severity / confidence / status | **P2 Medium** / High / `FIXED` |
 | Category | Performance / assets |
 | Route | Home and shared document head |
 | Environment | Production and local; network-independent static evidence |
@@ -329,6 +345,8 @@ The required 1366×768 viewport was covered with Firefox; the other requested vi
 - **Suspected files/components:** `public/favicon*.png`, `public/assets/profile-mark*.png`, `src/layouts/Layout.astro`, `src/pages/index.astro`.
 - **Smallest safe repair:** Generate role-sized favicon/profile derivatives, reuse identical resources where possible, and keep lossless/source masters outside delivered paths.
 - **Regression checks:** Cold-load network budget, decoded dimensions, DPR quality, light/dark appearance, favicon formats, and no duplicate-content URLs.
+
+- **Round 2B resolution:** Delivered identity assets are role-sized and byte-distinct: 64×64 light/dark favicons (2,704/2,676 bytes), a 180×180 touch icon (11,519 bytes), and a 554×554 profile image (132,338 bytes). Head/home markup declares intrinsic roles, and the unreferenced duplicate profile file was removed. Browser image decode, appearance, dimensions, hashes, and request checks pass. Local status: `FIXED`; production: `PENDING_DEPLOY`.
 
 ### WEB-013 — Browser theme metadata stays light after switching to dark mode
 

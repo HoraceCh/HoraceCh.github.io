@@ -6,6 +6,7 @@ const notes = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
+    language: z.enum(['en', 'zh-CN']).default('en'),
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
     category: z.string(),

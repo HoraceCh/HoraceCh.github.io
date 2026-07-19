@@ -91,3 +91,56 @@ export const statusDescriptions: Record<string, string> = {
   evergreen: 'Stable reference.',
   archived: 'Kept for history.',
 };
+
+export const publicTagDefinitions = [
+  {
+    label: 'C',
+    aliases: ['c', 'C语言'],
+  },
+] as const;
+
+export interface PublicTagConcept {
+  label: string;
+  slug: string;
+  sourceTags: string[];
+}
+
+export function canonicalPublicTagLabel(tag: string) {
+  return publicTagDefinitions.find(
+    (definition) => definition.label === tag || definition.aliases.some((alias) => alias === tag),
+  )?.label ?? tag;
+}
+
+export function buildPublicTagConcepts(tags: Iterable<string>, toSlug: (value: string) => string): PublicTagConcept[] {
+  const conceptsByLabel = new Map<string, Set<string>>();
+
+  for (const tag of tags) {
+    const label = canonicalPublicTagLabel(tag);
+    const sourceTags = conceptsByLabel.get(label) ?? new Set<string>();
+    sourceTags.add(tag);
+    conceptsByLabel.set(label, sourceTags);
+  }
+
+  const concepts = [...conceptsByLabel.entries()].map(([label, sourceTags]) => ({
+    label,
+    slug: toSlug(label),
+    sourceTags: [...sourceTags],
+  }));
+  const labelsBySlug = new Map<string, string>();
+
+  for (const concept of concepts) {
+    const existingLabel = labelsBySlug.get(concept.slug);
+    if (existingLabel && existingLabel !== concept.label) {
+      throw new Error(
+        `Public tag slug collision: "${existingLabel}" and "${concept.label}" both map to "${concept.slug}". Declare an alias before publishing.`,
+      );
+    }
+    labelsBySlug.set(concept.slug, concept.label);
+  }
+
+  return concepts.sort((a, b) => a.label.localeCompare(b.label));
+}
+
+export function noteHasPublicTag(tags: Iterable<string>, label: string) {
+  return [...tags].some((tag) => canonicalPublicTagLabel(tag) === label);
+}

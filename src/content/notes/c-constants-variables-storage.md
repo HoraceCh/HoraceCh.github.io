@@ -1,6 +1,7 @@
 ---
 title: "C 常量、变量与存储方式"
-description: "常量"
+description: "# 常量 常量是固定值，在程序执行的过程中不会发生改变。"
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "Programming Languages/C/c-constants-variables-storage.md"
 collection: "Programming Languages"
@@ -76,10 +77,10 @@ unsigned int myUnsignedInt = 10U;
 - 带符号的指数是用 e 或 E 引入的。
 
 > **INFO: 浮点常量的写法**
-> 包含小数点的一个带符号的数字序列，接着是字母e或E，然后是一个代表10的指数的有符号值，且**必须为整数**。  
+> 包含小数点的一个带符号的数字序列，接着是字母e或E，然后是一个代表10的指数的有符号值，且**必须为整数**。\
 > 其中 e 或 E 被称为阶码标志，e 或 E 后面的有符号整数被称为阶码。
 > 阶码代表 10 的阶码次方。
-> >[!EXAMPLE]
+> > **EXAMPLE**
 > >```
 > >15.75 1.575E1 /* = 15.75 */ 
 > >1575e-2       /* = 15.75 */ 
@@ -87,7 +88,7 @@ unsigned int myUnsignedInt = 10U;
 > >25E-4         /* = 0.0025 */
 > >```
 > 
-> >[!ATTENTION]
+> > **ATTENTION**
 > >1. 浮点型常量可以省略正号，可以没有小数点或指数部分
 > >2. 但是不能同时没有二者
 > >3. 浮点型常量可以省略小数或者整数部分，但不能同时省略
@@ -158,13 +159,15 @@ o和h表示数
 ```
 #define 常量名 常量值
 ```
-> **EXAMPLE: >`#define PI 3.14159`**
+> **EXAMPLE**
+>`#define PI 3.14159`
 ### `const` 关键字
 使用 **const** 前缀声明指定类型的常量
 ```
 const 数据类型 常量名 = 常量值;
 ```
-> **EXAMPLE: >`const int MAX_VALUE = 100;`**
+> **EXAMPLE**
+>`const int MAX_VALUE = 100;`
 
 ![常量定义](/notes-assets/c-constants-variables-storage/asset-ekliwx.png)
 const 声明常量要在一个语句内完成：
@@ -188,7 +191,8 @@ int main()
    return 0;
 }
 ```
-> **ATTENTION: >把常量定义为大写字母形式，是一个很好的编程习惯**
+> **ATTENTION**
+>把常量定义为大写字母形式，是一个很好的编程习惯
 
 ### `#define`与`const`区别
 - 替换机制：`#define` 是进行简单的文本替换，而 `const` 是声明一个具有类型的常量。`#define` 定义的常量在编译时会被直接替换为其对应的值，而 `const` 定义的常量在程序运行时会分配内存，并且具有类型信息。

@@ -1,6 +1,7 @@
 ---
 title: "最大公约数与最小公倍数"
-description: "这是一种函数的嵌套调用的方法"
+description: "定理：gcd(a,b) = gcd(b,a mod b) 证明：a可以表示成a = kb + r，则r = a mod b 假设d是a,b的一个公约数，则有 d a, d b，而r = a - kb，因此d r 因此d是(b,a mod b)的公约数 假设d 是(b,a mod b)的公约数，则 d b , d r ，但是a = kb +r 因此d也是(a,b)的公约数 因此(a,b)和(b,a mod b)的公约数是一样的，其最大公约数也必然相等，得证"
+language: "zh-CN"
 date: 2026-04-06
 sourcePath: "CS Fundamentals/Algorithms/gcd-lcm.md"
 collection: "CS Fundamentals"

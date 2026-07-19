@@ -2,7 +2,12 @@ import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { relative, resolve } from 'node:path';
 import test from 'node:test';
-import { categoryDefinitions } from '../../src/utils/notes.ts';
+import {
+  buildPublicTagConcepts,
+  canonicalPublicTagLabel,
+  categoryDefinitions,
+  noteHasPublicTag,
+} from '../../src/utils/notes.ts';
 import { slugify } from '../../src/utils/slugify.ts';
 
 type PublicationOverride = { slug: string; published?: boolean };
@@ -41,6 +46,21 @@ test('every published Note category has one canonical generated category route',
     publishedNotes.filter((note) => note.category === 'Information Retrieval').length,
     7,
     'Information Retrieval should contain its seven approved public Notes',
+  );
+});
+
+test('public Note tags aggregate declared aliases and reject undeclared route collisions', () => {
+  const concepts = buildPublicTagConcepts(['c', 'C语言', 'programming'], slugify);
+
+  assert.deepEqual(concepts, [
+    { label: 'C', slug: 'c', sourceTags: ['c', 'C语言'] },
+    { label: 'programming', slug: 'programming', sourceTags: ['programming'] },
+  ]);
+  assert.equal(canonicalPublicTagLabel('C语言'), 'C');
+  assert.equal(noteHasPublicTag(['c', 'C语言'], 'C'), true);
+  assert.throws(
+    () => buildPublicTagConcepts(['a+b', 'a b'], slugify),
+    /Public tag slug collision.*Declare an alias/,
   );
 });
 

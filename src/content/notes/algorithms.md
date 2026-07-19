@@ -1,6 +1,7 @@
 ---
 title: "Algorithms"
 description: "Algorithm implementations and analysis."
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "CS Fundamentals/Algorithms/index.md"
 collection: "CS Fundamentals"

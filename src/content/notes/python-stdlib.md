@@ -1,6 +1,7 @@
 ---
 title: "Python 常用库函数"
-description: "random库是Python的标准库,用于产生各种分布的伪随机数序列。"
+description: "random库是Python的标准库,用于产生各种分布的伪随机数序列。 它采用梅森旋转算法生成伪随机数序列。 1. random.random(): 返回随机生成的一个浮点数，范围在[0,1)之间 2. random.uniform(a, b): 返回随机生成的一个浮点数，范围在[a, b)之间 3. random.randint(a,b): 返回随机生成的[a,b]之间的整数 4. random.randrange(a, b, step=c): 在指定范围内，在指定的基数和"
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "Programming Languages/Python/python-stdlib.md"
 collection: "Programming Languages"
@@ -34,19 +35,19 @@ concepts:
 random库是Python的标准库,用于产生各种分布的伪随机数序列。
 它采用**梅森旋转算法**生成伪随机数序列。
 ### 常用随机函数总结
-1. random.random(): 返回随机生成的一个浮点数，范围在$[0,1)$之间
-2. random.uniform(a, b): 返回随机生成的一个浮点数，范围在$[a, b)$之间
-3. random.randint(a,b): 返回随机生成的$[a,b]$之间的整数
+1. random.random(): 返回随机生成的一个浮点数，范围在[0,1)之间
+2. random.uniform(a, b): 返回随机生成的一个浮点数，范围在[a, b)之间
+3. random.randint(a,b): 返回随机生成的[a,b]之间的整数
 4. random.randrange(a, b, step=c): 在指定范围内，在指定的基数和步长值形成的集合中获取1个随机数值
 5. random.choice(x): 从指定的序列x中随机获取一个数据
 6. random.seed(): 设定随机种子
 7. random.sample(k): 从总体序列或集合中随机选取k个唯一的元素
 8. random.shuffle(x): 将一个列表x中的元素打乱，随机排序（俗称：洗牌）
-9. np.random.rand(d0, d1, …, dn): 返回一个或一组浮点数，范围在$[0, 1)$之间
+9. np.random.rand(d0, d1, …, dn): 返回一个或一组浮点数，范围在[0, 1)之间
 10. np.random.normal(loc=a, scale=b, size=()): 返回满足条件为均值=a, 标准差=b的正态分布（高斯分布）的概率密度随机数
 11. np.random.randn(d0, d1, … dn): 返回标准正态分布(均值=0，标准差=1)的概率密度随机数
 12. np.random.standard_normal(size=()): 返回标准正态分布(均值=0，标准差=1)的概率密度随机数
-13. np.random.randint(a, b, size=(), dtype=int): 返回在范围在$[a, b)$中的随机整数（含有重复值）
+13. np.random.randint(a, b, size=(), dtype=int): 返回在范围在[a, b)中的随机整数（含有重复值）
 
 ## time 库
 time库中 **ctime()** 函数生成一个时间的字符串
@@ -172,7 +173,8 @@ print(ls4)
 ```
 ### add_word(self, word, freq=None, tag=None)
 
-> **EXPLAIN: > ```Python**
+> **EXPLAIN**
+> ```python
 > Add a word to dictionary.
 > freq and tag can be omitted, freq defaults to be a calculated value that ensures the word can be cut out.
 > ```

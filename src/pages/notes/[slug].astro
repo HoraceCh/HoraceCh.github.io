@@ -88,8 +88,8 @@ const relatedLinks = relatedNotes.map((item) => ({
 }));
 ---
 
-<Layout title={note.data.title} description={note.data.publicSummary}>
-  <article class="article note-article">
+<Layout title={note.data.title} description={note.data.publicSummary} lang={note.data.language}>
+  <article class="article note-article" lang={note.data.language}>
     <div class="note-header">
       <nav class="note-breadcrumbs" aria-label="Note breadcrumb">
         <ol>

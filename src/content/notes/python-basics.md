@@ -1,6 +1,7 @@
 ---
 title: "Python 基础知识"
-description: "1. 文件是存储在辅助存储器上的一组数据序列，可以包含任何数据内容。"
+description: "1. 文件是存储在辅助存储器上的一组数据序列，可以包含任何数据内容。 2. 文件包括文本文件和二进制文件两种类. 型。 3. 文本文件和二进制文件的存储方式不同。 4. Python 为源文件指定的默认字符编码是UTF-8 5. 文件的打开方式对应为： ‘r’：只读方式 ‘w’：只写方式，若文件存在，覆盖原来内容 ‘a’：只写方式若文件存在，内容追加在原文件内容后面 ‘t’：文本文件模式 ‘b’：二进制文件模式 ‘x’：创建写模式，文件不存在则创建，存在则返回异常FileEx"
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "Programming Languages/Python/python-basics.md"
 collection: "Programming Languages"

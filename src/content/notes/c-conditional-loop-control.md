@@ -1,6 +1,7 @@
 ---
 title: "条件运算符与循环控制"
 description: "条件运算符的语法格式为"
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "Programming Languages/C/c-conditional-loop-control.md"
 collection: "Programming Languages"
@@ -47,7 +48,8 @@ concepts:
 
 两个数求最大值可以简化为：`max = (a>b) ? a : b;`
 
-> **ATTENTION: >1) 条件运算符的优先级低于关系运算符和算术运算符，但高于赋值符。**
+> **ATTENTION**
+>1) 条件运算符的优先级低于关系运算符和算术运算符，但高于赋值符。
 >   因此`max=(a>b) ? a : b;`可以去掉括号而写为`max=a>b ? a : b;`
 >   
 >2) 条件运算符?和：是一对运算符，不能分开单独使用。
@@ -57,7 +59,7 @@ concepts:
 >   这也就是条件表达式嵌套的情形，即其中的表达式又是一个条件表达式。
 
 ## 跳出循环
-在利用循环结构（[for](/notes/c-control-flow/#for) 和 [while](/notes/c-control-flow/#while-do-while) 循环）编程时，我们经常需要提前结束循环（在循环条件成立的情况下强制结束循环），或者跳过某些迭代，此时就可以使用 break 或者 continue 关键字。
+在利用循环结构（[for](/notes/c-control-flow/#for循环-的用法) 和 [while](/notes/c-control-flow/#while循环-和-do-while循环-的用法) 循环）编程时，我们经常需要提前结束循环（在循环条件成立的情况下强制结束循环），或者跳过某些迭代，此时就可以使用 break 或者 continue 关键字。
 >一次循环称为一次迭代，
 >例如 for(int i=1; i<=10; i++) 会循环 10 次，所以有 10 次迭代。
 ### break
@@ -65,7 +67,8 @@ concepts:
 
 当程序执行到 break 语句时，会立即终止整个循环，并继续执行循环之后的代码。
 
-> **ATTENTION: > 一个 break 只能跳出一个 while/for 循环。**
+> **ATTENTION**
+> 一个 break 只能跳出一个 while/for 循环。
 > 这意味着在多层循环中，一个 break 语句只向外跳出一层；
 > 如果需要跳出多层循环，那么每层循环都需要一个 break 语句。
 

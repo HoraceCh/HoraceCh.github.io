@@ -1,6 +1,7 @@
 ---
 title: "C 自建数据类型"
-description: ""
+description: "本章导览 C 语言除了基本数据类型（int、float、char 等），还允许用户自己构造数据类型来描述复杂的现实对象。本章介绍三种构造类型和一种类型重命名机制： 类型 关键字 用途 结构体 struct 将不同类型的数据组合成一个整体 共用体 union 多个成员共享同一段内存 枚举 enum 将变量的取值限定在有限集合内 类型重命名 typedef 为已有类型起一个更简洁的别名 本章涵盖：结构体（定义、变量、数组、指针） → 链表（见 c-linked-list） → 共"
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "Programming Languages/C/c-custom-types.md"
 collection: "Programming Languages"

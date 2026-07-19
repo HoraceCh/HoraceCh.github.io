@@ -30,3 +30,23 @@ const isCurrent = (href: string) => currentPath === href || (href !== '/' && cur
     }
   </nav>
 </header>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('.site-nav');
+
+  function revealNavLink(link: HTMLElement | null) {
+    if (!link || !nav || nav.scrollWidth <= nav.clientWidth) return;
+
+    const documentScroll = { left: window.scrollX, top: window.scrollY };
+    link.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'nearest' });
+
+    if (window.scrollX !== documentScroll.left || window.scrollY !== documentScroll.top) {
+      window.scrollTo({ ...documentScroll, behavior: 'auto' });
+    }
+  }
+
+  revealNavLink(nav?.querySelector<HTMLElement>('[aria-current="page"]') ?? null);
+  nav?.addEventListener('focusin', (event) => {
+    revealNavLink((event.target as Element).closest<HTMLElement>('a'));
+  });
+</script>

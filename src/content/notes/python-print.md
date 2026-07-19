@@ -1,6 +1,7 @@
 ---
 title: "Python Print() 函数详解"
-description: ""
+description: "核心提要 print() 是 Python 中最常用的内置函数，用于向控制台或文件输出信息。除了把文本显示在屏幕上，它还内置了几个非常实用的控制参数（sep、end、file 等），可以轻松实现数据排版和日志写入。"
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "Programming Languages/Python/python-print.md"
 collection: "Programming Languages"

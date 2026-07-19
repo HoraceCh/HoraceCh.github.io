@@ -14,7 +14,7 @@ shadcn/ui is a monochromatic design-system workshop: pure white canvas, soft war
 | Surface Alt | `#fafafa` | `--color-surface-alt` | Sidebar background, subtle card variant, input resting state |
 | Ink | `#0a0a0a` | `--color-ink` | Primary text, headings, button labels, icon strokes |
 | Ink Soft | `#171717` | `--color-ink-soft` | Filled button backgrounds, secondary text on light surfaces |
-| Mid Gray | `#737373` | `--color-mid-gray` | Muted body text, placeholder text, helper labels, icon fills at rest |
+| Mid Gray | `#707070` | `--color-mid-gray` | Muted body text, placeholder text, helper labels, icon fills at rest |
 | Hairline | `#e5e5e5` | `--color-hairline` | Borders, input outlines, card edges, badge outlines |
 | Ember | `#e7000b` | `--color-ember` | Red decorative accent for icons, marks, and small graphic details. Use as a supporting accent, not as a status color |
 
@@ -140,17 +140,17 @@ Background #fafafa, full-height, contained width. Sits one tonal step off the ca
 ### Breadcrumb Trail
 **Role:** Hierarchical path indicator
 
-Inline text with chevron separators, font 14px weight 400, color #737373 for separators and #0a0a0a for the current segment. No background, no borders — purely typographic hierarchy.
+Inline text with chevron separators, font 14px weight 400, color #707070 for separators and #0a0a0a for the current segment. No background, no borders — purely typographic hierarchy.
 
 ### Stat Block
 **Role:** Large numeric metric display
 
-Label in 12–14px uppercase #737373, value in 30–48px weight 600 #0a0a0a with tight tracking. Progress bar or comparison text in 14px #737373. The block relies on typographic scale alone — no card chrome — to establish the metric.
+Label in 12–14px uppercase #707070, value in 30–48px weight 600 #0a0a0a with tight tracking. Progress bar or comparison text in 14px #707070. The block relies on typographic scale alone — no card chrome — to establish the metric.
 
 ### Search Trigger
 **Role:** Command palette / search input
 
-Background #f5f5f5, text #737373, radius 18px, padding 8px 10px, with a keyboard shortcut indicator (e.g., ⌘K) right-aligned. Functions as both a button and an input affordance.
+Background #f5f5f5, text #707070, radius 18px, padding 8px 10px, with a keyboard shortcut indicator (e.g., ⌘K) right-aligned. Functions as both a button and an input affordance.
 
 ### Destructive Action
 **Role:** Delete, remove, revoke — error-adjacent interactions
@@ -171,7 +171,7 @@ Text or icon in #e7000b against the monochromatic palette. The red is the only c
 - Do not introduce chromatic brand colors beyond #e7000b — the monochromatic palette is the system.
 - Do not use border-radius values other than 18px (interactive) or 24px (containers); avoid square corners on any element.
 - Do not skip the 1px hairline border on cards — the shadow alone does not define the card edge in this system.
-- Do not set body text below 14px or above #737373 lightness — the type scale is deliberately compact.
+- Do not set body text below 14px or above #707070 lightness — the type scale is deliberately compact.
 - Do not apply gradients, colored shadows, or accent fills — every surface is a solid tone.
 - Do not use letter-spacing wider than 0.05em or tighter than -0.05em; tracking outside this range breaks the typographic system.
 - Do not mix filled and outline buttons of the same size in a single row without visual rhythm — alternate ghost or secondary variants.
@@ -193,7 +193,7 @@ Text or icon in #e7000b against the monochromatic palette. The red is the only c
 
 ## Imagery
 
-Minimal imagery — the system is almost entirely UI. No hero photography, no illustrations, no decorative graphics. Product showcases are rendered as component mockups (cards, inputs, buttons) in a grid, serving as both documentation and visual content. Icons are thin-stroke geometric marks (likely Lucide-derived) at 1.5–2px stroke weight in #0a0a0a or #737373, used sparingly as functional cues. The visual language IS the UI components themselves — the page functions as a living style guide where every visible element is a design token made visible.
+Minimal imagery — the system is almost entirely UI. No hero photography, no illustrations, no decorative graphics. Product showcases are rendered as component mockups (cards, inputs, buttons) in a grid, serving as both documentation and visual content. Icons are thin-stroke geometric marks (likely Lucide-derived) at 1.5–2px stroke weight in #0a0a0a or #707070, used sparingly as functional cues. The visual language IS the UI components themselves — the page functions as a living style guide where every visible element is a design token made visible.
 
 ## Agent Prompt Guide
 
@@ -201,19 +201,19 @@ Minimal imagery — the system is almost entirely UI. No hero photography, no il
 - Canvas/background: #f5f5f5
 - Card/surface: #ffffff
 - Primary text: #0a0a0a
-- Muted text: #737373
+- Muted text: #707070
 - Border: #e5e5e5
 - primary action: #171717 (filled action)
 - Destructive: #e7000b
 
 **Example Component Prompts**
-1. Create a dashboard stat card: white (#ffffff) background, 24px radius, 1px solid #e5e5e5 border, shadow 0 0 0 1px rgba(23,23,23,0.05) + 0 1px 3px rgba(0,0,0,0.1) + 0 1px 2px -1px rgba(0,0,0,0.1), 20px padding. Label in 12px uppercase #737373, value in 36px Geist weight 600 #0a0a0a with -0.025em tracking.
+1. Create a dashboard stat card: white (#ffffff) background, 24px radius, 1px solid #e5e5e5 border, shadow 0 0 0 1px rgba(23,23,23,0.05) + 0 1px 3px rgba(0,0,0,0.1) + 0 1px 2px -1px rgba(0,0,0,0.1), 20px padding. Label in 12px uppercase #707070, value in 36px Geist weight 600 #0a0a0a with -0.025em tracking.
 
 2. Create a filled dark button: background #0a0a0a, text #fafafa, no border, 18px radius, padding 0px 12px, font 14px Geist weight 500. Height 36px. No shadow — tonal contrast only.
 
 3. Create a ghost secondary button: background #f5f5f5, text #0a0a0a, no border, 18px radius, padding 0px 12px, font 14px weight 500. Same dimensions as the filled button for visual parity.
 
-4. Create an input field: background #f5f5f5, text #0a0a0a, placeholder #737373, no border at rest, 18px radius, padding 8px 10px, font 14px weight 400. On focus: 1px solid #e5e5e5 ring with no offset.
+4. Create an input field: background #f5f5f5, text #0a0a0a, placeholder #707070, no border at rest, 18px radius, padding 8px 10px, font 14px weight 400. On focus: 1px solid #e5e5e5 ring with no offset.
 
 5. Create a badge tag: background #171717, text #fafafa, 18px radius (full pill), padding 2px 8px, font 12px Geist weight 500.
 
@@ -241,7 +241,7 @@ shadcn/ui is built on three principles visible in every token: (1) achromatic by
   --color-surface-alt: #fafafa;
   --color-ink: #0a0a0a;
   --color-ink-soft: #171717;
-  --color-mid-gray: #737373;
+  --color-mid-gray: #707070;
   --color-hairline: #e5e5e5;
   --color-ember: #e7000b;
 
@@ -329,7 +329,7 @@ shadcn/ui is built on three principles visible in every token: (1) achromatic by
   --color-surface-alt: #fafafa;
   --color-ink: #0a0a0a;
   --color-ink-soft: #171717;
-  --color-mid-gray: #737373;
+  --color-mid-gray: #707070;
   --color-hairline: #e5e5e5;
   --color-ember: #e7000b;
 

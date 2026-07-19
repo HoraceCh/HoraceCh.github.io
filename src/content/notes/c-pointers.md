@@ -1,6 +1,7 @@
 ---
 title: "C 指针"
-description: ""
+description: "本章导览 指针是 C 语言最强大也最容易出错的特性。指针 = 地址，理解了这一点，其余都是推论。 本章涵盖：指针基本概念 → 指针变量 → 指针运算 → 数组指针 → 字符串指针 → 函数指针 → 指针数组与多级指针 → 动态内存分配 → 综合小结"
+language: "zh-CN"
 date: 2026-07-11
 sourcePath: "Programming Languages/C/c-pointers.md"
 collection: "Programming Languages"
@@ -467,7 +468,7 @@ int main() {
 
 对于 `int a[M][N]`，用 `int *p = &a[0][0]`，则 `p+k` 指向 `a[i][j]`，其中：
 
-$$k = i \times N + j, \quad i = k / N, \quad j = k \% N$$
+k = i × N + j, i = k / N, j = k \% N
 
 **方式二：指向一维数组（行）的指针**（行指针）
 
@@ -528,7 +529,7 @@ search(score, 2);       // score 的类型为 float(*)[4]
 
 ## 6 字符串与指针
 
-C 语言没有专门的字符串类型，字符串存放在字符数组中。[数组章节](/notes/c-arrays/#)中讲到的指针与数组的规则同样适用于字符数组。
+C 语言没有专门的字符串类型，字符串存放在字符数组中。[数组章节](/notes/c-arrays/#字符数组和字符串)中讲到的指针与数组的规则同样适用于字符数组。
 
 ### 6.1 字符串的两种引用方式
 

@@ -4,7 +4,14 @@ import BrowsePills from '../../components/BrowsePills.astro';
 import NoteList from '../../components/NoteList.astro';
 import NoteModuleTree from '../../components/NoteModuleTree.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
-import { categoryDefinitions, pathDefinitions, statusDescriptions, typeLabels } from '../../utils/notes';
+import {
+  buildPublicTagConcepts,
+  categoryDefinitions,
+  noteHasPublicTag,
+  pathDefinitions,
+  statusDescriptions,
+  typeLabels,
+} from '../../utils/notes';
 import {
   buildNoteModuleTree,
   flattenNoteModuleTree,
@@ -31,12 +38,11 @@ const categories = categoryDefinitions.map((category) => ({
   count: publicBrowseNotes.filter((note) => note.data.category === category.name).length,
 }));
 
-const tagCounts = [...new Set(publicBrowseNotes.flatMap((note) => note.data.tags))]
-  .sort((a, b) => a.localeCompare(b))
+const tagCounts = buildPublicTagConcepts(publicBrowseNotes.flatMap((note) => note.data.tags), slugify)
   .map((tag) => ({
-    label: tag,
-    href: `/notes/tags/${slugify(tag)}/`,
-    count: publicBrowseNotes.filter((note) => note.data.tags.includes(tag)).length,
+    label: tag.label,
+    href: `/notes/tags/${tag.slug}/`,
+    count: publicBrowseNotes.filter((note) => noteHasPublicTag(note.data.tags, tag.label)).length,
   }));
 
 const pathCounts = pathDefinitions.map((path) => ({

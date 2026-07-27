@@ -28,3 +28,10 @@
 - **Files**: `.codex/config.toml`, `.codex/agents/README.md`, `.codex/agents/*.toml`, `AGENTS.md`, `docs/AGENT_WORKFLOW.md`, `docs/CODEX_AGENT_ROUTING.md`, `docs/CODEX_MODEL_USAGE.md`, `.agents/rules.md`, `.agents/skills/`, `.agents/changelog.md`
 - **Reason**: 使用当前官方 Codex 文档修正 legacy concurrency alias、移除不受支持的深度和任务时长配置键、避免 agent TOML 阻止动态模型升级，并把重复操作流程迁移为可发现的项目 Skills。
 - **Validation**: 官方 Codex manual 与 latest-model resolver 已核对；7 个 TOML 文件解析通过；5 个 Skill 通过 `quick_validate.py`；5 个 Skill UI YAML 解析通过；模型、权限、递归委派、路径和敏感信息扫描无非预期结果；`git diff --check` 与新 Skill 空白检查通过。未运行网站构建，因为没有修改网站源码、内容、构建或部署文件。
+
+## [2026-07-27 21:00] Codex | agent-rules | 添加审查通过的项目本地 UI Skills
+
+- **Scope**: 第三方 UI Skills 的项目本地副本、优先级与既有六 Agent 路由边界
+- **Files**: `AGENTS.md`, `.agents/skills/improve-ui/`, `.agents/skills/fixing-accessibility/`, `.agents/skills/fixing-metadata/`, `.agents/skills/fixing-motion-performance/`, `.agents/changelog.md`
+- **Reason**: 仅集成已审查且兼容 Astro/custom CSS 边界的 UI 审计参考，不引入动态路由、框架或依赖。
+- **Validation**: 已检查 Codex GitHub installer 的 `--help` 与实现，确认显式 `--path`、项目 `--dest` 和下载复制模式；逐一完整审查四个已安装 Skill 文件及附带 Improve UI 参考文件；`git diff --check` 通过，`git status --short` 与完整规则 diff 已检查。未运行网站构建，因为未修改网站源码、构建配置或包文件。

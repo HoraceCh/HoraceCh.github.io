@@ -1,6 +1,6 @@
 # Agent 操作规则
 
-本文件是 Agent 在本 Hexo 项目中工作的操作 schema。后续 Agent 进入项目时应首先阅读本文件，再以项目源码和配置文件作为 source of truth。
+本文件是 Agent 在本 Astro 项目（保留 Hexo 作为 legacy fallback）中工作的操作 schema。后续 Agent 进入项目时应首先阅读本文件，再以项目源码和配置文件作为 source of truth。
 
 本项目的 Agent 持久化机制采用 `.agents/` 分层架构，即 Rules / Skills / Memory / Changelog 四层：
 

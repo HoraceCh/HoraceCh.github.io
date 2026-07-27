@@ -8,7 +8,13 @@
 
 ## 当前 Skills
 
-- `audit-update.md`：修改项目后判断是否需要追加 `.agents/changelog.md`，并完成验证记录。
+- `audit-update/`：判断保留的改动是否需要追加 `.agents/changelog.md`。
+- `website-release-gate/`：由 `qa_build_reviewer` 执行网站发布前检查。
+- `notes-publication-preflight/`：由 Notes pipeline owner 执行同步与发布预检。
+- `publication-contract-audit/`：只读审计 Notes 发布边界与契约。
+- `interrupted-run-recovery/`：由 `qa_build_reviewer` 分类中断后的工作树并选择下一 owner。
+
+每个可发现 Skill 使用 `.agents/skills/<name>/SKILL.md`，并在 YAML frontmatter 中声明 `name` 和 `description`。
 
 ## 写入边界
 

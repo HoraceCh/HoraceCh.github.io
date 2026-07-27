@@ -1,0 +1,4 @@
+interface:
+  display_name: "Publication Contract Audit"
+  short_description: "Audit the Notes publication contract safely"
+  default_prompt: "Use $publication-contract-audit to audit publication boundaries without writing content."

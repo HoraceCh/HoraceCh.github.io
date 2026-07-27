@@ -11,6 +11,8 @@ Read [CODEX_MODEL_USAGE.md](CODEX_MODEL_USAGE.md) for model selection and [CODEX
 3. Make the smallest authorized change or produce the required spec; hand off when another ownership lane, unauthorized file, or product decision is required.
 4. Send multi-file, pipeline, and pre-release work to `qa_build_reviewer` before any authorized release action.
 
+Only the root orchestrator delegates. Delegation depth is one, write-capable work is serial-first, and delegated jobs are scoped to finish within 30 minutes. The configured concurrency cap is not a target.
+
 ## Ownership and risk
 
 - `project_architect`: plans cross-layer boundaries, IA, migrations, and routing.
@@ -27,3 +29,5 @@ For a Level 1 explicit single-file change, use Terra Medium implementation and L
 QA always verifies the diff surface, whitespace, and ownership, then selects checks for the changed behavior. Website source or build changes require `npm run build`; Hexo work requires `npm run hexo:build`; pipeline work uses `npm run notes:sync:dry` when a source path is available. UI changes receive rendered light/dark, mobile, accessibility, and UI-reference review when practical. Documentation and agent-rule changes use parsing, contradiction, path/secret, link, and diff checks appropriate to their formats. A required but unverified build is `BLOCKED: build not verified`.
 
 Reports preserve decisions, material risks, blockers, validation, and next actions while omitting routine tool narration. Ownership, privacy, release permissions, and stop rules are centralized in `CODEX_AGENT_ROUTING.md`; agent TOMLs add only lane-specific boundaries.
+
+Use repository Skills for repeatable procedures without moving domain judgment out of agents: `website-release-gate`, `notes-publication-preflight`, `publication-contract-audit`, `interrupted-run-recovery`, and `audit-update`.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Website Release Gate"
+  short_description: "Run the project website release readiness gate"
+  default_prompt: "Use $website-release-gate to validate this website change before release."

@@ -2,7 +2,7 @@
 
 This directory defines six non-overlapping agents. Read `AGENTS.md` first. `docs/CODEX_MODEL_USAGE.md` is the model-routing source of truth; `docs/CODEX_AGENT_ROUTING.md` defines prompt structure and handoffs; `docs/AGENT_WORKFLOW.md` defines execution and validation.
 
-Use one primary owner by default. Independent read-only exploration may run in parallel; implementation has one writer and depth one. Model selection, permissions, prompt structure, output rules, and approval boundaries are defined centrally rather than repeated in agent prompts.
+Use one primary owner by default. Independent read-only exploration may run in parallel; implementation has one writer and delegation depth one. Only the always-Sol architect pins its model and reasoning in TOML. Other roles keep their documented escalation paths available, so the caller selects their risk-matched model and reasoning. Model selection, permissions, prompt structure, output rules, and approval boundaries are defined centrally rather than repeated in agent prompts.
 
 ## The six agents
 

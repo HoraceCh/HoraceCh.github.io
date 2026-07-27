@@ -21,3 +21,10 @@
 - **Reason**: 按照 clipping 中 Rules / Skills / Memory 的持久化架构，将项目 Agent 规则从单一说明扩展为可发现、可按需读取、且避免把私人 Memory 入库的结构。
 - **Validation**: 文件级检查：确认 `.agents/` 架构文件存在、日志模板字段一致、关键规则文本存在、未发现明显敏感赋值；未运行 `npm.cmd run build`，因为本次仅修改 Agent Markdown 规则与审计文件，不影响 Hexo 构建。
 - **Notes**: 真实 Memory 内容不放入仓库，`.agents/memory/.gitignore` 仅允许提交边界说明文件。
+
+## [2026-07-27 20:47] Codex | agent-rules | 对齐当前 Codex 配置、模型路由与可复用 Skills
+
+- **Scope**: Codex 项目配置、六个 agent 的模型与推理路由、串行和 depth-one 策略、项目内 Skills、Goal / browser / Computer Use 指南
+- **Files**: `.codex/config.toml`, `.codex/agents/README.md`, `.codex/agents/*.toml`, `AGENTS.md`, `docs/AGENT_WORKFLOW.md`, `docs/CODEX_AGENT_ROUTING.md`, `docs/CODEX_MODEL_USAGE.md`, `.agents/rules.md`, `.agents/skills/`, `.agents/changelog.md`
+- **Reason**: 使用当前官方 Codex 文档修正 legacy concurrency alias、移除不受支持的深度和任务时长配置键、避免 agent TOML 阻止动态模型升级，并把重复操作流程迁移为可发现的项目 Skills。
+- **Validation**: 官方 Codex manual 与 latest-model resolver 已核对；7 个 TOML 文件解析通过；5 个 Skill 通过 `quick_validate.py`；5 个 Skill UI YAML 解析通过；模型、权限、递归委派、路径和敏感信息扫描无非预期结果；`git diff --check` 与新 Skill 空白检查通过。未运行网站构建，因为没有修改网站源码、内容、构建或部署文件。

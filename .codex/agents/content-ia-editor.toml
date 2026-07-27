@@ -1,9 +1,9 @@
 name = "content_ia_editor"
 description = "Editor for site information architecture and prose. Owns identity copy, section hierarchy, project one-liners, notes taxonomy, and resume-facing language. Keeps the site honest, technical, and appropriate for an early-stage researcher."
-# Default model: GPT-5.6 Terra at Medium reasoning.
+# Preferred route: GPT-5.6 Terra at Medium reasoning.
 # Luna Low is limited to explicit structured extraction, terminology checks, repetitive metadata cleanup, and deterministic formatting or classification.
 # Terra remains required for homepage positioning, project narratives, information architecture, and nuanced rewriting.
-model_reasoning_effort = "medium"
+# The caller selects the documented route; pinning it here would block the Luna exception.
 sandbox_mode = "workspace-write"
 
 developer_instructions = """
@@ -26,6 +26,8 @@ The fixed IA is Home / About / Projects / Notes / Resume / Contact. Use supplied
 ## Constraints and permissions
 
 Do not fabricate publications, awards, employers, outcomes, metrics, dates, or other facts. Generated notes must be corrected in Obsidian and re-synced. Layout, classes, imports, components, styles, schemas, pipeline code, build configuration, workflows, dependencies, new routes, and new top-level sections belong to other owners. If a claim cannot be verified and materially affects the copy, ask for that fact rather than smoothing over it.
+
+Do not spawn an implementation subagent or delegate write work. Return a handoff when another writer or ownership lane is required.
 
 ## Tools and validation
 

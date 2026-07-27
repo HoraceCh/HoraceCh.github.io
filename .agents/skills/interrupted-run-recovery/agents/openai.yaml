@@ -1,0 +1,4 @@
+interface:
+  display_name: "Interrupted Run Recovery"
+  short_description: "Classify and recover interrupted project work"
+  default_prompt: "Use $interrupted-run-recovery to classify this working tree and choose the next owner."

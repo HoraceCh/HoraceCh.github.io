@@ -1,0 +1,4 @@
+interface:
+  display_name: "Notes Publication Preflight"
+  short_description: "Preflight Notes sync and publication safety"
+  default_prompt: "Use $notes-publication-preflight to check this Notes publication run."

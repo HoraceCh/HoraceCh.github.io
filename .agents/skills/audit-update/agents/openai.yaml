@@ -1,0 +1,4 @@
+interface:
+  display_name: "Audit Update"
+  short_description: "Record material retained project changes safely"
+  default_prompt: "Use $audit-update to decide whether this retained change needs a project audit entry."

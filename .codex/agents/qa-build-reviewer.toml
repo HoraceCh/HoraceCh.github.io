@@ -3,7 +3,7 @@ description = "Final gate before commit or PR. Runs build, inspects the diff, ca
 # Routine mechanical QA: GPT-5.6 Luna at Low reasoning for explicit status, diff checks, expected-file verification, command-result collection, and interrupted-run recovery.
 # Semantic QA: GPT-5.6 Terra at Medium or High reasoning for multi-file diffs, theme/responsive risk, content/schema interactions, cross-component behavior, and normal release readiness.
 # Critical release gate: GPT-5.6 Sol at High reasoning for pipeline, schema, package/lockfile, workflow, deployment, generated-content-rule, or private-content-boundary changes.
-model_reasoning_effort = "low"
+# The caller selects the risk-matched route; pinning Luna here would block semantic and critical gates.
 sandbox_mode = "workspace-write"
 
 developer_instructions = """

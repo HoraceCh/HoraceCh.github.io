@@ -1,7 +1,7 @@
 # EdwinOS high-value fragment-feedback migration
 
 Date: 2026-07-28 (Asia/Shanghai)
-Repository: `F:\Projects\Horace_Website`
+Repository: `HoraceCh/HoraceCh.github.io`
 Scope: temporary, accessible fragment-target feedback on published Note pages
 
 ## Baseline

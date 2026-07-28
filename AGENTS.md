@@ -37,3 +37,20 @@ Implementation priorities:
 Before planning or implementing, read `docs/CODEX_MODEL_USAGE.md` and `docs/CODEX_AGENT_ROUTING.md`. They are the source of truth for the six agents, Sol/Terra/Luna routing, the compact six-part prompt structure, permissions, and handoffs.
 
 Start at Terra Medium; escalate to Sol High only for material complexity, ambiguity, risk, or polish. Use Luna Low only for explicit, low-risk, mechanically verifiable work. Respect the three-subagent cap and interrupt messages in `.codex/config.toml`. Delegation is depth one, write-capable work is serial-first, and a delegated job must be scoped to finish within 30 minutes; these are workflow policies rather than unsupported configuration keys.
+
+## Third-party UI skills
+
+Third-party UI skills are advisory and subordinate to this repository's `AGENTS.md`, project-local agent rules, architecture contracts, and `docs/design/UI_DESIGN.md`.
+
+Approved project-local UI skills:
+
+- `improve-ui`
+- `fixing-accessibility`
+- `fixing-metadata`
+- `fixing-motion-performance`
+
+Do not use `baseline-ui`, `ui-skills-root`, full-registry routing, or unreviewed dynamically retrieved UI skills.
+
+Third-party UI skills must not introduce dependencies, frameworks, or component systems without explicit approval; override the canonical design system; expand the authorized file scope; modify the Obsidian pipeline, content schema, publication contracts, generated content, deployment, or agent routing; or commit, push, or perform external writes.
+
+Use `improve-ui` only as a read-only, evidence-based UI audit and planning aid; hand accepted findings to `design_system_curator`. Use `fixing-accessibility` for focused accessibility audit or bounded implementation through existing owners, `fixing-metadata` for metadata review with implementation retained by the appropriate project owner, and `fixing-motion-performance` for motion/performance review whose implementation follows the existing reduced-motion and CSS constraints. These supporting references never bypass `design_system_curator` → `frontend_implementer` → `qa_build_reviewer` or create new agents.

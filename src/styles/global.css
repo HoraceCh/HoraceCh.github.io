@@ -2196,6 +2196,26 @@ li {
   margin-top: 1.1rem;
 }
 
+@keyframes note-fragment-feedback {
+  0%,
+  36% {
+    box-shadow:
+      inset 3px 0 0 color-mix(in srgb, var(--notes-interactive) 56%, transparent),
+      inset 0 0 0 100vmax color-mix(in srgb, var(--notes-interactive) 7%, transparent);
+  }
+
+  100% {
+    box-shadow:
+      inset 3px 0 0 transparent,
+      inset 0 0 0 100vmax transparent;
+  }
+}
+
+.note-prose .is-note-fragment-target:not(tr),
+.note-prose tr.is-note-fragment-target > :is(th, td) {
+  animation: note-fragment-feedback 2.4s ease-out both;
+}
+
 .note-prose :is(h1, h2, h3, h4) {
   color: var(--text);
   line-height: 1.25;
@@ -2896,6 +2916,15 @@ li {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .note-prose .is-note-fragment-target:not(tr),
+  .note-prose tr.is-note-fragment-target > :is(th, td) {
+    animation: none;
+    box-shadow:
+      inset 3px 0 0 color-mix(in srgb, var(--notes-interactive) 56%, transparent),
+      inset 0 0 0 100vmax color-mix(in srgb, var(--notes-interactive) 7%, transparent);
+    transition: none;
+  }
+
   a,
   button,
   .theme-toggle,
@@ -2930,6 +2959,16 @@ li {
   .hub-link:hover > .card-action,
   .hub-link:hover {
     transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .note-prose .is-note-fragment-target:not(tr),
+  .note-prose tr.is-note-fragment-target > :is(th, td) {
+    outline: 2px solid CanvasText;
+    outline-offset: 2px;
+    animation: none;
+    box-shadow: none;
   }
 }
 

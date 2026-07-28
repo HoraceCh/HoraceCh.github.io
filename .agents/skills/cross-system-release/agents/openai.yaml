@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cross-System Release"
+  short_description: "Correlate Website and Admin release records"
+  default_prompt: "Use $cross-system-release to coordinate independent Website and Admin maintenance records."

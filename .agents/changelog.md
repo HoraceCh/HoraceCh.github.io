@@ -1,5 +1,7 @@
 # Agent 变更日志
 
+> **Legacy v1 — immutable.** This file is closed to new entries. Use [System Maintenance Log v2](maintenance/index.md) for new records; existing history below remains unchanged and is not duplicated in v2.
+
 本文件是 Agent 维护的重要项目变更的 append-only 审计时间线，用于记录项目为什么演化成当前状态以及改动如何验证。项目源码和配置本身仍然是 source of truth，本日志只作为 audit trail。
 
 新记录必须追加到文件底部。不要记录 API key、token、密码、邮箱凭据或其他敏感信息。

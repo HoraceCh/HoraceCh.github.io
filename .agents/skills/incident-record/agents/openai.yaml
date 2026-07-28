@@ -1,0 +1,4 @@
+interface:
+  display_name: "Incident Record"
+  short_description: "Record Website incidents and recoveries safely"
+  default_prompt: "Use $incident-record to create and validate a public-safe Website incident record."

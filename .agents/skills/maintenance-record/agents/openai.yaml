@@ -1,0 +1,4 @@
+interface:
+  display_name: "Maintenance Record"
+  short_description: "Record validated Website maintenance events"
+  default_prompt: "Use $maintenance-record to create and validate a public-safe Website maintenance event."

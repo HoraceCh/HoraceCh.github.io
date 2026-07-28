@@ -1,15 +1,17 @@
 ---
 name: audit-update
-description: Decide whether a retained Horace_Website change requires an append-only agent audit entry, validate the change, and record one safe entry when required. Use after project changes that may match `.agents/rules/audit-trail.md`; do not use for transient work or changes covered by its SKIP rules.
+description: Compatibility bridge that decides whether a retained Horace_Website change requires System Maintenance Log v2 and hands it to the correct recording workflow. Use after project changes that may be material; never append new entries to the legacy `.agents/changelog.md`.
 ---
 
 # Audit Update
 
-Read `.agents/rules/audit-trail.md` and `.agents/rules/safety-validation.md`.
+Read `.agents/rules/maintenance-logging.md` and `.agents/rules/safety-validation.md`.
 
-1. Inspect the working tree and isolate changes retained by the current task.
-2. Apply the MUST Log and SKIP rules. Do not log routine narration or transient work.
-3. Run validation appropriate to the changed files before writing the entry.
-4. If logging is required, append exactly one entry using an approved category and the required fields.
-5. Record only validation that actually ran. Omit secrets, credentials, private endpoints, and machine-specific paths.
-6. Re-read the appended entry and confirm it is the final block in `.agents/changelog.md`.
+1. Inspect the working tree and isolate retained changes from the current task.
+2. Apply the canonical log/skip decision without copying its rules into this Skill.
+3. If no record is required, stop without changing maintenance history.
+4. For an incident or recovery, invoke or hand off to `$incident-record`.
+5. For other material events, invoke or hand off to `$maintenance-record`.
+6. For coordinated Website/Admin releases, also apply `$cross-system-release`.
+
+Never append to or rewrite `.agents/changelog.md`. It is immutable v1 history.

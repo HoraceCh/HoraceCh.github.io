@@ -127,6 +127,10 @@ const relatedLinks = relatedNotes.map((item) => ({
   </article>
 
   <script>
+    import { installNoteFragmentHighlight } from '../../scripts/noteFragmentHighlight';
+
+    installNoteFragmentHighlight();
+
     const genericCodeLanguages = new Set(['plaintext', 'text', 'txt', 'plain', 'none']);
     const copyFeedbackDelay = 1600;
     const copyResetTimers = new WeakMap();

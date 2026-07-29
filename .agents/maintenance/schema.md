@@ -4,7 +4,9 @@ The normative field list, allowed values, identifier formats, body sections, log
 
 ## Serialization contract
 
-- Encoding: UTF-8 Markdown.
+- Encoding: UTF-8 without BOM.
+- Line endings: LF.
+- Terminal newline: exactly one.
 - Frontmatter: a leading `---` block containing only flat scalars and block or empty lists.
 - Schema version: represented as a quoted string so YAML readers do not coerce it to a number.
 - Lists: `issue_refs`, `pr_refs`, `commit_refs`, and `affected_paths` are string arrays; use `[]` when empty.

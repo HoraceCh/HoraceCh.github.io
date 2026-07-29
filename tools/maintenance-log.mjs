@@ -360,6 +360,10 @@ function listValue(values) {
   return JSON.stringify(values.map(String));
 }
 
+export function canonicalGeneratedText(text) {
+  return String(text).replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n').replace(/\n+$/, '') + '\n';
+}
+
 function render(template, values) {
   const unresolved = new Set();
   const output = template.replace(/{{([^}]+)}}/g, (placeholder, key) => {
@@ -370,7 +374,7 @@ function render(template, values) {
     return values[key];
   });
   if (unresolved.size) throw new Error(`template has unresolved values: ${[...unresolved].join(', ')}`);
-  return output.replaceAll('\r\n', '\n').replace(/\n*$/, '\n');
+  return canonicalGeneratedText(output);
 }
 
 export async function createRecord(root = SCRIPT_ROOT, options = {}) {
@@ -462,8 +466,7 @@ export async function rebuildIndex(root = SCRIPT_ROOT) {
       lines.push(`| [${tableCell(record.event_id)}](${relative}) | ${tableCell(record.occurred_at)} | ${tableCell(record.kind)} | ${tableCell(record.category)} | ${tableCell(record.status)} | ${tableCell(record.risk)} | ${tableCell(summaryOf(record))} |`);
     }
   }
-  lines.push('');
-  const output = lines.join('\n');
+  const output = canonicalGeneratedText(lines.join('\n'));
   await writeFile(path.join(maintenanceRoot, 'index.md'), output, 'utf8');
   return { count: records.length, output };
 }

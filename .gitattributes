@@ -1,0 +1,2 @@
+.agents/maintenance/*.md text eol=lf
+.agents/maintenance/**/*.md text eol=lf

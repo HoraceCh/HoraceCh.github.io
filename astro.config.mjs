@@ -1,7 +1,8 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
+import { addNoteImageGeometryToHtml, readNoteImageMetadata } from './tools/note-image-metadata.mjs';
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 const generatedNotesMarker =
@@ -14,7 +15,7 @@ const virtualNoteAssetPrefix = '\0generated-note-asset:';
 const imageExtensions = new Set(['.avif', '.bmp', '.gif', '.jpeg', '.jpg', '.png', '.svg', '.webp']);
 const generatedNoteCache = new Map();
 
-function generatedNoteAssetFallback() {
+export function generatedNoteAssetFallback() {
   return {
     name: 'generated-note-asset-fallback',
     enforce: 'pre',
@@ -45,9 +46,36 @@ function generatedNoteAssetFallback() {
 
       const params = new URLSearchParams(id.slice(virtualNoteAssetPrefix.length));
       const publicPath = decodeAssetPath(params.get('data') ?? '');
-      return `export default ${JSON.stringify(publicPath)};`;
+      const { width, height } = readNoteImageMetadata(publicPath);
+      const sentinel = { __generatedNoteAssetFallback: true, src: publicPath, width, height };
+      return `export default ${JSON.stringify(sentinel)};`;
     },
   };
+}
+
+export function generatedNoteImageGeometry() {
+  return {
+    name: 'generated-note-image-geometry',
+    hooks: {
+      'astro:build:done': ({ dir }) => {
+        const notesDirectory = fileURLToPath(new URL('notes/', dir));
+        annotateBuiltNoteHtml(notesDirectory);
+      },
+    },
+  };
+}
+
+function annotateBuiltNoteHtml(directory) {
+  if (!existsSync(directory)) return;
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const target = path.join(directory, entry.name);
+    if (entry.isDirectory()) annotateBuiltNoteHtml(target);
+    else if (entry.name === 'index.html') {
+      const source = readFileSync(target, 'utf8');
+      const annotated = addNoteImageGeometryToHtml(source);
+      if (annotated !== source) writeFileSync(target, annotated);
+    }
+  }
 }
 
 function transformContentAssetImports(source) {
@@ -73,14 +101,23 @@ function transformAstroContentRuntime(source) {
   const target = 'image = await getImage({ ...decodedImagePath, src: imported });';
 
   if (!source.includes(target)) {
-    return null;
+    throw new Error(
+      `generated-note-asset-fallback could not patch ${astroContentRuntimeFile}; ` +
+      'the Astro content image runtime contract changed',
+    );
   }
 
-  const replacement = `if (typeof imported === "string" && imported.startsWith("/notes-assets/")) {
+  const replacement = `if (imported?.__generatedNoteAssetFallback === true) {
           image = {
-            src: imported,
+            src: imported.src,
             srcSet: { attribute: null },
-            attributes: { alt: decodedImagePath.alt, loading: "lazy", decoding: "async" }
+            attributes: {
+              alt: decodedImagePath.alt,
+              width: imported.width,
+              height: imported.height,
+              loading: "lazy",
+              decoding: "async"
+            }
           };
         } else {
           image = await getImage({ ...decodedImagePath, src: imported });
@@ -202,6 +239,7 @@ export default defineConfig({
   output: 'static',
   publicDir: './astro-public',
   cacheDir: '.astro/cache',
+  integrations: [generatedNoteImageGeometry()],
   vite: {
     cacheDir: '.astro/vite',
     plugins: [generatedNoteAssetFallback()],

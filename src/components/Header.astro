@@ -45,8 +45,19 @@ const isCurrent = (href: string) => currentPath === href || (href !== '/' && cur
     }
   }
 
-  revealNavLink(nav?.querySelector<HTMLElement>('[aria-current="page"]') ?? null);
-  nav?.addEventListener('focusin', (event) => {
-    revealNavLink((event.target as Element).closest<HTMLElement>('a'));
-  });
+  const scheduleAfterPaint = (callback: () => void) => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(callback);
+    });
+  };
+
+  if (nav && nav.dataset.revealInitialized !== 'true') {
+    nav.dataset.revealInitialized = 'true';
+    nav.addEventListener('focusin', (event) => {
+      revealNavLink((event.target as Element).closest<HTMLElement>('a'));
+    });
+
+    const currentLink = nav.querySelector<HTMLElement>('[aria-current="page"]');
+    scheduleAfterPaint(() => revealNavLink(currentLink));
+  }
 </script>

@@ -21,6 +21,31 @@ function idsOf(html) {
   return Array.from(html.matchAll(/\sid="([^"]+)"/g), (match) => decodeURIComponent(match[1]));
 }
 
+function attributeOf(tag, name) {
+  return tag.match(new RegExp(`\\s${name}=(?:"([^"]*)"|'([^']*)')`, 'i'))?.slice(1).find(Boolean);
+}
+
+test('every built local Note asset image reserves positive intrinsic geometry', async () => {
+  const files = await collectNoteHtml();
+  let localImageCount = 0;
+
+  for (const file of files) {
+    const html = await readFile(file, 'utf8');
+    for (const match of html.matchAll(/<img\b[^>]*>/gi)) {
+      const tag = match[0];
+      const src = attributeOf(tag, 'src');
+      if (!src?.startsWith('/notes-assets/')) continue;
+      localImageCount += 1;
+      const width = Number(attributeOf(tag, 'width'));
+      const height = Number(attributeOf(tag, 'height'));
+      assert.ok(Number.isInteger(width) && width > 0, `${file}: missing positive width on ${src}`);
+      assert.ok(Number.isInteger(height) && height > 0, `${file}: missing positive height on ${src}`);
+    }
+  }
+
+  assert.ok(localImageCount > 0, 'expected at least one built /notes-assets/ image');
+});
+
 test('five structurally distinct Notes keep language, heading, and clean-reader contracts', async () => {
   const expectations = new Map([
     ['c-pointers', 'zh-CN'],

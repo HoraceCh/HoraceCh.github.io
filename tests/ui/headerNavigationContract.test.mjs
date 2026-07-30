@@ -10,6 +10,23 @@ test('mobile header reveals current and focused links without collateral documen
 
   assert.match(header, /querySelector<HTMLElement>\('\[aria-current="page"\]'\)/);
   assert.match(header, /addEventListener\('focusin'/);
+  assert.match(header, /dataset\.revealInitialized !== 'true'/, 'header setup must be idempotent');
+  assert.match(
+    header,
+    /requestAnimationFrame\(\(\) => \{\s*window\.requestAnimationFrame\(callback\);\s*\}\)/,
+    'startup overflow measurement must wait until the frame after an initial paint opportunity',
+  );
+  assert.match(header, /scheduleAfterPaint\(\(\) => revealNavLink\(currentLink\)\)/);
+  assert.doesNotMatch(
+    header,
+    /revealNavLink\(nav\?\.querySelector/,
+    'the current-link geometry path must not run synchronously during module evaluation',
+  );
+  assert.match(
+    header,
+    /addEventListener\('focusin',[\s\S]*?revealNavLink\(\(event\.target as Element\)\.closest<HTMLElement>\('a'\)\)/,
+    'keyboard focus must retain an immediate reveal path',
+  );
   assert.match(
     header,
     /scrollIntoView\(\{ behavior: 'auto', block: 'nearest', inline: 'nearest' \}\)/,
@@ -23,4 +40,8 @@ test('mobile header reveals current and focused links without collateral documen
   assert.match(mobileNav, /overflow-x: auto/);
   assert.match(mobileNav, /padding: 6px 6px 8px/);
   assert.match(mobileNav, /scroll-padding-inline: 6px/);
+
+  for (const forbidden of ['setTimeout(', 'setInterval(', 'requestIdleCallback(', 'IntersectionObserver(']) {
+    assert.doesNotMatch(header, new RegExp(forbidden.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
 });

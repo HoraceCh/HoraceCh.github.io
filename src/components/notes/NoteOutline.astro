@@ -74,7 +74,11 @@ const outlineItems = outline
     const outline = document.querySelector('[data-note-outline]');
     const article = document.querySelector('[data-note-prose]');
 
-    if (!(outline instanceof HTMLElement) || !(article instanceof HTMLElement)) {
+    if (
+      !(outline instanceof HTMLElement) ||
+      !(article instanceof HTMLElement) ||
+      outline.dataset.scrollspyInitialized === 'true'
+    ) {
       return;
     }
 
@@ -100,6 +104,8 @@ const outlineItems = outline
     if (headings.length === 0) {
       return;
     }
+
+    outline.dataset.scrollspyInitialized = 'true';
 
     let activeId = '';
     let frameId = 0;
@@ -149,10 +155,16 @@ const outlineItems = outline
       frameId = window.requestAnimationFrame(updateActiveHeading);
     };
 
-    updateActiveHeading();
-    window.addEventListener('scroll', requestActiveHeadingUpdate, { passive: true });
-    window.addEventListener('resize', requestActiveHeadingUpdate);
-    window.addEventListener('hashchange', requestActiveHeadingUpdate);
+    const initializeAfterPaint = () => {
+      updateActiveHeading();
+      window.addEventListener('scroll', requestActiveHeadingUpdate, { passive: true });
+      window.addEventListener('resize', requestActiveHeadingUpdate);
+      window.addEventListener('hashchange', requestActiveHeadingUpdate);
+    };
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(initializeAfterPaint);
+    });
   };
 
   setupNoteOutlineScrollspy();

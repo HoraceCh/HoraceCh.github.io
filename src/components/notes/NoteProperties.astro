@@ -64,7 +64,7 @@ const visibleProperties = properties.filter((item) => item.value !== undefined &
     <div class="note-context-section">
       <h3>Related notes</h3>
       <ul class="context-link-list">
-        {relatedNotes.map((item) => <li>{item.href ? <a href={item.href}>{item.label}</a> : <span>{item.label}</span>}</li>)}
+        {relatedNotes.map((item) => <li>{item.href ? <a href={item.href} data-astro-prefetch="hover">{item.label}</a> : <span>{item.label}</span>}</li>)}
       </ul>
     </div>
   )}

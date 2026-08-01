@@ -237,6 +237,10 @@ function slash(value) {
 export default defineConfig({
   site: 'https://horacech.github.io',
   output: 'static',
+  prefetch: {
+    prefetchAll: false,
+    defaultStrategy: 'hover',
+  },
   publicDir: './astro-public',
   cacheDir: '.astro/cache',
   integrations: [generatedNoteImageGeometry()],

@@ -128,7 +128,7 @@ const allNotes = [...ordinaryNotes].sort((a, b) => {
       recentNotes.length > 0 ? (
         <div class="compact-note-list" aria-label="Recently updated individual notes">
           {recentNotes.map((note) => (
-            <a class="compact-note" href={noteHref(note)}>
+            <a class="compact-note" href={noteHref(note)} data-astro-prefetch="hover">
               <span>{note.data.title}</span>
               <small>{note.data.category} / {note.data.status}</small>
             </a>
@@ -171,7 +171,7 @@ const allNotes = [...ordinaryNotes].sort((a, b) => {
       title="Individual Notes Archive"
       description="Archive-style list of public individual notes. Collection and module index notes and hidden archive branches stay separate."
     />
-    <NoteList notes={allNotes} emptyMessage="No public individual notes yet." />
+    <NoteList notes={allNotes} emptyMessage="No public individual notes yet." prefetch={true} />
 
     {
       hierarchyIndexNotes.length > 0 && (
@@ -179,7 +179,7 @@ const allNotes = [...ordinaryNotes].sort((a, b) => {
           <h3 id="module-index-list-title">Collection and Module Index Notes</h3>
           <div class="compact-note-list">
             {hierarchyIndexNotes.map((note) => (
-              <a class="compact-note compact-note-muted" href={noteHref(note)}>
+              <a class="compact-note compact-note-muted" href={noteHref(note)} data-astro-prefetch="hover">
                 <span>{note.data.title}</span>
                 <small>{note.data.isIndex ? 'index note' : note.data.noteRole}</small>
               </a>

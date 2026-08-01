@@ -5,9 +5,10 @@ import { noteHref, type EffectiveNote } from '../utils/notePublication';
 interface Props {
   notes: EffectiveNote[];
   emptyMessage?: string;
+  prefetch?: boolean;
 }
 
-const { notes, emptyMessage = 'No public notes here yet.' } = Astro.props;
+const { notes, emptyMessage = 'No public notes here yet.', prefetch = false } = Astro.props;
 ---
 
 {
@@ -23,6 +24,7 @@ const { notes, emptyMessage = 'No public notes here yet.' } = Astro.props;
           type={note.data.type}
           tags={note.data.tags}
           href={noteHref(note)}
+          prefetch={prefetch}
         />
       ))}
     </div>

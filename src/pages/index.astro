@@ -159,7 +159,7 @@ const focusAreas = [
       </div>
       <div class="work-grid">
         {selectedWork.map((item) => (
-          <a class="work-card" href={item.href}>
+          <a class="work-card" href={item.href} data-astro-prefetch="hover">
             <div class="work-card-meta">
               <span>{item.status}</span>
               <span>{item.type}</span>

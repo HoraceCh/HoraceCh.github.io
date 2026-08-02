@@ -110,6 +110,21 @@ const outlineItems = outline
     let activeId = '';
     let frameId = 0;
 
+    const revealActiveLink = (activeLink) => {
+      if (!(activeLink instanceof HTMLAnchorElement)) {
+        return;
+      }
+
+      const documentScrollLeft = window.scrollX;
+      const documentScrollTop = window.scrollY;
+
+      activeLink?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' });
+
+      if (window.scrollX !== documentScrollLeft || window.scrollY !== documentScrollTop) {
+        window.scrollTo({ left: documentScrollLeft, top: documentScrollTop, behavior: 'auto' });
+      }
+    };
+
     const setActiveHeading = (headingId) => {
       if (headingId === activeId) {
         return;
@@ -126,7 +141,7 @@ const outlineItems = outline
       activeLink?.setAttribute('aria-current', 'location');
       activeLink?.classList.add('is-active');
       activeLink?.closest('.note-outline-item')?.classList.add('is-active');
-      activeLink?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' });
+      revealActiveLink(activeLink);
       activeId = headingId;
     };
 

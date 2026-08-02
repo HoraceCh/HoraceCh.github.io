@@ -1533,8 +1533,8 @@ li {
 .note-reading-layout {
   display: grid;
   grid-template-areas:
-    "properties sidepane"
-    "content sidepane";
+    "content sidepane"
+    "properties sidepane";
   grid-template-columns: minmax(0, 760px) minmax(260px, 320px);
   align-items: start;
   gap: 0 40px;
@@ -2196,6 +2196,10 @@ li {
   margin-top: 1.1rem;
 }
 
+.note-prose > :is(p, ul, ol, blockquote):not(:has(:is(img, picture, figure, table, pre, .note-code-block))) {
+  max-inline-size: min(100%, 70ch);
+}
+
 @keyframes note-fragment-feedback {
   0%,
   36% {
@@ -2621,9 +2625,9 @@ li {
 
   .note-reading-layout {
     grid-template-areas:
+      "content"
       "properties"
-      "sidepane"
-      "content";
+      "sidepane";
     grid-template-columns: 1fr;
   }
 

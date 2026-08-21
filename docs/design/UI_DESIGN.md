@@ -1,382 +1,520 @@
-# Ui — Style Reference
-> clinical blueprint on frosted paper
+# Horace Website Design Authority v2
 
-**Theme:** light
+**Status:** Canonical working specification
 
-shadcn/ui is a monochromatic design-system workshop: pure white canvas, soft warm-gray surfaces, and large-radius cards floating on hairline borders. The interface is almost entirely achromatic — black text, white surfaces, gray secondary tones — with a single destructive red reserved for error states and nothing else. Typography leans on Geist's geometric neutrality with tight letter-spacing on display sizes, creating a quiet, code-adjacent feel that reads as developer infrastructure rather than consumer product.
+> This document is the canonical design authority for Horace Website v2. It supersedes the earlier shadcn-style `UI_DESIGN.md`, which no longer matches production behavior.
+>
+> This is an **authority-only** document: it defines design direction, token roles, component boundaries, and implementation handoff. It does **not** assert that every v2 visual rule described here is already reflected in production. Known drift between this specification and the current implementation is owned by the downstream issues HC-26, HC-27, HC-28, and gated by HC-29.
 
-## Tokens — Colors
+---
 
-| Name | Value | Token | Role |
-|------|-------|-------|------|
-| Canvas | `#f5f5f5` | `--color-canvas` | Page background, muted surface fills, secondary buttons |
-| Paper | `#ffffff` | `--color-paper` | Card surfaces, popover backgrounds, primary button fills |
-| Surface Alt | `#fafafa` | `--color-surface-alt` | Sidebar background, subtle card variant, input resting state |
-| Ink | `#0a0a0a` | `--color-ink` | Primary text, headings, button labels, icon strokes |
-| Ink Soft | `#171717` | `--color-ink-soft` | Filled button backgrounds, secondary text on light surfaces |
-| Mid Gray | `#707070` | `--color-mid-gray` | Muted body text, placeholder text, helper labels, icon fills at rest |
-| Hairline | `#e5e5e5` | `--color-hairline` | Borders, input outlines, card edges, badge outlines |
-| Ember | `#e7000b` | `--color-ember` | Red decorative accent for icons, marks, and small graphic details. Use as a supporting accent, not as a status color |
+## 1. Design thesis
 
-## Tokens — Typography
+Horace Website v2 is not a site-wide EdwinOS redesign.
 
-### Geist — All interface text — body at 14px/400, headings ranging 24–48px/600, buttons at 13–14px/500. Geist's geometric letterforms and uniform stroke width create a developer-tool neutrality; weight 600 at 48px with -0.05em tracking produces tight, confident display headlines that feel engineered rather than editorial. · `--font-geist`
-- **Substitute:** Inter
-- **Weights:** 400, 500, 600
-- **Sizes:** 12, 13, 14, 16, 18, 24, 30, 36, 48
-- **Line height:** 1.10, 1.11, 1.20, 1.33, 1.43, 1.50, 1.56, 1.63, 2.00
-- **Letter spacing:** -0.0500em at display (48px), -0.0250em at subheading (24–30px), 0.0500em at caption (12px uppercase). Tracking tightens aggressively at large sizes and loosens slightly at small uppercase labels.
-- **OpenType features:** `"ss01" on, "cv11" on`
-- **Role:** All interface text — body at 14px/400, headings ranging 24–48px/600, buttons at 13–14px/500. Geist's geometric letterforms and uniform stroke width create a developer-tool neutrality; weight 600 at 48px with -0.05em tracking produces tight, confident display headlines that feel engineered rather than editorial.
+The system is intentionally split into three layers:
 
-### Type Scale
+### A. Horace Engineering Shell
 
-| Role | Size | Line Height | Letter Spacing | Token |
-|------|------|-------------|----------------|-------|
-| caption | 12px | 1.33 | 0.6px | `--text-caption` |
-| body | 14px | 1.43 | — | `--text-body` |
-| body-lg | 16px | 1.5 | — | `--text-body-lg` |
-| subheading | 18px | 1.56 | — | `--text-subheading` |
-| heading-sm | 24px | 1.33 | -0.6px | `--text-heading-sm` |
-| heading | 30px | 1.2 | -0.75px | `--text-heading` |
-| heading-lg | 36px | 1.11 | -0.9px | `--text-heading-lg` |
-| display | 48px | 1.1 | -2.4px | `--text-display` |
+Used by Home, Projects, About, Resume, Header, Footer and global navigation.
 
-## Tokens — Spacing & Shapes
+Character:
 
-**Base unit:** 4px
+* restrained engineering interface;
+* Vercel / Linear-like clarity;
+* Sans UI + Mono metadata;
+* low-radius geometry;
+* hairline borders and very quiet elevation;
+* evidence-first hierarchy rather than decorative storytelling.
 
-**Density:** compact
+### B. Edwin-derived Notes Reading Layer
 
-### Spacing Scale
+Used only by Notes reading and Notes discovery surfaces.
 
-| Name | Value | Token |
-|------|-------|-------|
-| 4 | 4px | `--spacing-4` |
-| 8 | 8px | `--spacing-8` |
-| 12 | 12px | `--spacing-12` |
-| 16 | 16px | `--spacing-16` |
-| 20 | 20px | `--spacing-20` |
-| 24 | 24px | `--spacing-24` |
-| 48 | 48px | `--spacing-48` |
+Character:
 
-### Border Radius
+* editorial long-form body typography;
+* stronger chapter rhythm;
+* softer reading surfaces;
+* explicit knowledge hierarchy;
+* Sans / Mono retained for controls, metadata, Outline, Backlinks and code.
 
-| Element | Value |
-|---------|-------|
-| cards | 24px |
-| small | 6px |
-| badges | 18px |
-| inputs | 18px |
-| nested | 10px |
-| buttons | 18px |
+### C. SKK Continuity Contract
 
-### Shadows
+Applies across both layers.
 
-| Name | Value | Token |
-|------|-------|-------|
-| subtle | `oklab(0.145 -0.00000143796 0.00000340492 / 0.05) 0px 0px ...` | `--shadow-subtle` |
-| subtle-2 | `lab(2.75381 0 0) 0px 0px 0px 0px` | `--shadow-subtle-2` |
+Character:
 
-### Layout
+* stable shell;
+* low-layout-shift navigation;
+* native/history-friendly page behavior;
+* small, local transitions only;
+* progressive enhancement rather than client-router replacement.
 
-- **Page max-width:** 1280px
-- **Section gap:** 48-80px
-- **Card padding:** 20px
-- **Element gap:** 8px
+The intended user transition is:
 
-## Components
+`engineering portfolio shell → editorial technical notebook`
 
-### Primary Filled Button
-**Role:** High-emphasis action (Submit, Save, Create)
+The two surfaces must feel related, not identical.
 
-Background #0a0a0a, text #fafafa, border none, radius 18px, padding 0px 12px (compact) or 8px 16px (comfortable), font 14px Geist weight 500. Height ≈ 36–40px. The dark-on-light inversion is the only chromatic interaction in the system; the fully rounded radius (18px on a ~36px height) produces perfect pill geometry.
+---
 
-### Secondary Ghost Button
-**Role:** Low-emphasis action (Cancel, Back)
+## 2. Current authority conflict and supersession
 
-Background #f5f5f5, text #0a0a0a, no border, radius 18px, padding 0px 12px or 8px 16px, font 14px weight 500. Soft gray fill reads as a tonal sibling to the primary rather than a muted alternative — both buttons share shape and type, differing only in lightness.
+The prior `docs/design/UI_DESIGN.md` described a generic shadcn-like system with 24px cards, 18px interactive pills and an all-Geist interface. Production `src/styles/global.css` no longer follows that geometry consistently: Home and many site components use 8px engineering containers, while Notes already has dedicated `--notes-*` tokens, a 760px reading column, 70ch prose and a sticky sidepane.
 
-### Outline Button
-**Role:** Tertiary action with visible boundary
+Therefore v2 supersedes the following stale assumptions:
 
-Background transparent, text #0a0a0a, border 1px solid #e5e5e5, radius 18px, padding 0px 12px or 8px 10px. The hairline border defines the shape without weight — preferred when the button sits inside a card or alongside filled controls.
+* 24px is **not** the global card radius;
+* 18px is **not** the universal interaction radius;
+* all interface/body text does **not** share one global Sans role;
+* the site is **not** a shadcn component showcase;
+* destructive red is not a brand accent requirement;
+* Notes should not inherit global Hero heading behavior.
 
-### Card
-**Role:** Content container for blocks, previews, dashboard panels
+Repository behavior that is already validated remains protected unless a downstream Issue explicitly changes it.
 
-Background #ffffff, radius 24px, border 1px solid #e5e5e5, shadow oklab(0.145/.05) 0 0 0 1px + rgba(0,0,0,0.1) 0 1px 3px + rgba(0,0,0,0.1) 0 1px 2px -1px, padding 20px. The 1px hairline shadow stacks with a faint elevation layer — cards sit visually raised but remain flat and understated.
+---
 
-### Nested Card Header/Footer
-**Role:** Header or footer strip inside a card
+## 3. Global Shell contract
 
-Asymmetric radius — top corners 24px on header, bottom corners 24px on footer. Padding 20px horizontal, transparent fill. Provides a subtle tonal band within card boundaries without introducing a new color.
+### 3.1 Production-neutral color baseline
 
-### Input Field
-**Role:** Text entry, search, form controls
+Keep the current global palette as the engineering shell baseline.
 
-Background #f5f5f5 (resting) or transparent (inline), text #0a0a0a, border none at rest with 1px #e5e5e5 on focus, radius 18px, padding 8px 10px, font 14px weight 400. The soft gray fill differentiates the input from the card surface beneath it; focus replaces the fill with a 1px ring.
+#### Light
 
-### Badge — Solid
-**Role:** Tag, status pill, counter
+* `--bg: #f5f5f5`
+* `--surface: #ffffff`
+* `--text: #0a0a0a`
+* `--muted: #707070`
+* `--line: #e5e5e5`
+* `--accent: #171717`
 
-Background #171717, text #fafafa, radius 18px, padding 2px 8px, font 12px weight 500. Pill-shaped at 18px radius — the minimum height creates a capsule tag.
+#### Dark
 
-### Badge — Soft
-**Role:** Neutral label, category tag
+* `--bg: #08090a`
+* `--surface: #0f1011`
+* `--text: #ffffff`
+* `--muted: #8a8f98`
+* `--line: #23252a`
+* `--accent: #d0d6e0`
 
-Background #f5f5f5, text #171717, radius 18px, padding 2px 8px, font 12px weight 500. Same capsule geometry as solid badge, tonal variant.
+Do not introduce a new saturated site-wide brand color during the Notes migration.
 
-### Badge — Outline
-**Role:** Subtle tag with no fill
+### 3.2 Shell typography
 
-Transparent background, text #0a0a0a, radius 18px, padding 2px 8px. The lightest-weight tag — used when the label is informational rather than categorical.
+Global UI remains Sans-first:
 
-### Sidebar Surface
-**Role:** Left navigation panel
+```css
+--font-ui:
+  Inter,
+  ui-sans-serif,
+  system-ui,
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  sans-serif;
 
-Background #fafafa, full-height, contained width. Sits one tonal step off the canvas (#f5f5f5) so the navigation reads as a distinct layer without introducing a divider line.
+--font-mono:
+  "JetBrains Mono",
+  ui-monospace,
+  "SFMono-Regular",
+  Consolas,
+  monospace;
+```
 
-### Breadcrumb Trail
-**Role:** Hierarchical path indicator
+If JetBrains Mono is not locally available or safely loaded, retain the existing monospace fallback without blocking implementation.
 
-Inline text with chevron separators, font 14px weight 400, color #707070 for separators and #0a0a0a for the current segment. No background, no borders — purely typographic hierarchy.
+Serif must never leak into Home, Projects, About, Resume, global navigation, buttons or generic cards.
 
-### Stat Block
-**Role:** Large numeric metric display
+### 3.3 Geometry
 
-Label in 12–14px uppercase #707070, value in 30–48px weight 600 #0a0a0a with tight tracking. Progress bar or comparison text in 14px #707070. The block relies on typographic scale alone — no card chrome — to establish the metric.
+Default shell geometry:
 
-### Search Trigger
-**Role:** Command palette / search input
+* primary content containers/cards: **8px radius**;
+* nested engineering surfaces: **6–8px**;
+* pill geometry only for semantic capsules such as tags, status badges, compact filters or circular controls;
+* do not use 18px/24px radius merely because an element is interactive or card-like.
 
-Background #f5f5f5, text #707070, radius 18px, padding 8px 10px, with a keyboard shortcut indicator (e.g., ⌘K) right-aligned. Functions as both a button and an input affordance.
+Shadows remain whisper-quiet. Prefer border + tonal separation over elevation.
 
-### Destructive Action
-**Role:** Delete, remove, revoke — error-adjacent interactions
+### 3.4 Global interaction
 
-Text or icon in #e7000b against the monochromatic palette. The red is the only chromatic hue in the system and appears exclusively in destructive or error contexts — it never decorates.
+Hover motion:
 
-## Do's and Don'ts
+* translation: maximum **1px**;
+* use only where it already communicates clickability;
+* no large card lifts;
+* no scale animation on normal navigation or content cards.
+
+---
+
+## 4. Notes Reading Layer contract
+
+### 4.1 Typography roles
+
+Preferred Notes roles:
+
+```css
+--note-font-body:
+  "Source Serif 4",
+  "Noto Serif CJK SC",
+  "Songti SC",
+  Georgia,
+  serif;
+
+--note-font-ui:
+  Inter,
+  "Noto Sans CJK SC",
+  system-ui,
+  sans-serif;
+
+--note-font-mono:
+  "JetBrains Mono",
+  ui-monospace,
+  "SFMono-Regular",
+  Consolas,
+  monospace;
+```
+
+Rules:
+
+* Serif: prose and document headings only;
+* Sans: breadcrumbs, Properties labels, Outline, Backlinks, controls;
+* Mono: code, code labels, compact metadata, technical path-like labels;
+* do not adopt Caveat or a decorative handwriting role;
+* do not require shipping font binaries in the repository;
+* if a webfont strategy creates CLS, licensing or build risk, use the fallback stack first and treat webfont optimization separately.
+
+### 4.2 Type scale
+
+Target range for Notes:
+
+| Role | Desktop | Mobile | Weight | Line height |
+| --- | --- | --- | --- | --- |
+| Note title / H1 | 42–48px | 32–36px | 600 | 1.12–1.18 |
+| H2 | 24–26px | 22–24px | 600 | ~1.30 |
+| H3 | 18–20px | 18px | 600 | ~1.38 |
+| Body | 16–17px | 16px | 400 | 1.68–1.76 |
+| Summary / lead | ~17px | 16px | 400 | 1.62–1.68 |
+| Properties / metadata | 11–12px | 11px | 500–600 | ~1.35 |
+| Outline H2 | ~14px | — | ~600 | ~1.45 |
+| Outline H3 | ~13px | — | 450–500 | ~1.45 |
+
+Notes H1 is a **document title**, not a product Hero.
+
+### 4.3 Heading rhythm
+
+* H1 must be calmer than the global site Hero scale.
+* H2 uses larger preceding space and a low-contrast section separator.
+* H3 is separated primarily by spacing and weight, not another rule.
+* Heading anchors and `scroll-margin` behavior must remain intact.
+* Do not use uppercase transformations for normal article headings.
+
+### 4.4 Reading measure
+
+* ordinary prose: **68–72ch**;
+* current 70ch production behavior is already within the target contract;
+* Note reading content column may remain approximately **710–760px**;
+* code, tables, formulas, figures and images may use the full technical content width;
+* do not narrow technical blocks to prose measure when it harms comprehension.
+
+### 4.5 Reading surfaces
+
+Callout / blockquote:
+
+* low-saturation semantic surface;
+* restrained border and/or left rail;
+* 6–8px radius;
+* no heavy shadow;
+* no paper texture.
+
+Code:
+
+* preserve the existing Linear-like technical panel language;
+* Mono body and language label;
+* one clear border layer;
+* copy control remains compact and functional;
+* code should not become an editorial card.
+
+Table:
+
+* subtle surface distinction;
+* hairline row/column separators;
+* no heavy card chrome;
+* preserve horizontal readability on small screens.
+
+Properties:
+
+* visually secondary to the document;
+* quiet metadata, not a large dashboard card;
+* labels favor Mono / small Sans;
+* reduce unnecessary pill density.
+
+Outline:
+
+* H2 visually stronger than H3;
+* H3 uses indentation + lower contrast;
+* active state restores contrast and may use a thin rail;
+* avoid large background highlight blocks.
+
+Backlinks:
+
+* preserve current grouping/context behavior;
+* visually quieter than Outline and far quieter than body headings;
+* treat as “Connections”, not a competing navigation product.
+
+---
+
+## 5. Notes Discovery contract
+
+Primary hierarchy:
+
+1. Start Here / entry context
+2. Collections
+3. Modules
+4. Recent Notes
+5. Browse
+   * Category
+   * Path
+   * Tag
+   * Type
+   * Status
+6. Archive
+
+Rules:
+
+* Collections / Modules are the main knowledge structure;
+* taxonomy is auxiliary navigation;
+* avoid equal-weight dashboard blocks for every discovery method;
+* reduce pill-wall behavior;
+* prefer rows, indentation, guides, path-like metadata and subtle counts;
+* do not introduce a permanent 240px left file tree at the current content scale;
+* do not require a client-side explorer/router.
+
+A desktop-only cluster rail may be reconsidered only when public Notes grow to roughly 80–120 items and stable topic clusters justify the spatial cost.
+
+---
+
+## 6. Motion and Continuity contract
+
+### Timing
+
+* color / border / focus: **120–160ms**;
+* control state: **140–180ms**;
+* small panel state: **180–220ms**;
+* page main-content transition: **160–190ms**;
+* hover translate: **≤1px**;
+* page translate: **≤4px**.
+
+### Allowed
+
+* opacity;
+* transform;
+* color;
+* border-color;
+* text-decoration-color;
+* small state feedback.
+
+### Forbidden
+
+* `transition: all`;
+* animated width / height / padding / margin / line-height;
+* 700ms+ cascade entry sequences;
+* whole-page Edwin animation recreation;
+* forced smooth scrolling;
+* ClientRouter introduced only for visual continuity;
+* page-wide skeleton flashes;
+* long 5s amber fragment feedback.
+
+### Protected continuity
+
+Do not regress:
+
+* native/history-friendly navigation;
+* browser Back / Forward;
+* fragment navigation;
+* Outline scrollspy;
+* Backlinks;
+* Copy Code;
+* selective intent-based prefetch;
+* native View Transition fallback behavior;
+* `prefers-reduced-motion`.
+
+### Architecture invariants
+
+The following are retained engineering invariants and are not up for renegotiation by visual work:
+
+* Astro static MPA;
+* native, history-friendly links and fragments (no click interception for visual purposes);
+* selective intent-based prefetch;
+* progressive native View Transitions (with fallback);
+* `prefers-reduced-motion` support.
+
+No runtime or client-side router may be introduced for visual continuity reasons.
+
+---
+
+## 7. Responsive and layout contract
+
+### Desktop
+
+Keep the current two-column reading model:
+
+`content + sticky sidepane`
+
+The current production geometry of approximately 760px content + 260–320px sidepane is a valid engineering baseline.
+
+### Tablet
+
+* sidepane may reduce width or move below/into a collapsible reading-support area;
+* never cause body measure to collapse into an uncomfortable narrow column;
+* preserve DOM order and avoid layout shifts caused only by CSS reordering.
+
+### Mobile
+
+Reading order must prioritize:
+
+1. breadcrumbs / context;
+2. document title and summary;
+3. article body;
+4. supporting metadata / Outline / Backlinks according to existing responsive behavior.
+
+No permanent multi-column navigation on mobile.
+
+No horizontal overflow except inside intentionally scrollable technical blocks.
+
+---
+
+## 8. Accessibility contract
+
+Must preserve or improve:
+
+* visible `:focus-visible` treatment;
+* keyboard access to Outline, Backlinks, Copy Code and collapsible sections;
+* adequate light/dark contrast;
+* reduced-motion support;
+* semantic heading order;
+* fragment destinations not hidden under sticky chrome;
+* non-color-only active states where practical.
+
+Visual softness must never reduce legibility below the current production baseline.
+
+---
+
+## 9. Component / ownership boundary
+
+| Surface | Authority | Downstream owner |
+| --- | --- | --- |
+| Global shell tokens / geometry | HC-25 | future shell-specific issue |
+| Notes typography / measure / heading rhythm | HC-25 spec | HC-26 |
+| Callout / code / table / quote / Properties | HC-25 spec | HC-27 |
+| Outline / Backlinks visual hierarchy | HC-25 spec | HC-27 |
+| Notes discovery hierarchy | HC-25 spec | HC-28 |
+| Final visual / functional gate | HC-29 contract | HC-29 |
+| Publication schema / Obsidian pipeline | repository contract | out of scope |
+| Admin integration | HC-10 / Admin project | out of scope |
+| Project evidence content | HC-5–HC-9 | out of scope |
+
+Implementation Issues may refine values inside these boundaries, but must not redefine the system architecture without returning to HC-25.
+
+---
+
+## 10. Do / Don’t
 
 ### Do
-- Use #0a0a0a on #ffffff for filled buttons — the dark inversion is the only primary action treatment.
-- Maintain 18px radius on all buttons, inputs, and badges for perfect pill geometry; use 24px radius only on cards.
-- Set display headlines at 48px/600 with -0.0500em tracking — Geist's geometric weight at this size with aggressive tightening produces the engineered headline voice.
-- Reserve #e7000b exclusively for destructive states; never use it for decoration, branding, or non-error emphasis.
-- Stack card shadows as 1px hairline + 1px + 2px offset — the combined effect is a barely-perceptible elevation that reads as 'card' without drama.
-- Use #f5f5f5 for secondary surfaces and inputs; use #fafafa for sidebar and subtle card variants — the three-tone surface stack (canvas → soft → paper) creates layering without borders.
 
-### Don't
-- Do not introduce chromatic brand colors beyond #e7000b — the monochromatic palette is the system.
-- Do not use border-radius values other than 18px (interactive) or 24px (containers); avoid square corners on any element.
-- Do not skip the 1px hairline border on cards — the shadow alone does not define the card edge in this system.
-- Do not set body text below 14px or above #707070 lightness — the type scale is deliberately compact.
-- Do not apply gradients, colored shadows, or accent fills — every surface is a solid tone.
-- Do not use letter-spacing wider than 0.05em or tighter than -0.05em; tracking outside this range breaks the typographic system.
-- Do not mix filled and outline buttons of the same size in a single row without visual rhythm — alternate ghost or secondary variants.
+* preserve Horace’s engineering identity outside Notes;
+* use Serif only where reading benefits from it;
+* use spacing and hierarchy before decoration;
+* keep metadata quiet and technical;
+* let technical blocks remain wide enough to be useful;
+* keep motion short and local;
+* prefer CSS/tokens over imported Edwin CSS;
+* verify light, dark and reduced-motion together.
 
-## Surfaces
+### Don’t
 
-| Level | Name | Value | Purpose |
-|-------|------|-------|---------|
-| 0 | Canvas | `#f5f5f5` | Page background, broadest layer |
-| 1 | Sidebar | `#fafafa` | Navigation surface, one step lighter than canvas |
-| 2 | Card | `#ffffff` | Primary content container, brightest surface |
-| 3 | Input Fill | `#f5f5f5` | Resting input field, matches canvas tone for subtle differentiation |
+* do not clone EdwinOS globally;
+* do not globalize Source Serif;
+* do not use Caveat;
+* do not copy Edwin’s large legacy CSS / `!important` strategy;
+* do not add permanent three-column navigation now;
+* do not introduce a full-width search system in this phase;
+* do not migrate to React / Next.js / ClientRouter for visual reasons;
+* do not change publication contracts during HC-25–HC-29;
+* do not turn Notes into a dashboard of equal-weight cards;
+* do not use 24px rounded cards as the default Horace geometry.
 
-## Elevation
+### Not migrated from EdwinOS
 
-- **Card:** `0 0 0 1px rgba(23,23,23,0.05), 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1)`
-- **Button (filled):** `none — relies on tonal contrast, not shadow`
-- **Input (focus):** `1px solid #e5e5e5 ring, no offset shadow`
+The following are explicitly **not** migrated into Horace Website v2:
 
-## Imagery
+* EdwinOS site-wide design (full-site restyle);
+* global Serif (site-wide Source Serif / editorial body outside Notes);
+* Caveat / decorative handwriting;
+* three-column Notes shell;
+* heavy search / graph view / command palette;
+* whole-page theatrical animation;
+* ClientRouter, click interception, or any runtime/router introduced for visual purposes.
 
-Minimal imagery — the system is almost entirely UI. No hero photography, no illustrations, no decorative graphics. Product showcases are rendered as component mockups (cards, inputs, buttons) in a grid, serving as both documentation and visual content. Icons are thin-stroke geometric marks (likely Lucide-derived) at 1.5–2px stroke weight in #0a0a0a or #707070, used sparingly as functional cues. The visual language IS the UI components themselves — the page functions as a living style guide where every visible element is a design token made visible.
+---
 
-## Agent Prompt Guide
+## 11. QA derivation checklist
 
-**Quick Color Reference**
-- Canvas/background: #f5f5f5
-- Card/surface: #ffffff
-- Primary text: #0a0a0a
-- Muted text: #707070
-- Border: #e5e5e5
-- primary action: #171717 (filled action)
-- Destructive: #e7000b
+A downstream QA reviewer should be able to derive at least these checks from this authority:
 
-**Example Component Prompts**
-1. Create a dashboard stat card: white (#ffffff) background, 24px radius, 1px solid #e5e5e5 border, shadow 0 0 0 1px rgba(23,23,23,0.05) + 0 1px 3px rgba(0,0,0,0.1) + 0 1px 2px -1px rgba(0,0,0,0.1), 20px padding. Label in 12px uppercase #707070, value in 36px Geist weight 600 #0a0a0a with -0.025em tracking.
+### Global leakage
 
-2. Create a filled dark button: background #0a0a0a, text #fafafa, no border, 18px radius, padding 0px 12px, font 14px Geist weight 500. Height 36px. No shadow — tonal contrast only.
+* Notes Serif does not affect Home / Projects / About / Resume.
+* Global H1/H2 remains unchanged unless explicitly authorized.
+* Shell 8px engineering geometry remains intact.
 
-3. Create a ghost secondary button: background #f5f5f5, text #0a0a0a, no border, 18px radius, padding 0px 12px, font 14px weight 500. Same dimensions as the filled button for visual parity.
+### Reading
 
-4. Create an input field: background #f5f5f5, text #0a0a0a, placeholder #707070, no border at rest, 18px radius, padding 8px 10px, font 14px weight 400. On focus: 1px solid #e5e5e5 ring with no offset.
+* prose stays within 68–72ch;
+* H1 behaves like a document title;
+* H2/H3 chapter hierarchy is visible;
+* technical blocks retain usable width;
+* Callout/Table/Quote are softer without becoming low-contrast.
 
-5. Create a badge tag: background #171717, text #fafafa, 18px radius (full pill), padding 2px 8px, font 12px Geist weight 500.
+### Sidepane
 
-## Design Philosophy
+* Outline H2/H3 hierarchy is visible;
+* active state is subtle and clear;
+* Backlinks remain scannable and secondary;
+* no focus clipping or sidepane overlap.
 
-shadcn/ui is built on three principles visible in every token: (1) achromatic by default — color is absence, not expression; (2) radius defines hierarchy — 18px for interactive elements, 24px for containers, never anything in between; (3) elevation is whisper-quiet — the card shadow is barely perceptible, relying on 1px hairlines and tonal contrast rather than dramatic drop shadows. The system is designed to be copied, modified, and owned — every value is explicit, every token is simple, and nothing is locked behind abstraction.
+### Discovery
 
-## Similar Brands
+* Collections / Modules dominate taxonomy;
+* no excessive pill wall;
+* no permanent file-tree rail;
+* all existing routes remain reachable.
 
-- **Vercel** — Same monochromatic palette, same Geist/geometric sans pairing, same pill-shaped buttons with tight letter-spacing on display text
-- **Linear** — Identical approach to monochromatic UI with single accent for destructive states, tight typographic tracking, and hairline-bordered cards
-- **Radix UI** — Same developer-tool visual language — neutral surfaces, geometric type, and component-first documentation layout
-- **Tailwind UI** — Matching restrained palette, identical border-radius scale (large radii on containers), and code-adjacent minimal chrome
-- **Cal.com** — Same compact density, same pill-badge system, and the same achromatic-first approach with red reserved for errors
+### Continuity
 
-## Quick Start
+* fragments;
+* browser history;
+* Outline;
+* Backlinks;
+* Copy Code;
+* View Transition fallback;
+* selective prefetch;
+* reduced motion;
+* build and layout stability.
 
-### CSS Custom Properties
+---
 
-```css
-:root {
-  /* Colors */
-  --color-canvas: #f5f5f5;
-  --color-paper: #ffffff;
-  --color-surface-alt: #fafafa;
-  --color-ink: #0a0a0a;
-  --color-ink-soft: #171717;
-  --color-mid-gray: #707070;
-  --color-hairline: #e5e5e5;
-  --color-ember: #e7000b;
+## 12. Authority status and downstream ownership
 
-  /* Typography — Font Families */
-  --font-geist: 'Geist', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+This document is the canonical repository design authority for Horace Website v2. It is an **authority-only** deliverable: production Astro source, CSS, JS, components, config, content schema, Obsidian pipeline, and generated content are unchanged by this specification.
 
-  /* Typography — Scale */
-  --text-caption: 12px;
-  --leading-caption: 1.33;
-  --tracking-caption: 0.6px;
-  --text-body: 14px;
-  --leading-body: 1.43;
-  --text-body-lg: 16px;
-  --leading-body-lg: 1.5;
-  --text-subheading: 18px;
-  --leading-subheading: 1.56;
-  --text-heading-sm: 24px;
-  --leading-heading-sm: 1.33;
-  --tracking-heading-sm: -0.6px;
-  --text-heading: 30px;
-  --leading-heading: 1.2;
-  --tracking-heading: -0.75px;
-  --text-heading-lg: 36px;
-  --leading-heading-lg: 1.11;
-  --tracking-heading-lg: -0.9px;
-  --text-display: 48px;
-  --leading-display: 1.1;
-  --tracking-display: -2.4px;
+* HC-25 owns this authority: design direction, token roles, component boundaries, and implementation handoff.
+* HC-26 owns Notes typography / measure / heading rhythm.
+* HC-27 owns Notes reading surfaces and sidepane hierarchy.
+* HC-28 owns Notes discovery / knowledge hierarchy.
+* HC-29 owns the final visual / functional migration gate.
 
-  /* Typography — Weights */
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-
-  /* Spacing */
-  --spacing-unit: 4px;
-  --spacing-4: 4px;
-  --spacing-8: 8px;
-  --spacing-12: 12px;
-  --spacing-16: 16px;
-  --spacing-20: 20px;
-  --spacing-24: 24px;
-  --spacing-48: 48px;
-
-  /* Layout */
-  --page-max-width: 1280px;
-  --section-gap: 48-80px;
-  --card-padding: 20px;
-  --element-gap: 8px;
-
-  /* Border Radius */
-  --radius-md: 6px;
-  --radius-lg: 10px;
-  --radius-xl: 14px;
-  --radius-2xl: 18px;
-  --radius-3xl: 24px;
-
-  /* Named Radii */
-  --radius-cards: 24px;
-  --radius-small: 6px;
-  --radius-badges: 18px;
-  --radius-inputs: 18px;
-  --radius-nested: 10px;
-  --radius-buttons: 18px;
-
-  /* Shadows */
-  --shadow-subtle: oklab(0.145 -0.00000143796 0.00000340492 / 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px;
-  --shadow-subtle-2: lab(2.75381 0 0) 0px 0px 0px 0px;
-
-  /* Surfaces */
-  --surface-canvas: #f5f5f5;
-  --surface-sidebar: #fafafa;
-  --surface-card: #ffffff;
-  --surface-input-fill: #f5f5f5;
-}
-```
-
-### Tailwind v4
-
-```css
-@theme {
-  /* Colors */
-  --color-canvas: #f5f5f5;
-  --color-paper: #ffffff;
-  --color-surface-alt: #fafafa;
-  --color-ink: #0a0a0a;
-  --color-ink-soft: #171717;
-  --color-mid-gray: #707070;
-  --color-hairline: #e5e5e5;
-  --color-ember: #e7000b;
-
-  /* Typography */
-  --font-geist: 'Geist', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-
-  /* Typography — Scale */
-  --text-caption: 12px;
-  --leading-caption: 1.33;
-  --tracking-caption: 0.6px;
-  --text-body: 14px;
-  --leading-body: 1.43;
-  --text-body-lg: 16px;
-  --leading-body-lg: 1.5;
-  --text-subheading: 18px;
-  --leading-subheading: 1.56;
-  --text-heading-sm: 24px;
-  --leading-heading-sm: 1.33;
-  --tracking-heading-sm: -0.6px;
-  --text-heading: 30px;
-  --leading-heading: 1.2;
-  --tracking-heading: -0.75px;
-  --text-heading-lg: 36px;
-  --leading-heading-lg: 1.11;
-  --tracking-heading-lg: -0.9px;
-  --text-display: 48px;
-  --leading-display: 1.1;
-  --tracking-display: -2.4px;
-
-  /* Spacing */
-  --spacing-4: 4px;
-  --spacing-8: 8px;
-  --spacing-12: 12px;
-  --spacing-16: 16px;
-  --spacing-20: 20px;
-  --spacing-24: 24px;
-  --spacing-48: 48px;
-
-  /* Border Radius */
-  --radius-md: 6px;
-  --radius-lg: 10px;
-  --radius-xl: 14px;
-  --radius-2xl: 18px;
-  --radius-3xl: 24px;
-
-  /* Shadows */
-  --shadow-subtle: oklab(0.145 -0.00000143796 0.00000340492 / 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px;
-  --shadow-subtle-2: lab(2.75381 0 0) 0px 0px 0px 0px;
-}
-```
+Known drift between this specification and the current production implementation is expected and is resolved by these downstream issues, not by this document. Implementation issues may refine values inside these boundaries, but must not redefine the system architecture without returning to HC-25.

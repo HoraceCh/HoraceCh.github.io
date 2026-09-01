@@ -102,17 +102,6 @@ const focusAreas = [
               <span>Chan</span>
             </h1>
           </div>
-          <div class="name-portrait">
-            <span class="portrait-monogram" aria-hidden="true">HC</span>
-            <img
-              class="portrait-mark"
-              src="/assets/profile-mark.png"
-              alt="Portrait of Horace Chan"
-              width="554"
-              height="554"
-              loading="eager"
-            />
-          </div>
         </div>
         <p class="home-thesis">
           Mechanical Engineering student building and documenting robotics, Embodied AI, and AI-assisted research
@@ -166,7 +155,7 @@ const focusAreas = [
             </div>
             <h3>{item.title}</h3>
             <p>{item.description}</p>
-            <span class="card-action">{item.actionLabel} <span aria-hidden="true">→</span></span>
+            <span class="work-row-action">{item.actionLabel} <span aria-hidden="true">→</span></span>
           </a>
         ))}
       </div>
@@ -206,7 +195,7 @@ const focusAreas = [
           <a class="hub-link" href={link.href}>
             <span>{link.label}</span>
             <small>{link.description}</small>
-            <span class="card-action" aria-hidden="true">Explore →</span>
+            <span class="hub-link-action" aria-hidden="true">Explore →</span>
           </a>
         ))}
       </div>

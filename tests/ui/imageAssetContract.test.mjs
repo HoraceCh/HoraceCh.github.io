@@ -29,7 +29,11 @@ test('public identity images are role-sized, referenced once, and byte-distinct'
   assert.match(layout, /sizes="64x64" href="\/favicon-dark\.png"/);
   assert.match(layout, /sizes="180x180" href="\/apple-touch-icon\.png"/);
   assert.equal((layout.match(/href="\/favicon\.png"/g) ?? []).length, 1, 'favicon URL must not be duplicated');
-  assert.match(home, /src="\/assets\/profile-mark\.png"[\s\S]*?width="554"[\s\S]*?height="554"/);
+  assert.doesNotMatch(
+    home,
+    /\/assets\/profile-mark\.png/,
+    'Home must not render the retired profile portrait asset',
+  );
 });
 
 function pngDimensions(buffer) {

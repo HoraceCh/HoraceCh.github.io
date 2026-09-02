@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "scanBoundary": {
+    "policyFiles": [
+      ".codex/agents/README.md",
+      ".codex/agents/content-ia-editor.toml",
+      ".codex/agents/design-system-curator.toml",
+      ".codex/agents/frontend-implementer.toml",
+      ".codex/agents/obsidian-notes-pipeline.toml",
+      ".codex/agents/project-architect.toml",
+      ".codex/agents/qa-build-reviewer.toml",
+      ".codex/config.toml",
+      ".omo/rules/agent-policy.md",
+      ".omo/rules/notes-publication.md",
+      "AGENTS.md",
+      "config/codex-workflow.json",
+      "docs/AGENT_WORKFLOW.md",
+      "docs/CODEX_AGENT_ROUTING.md",
+      "docs/CODEX_MODEL_USAGE.md",
+      "docs/CODEX_SCAN_BOUNDARY.md",
+      "docs/MODEL_ROUTING_PORTABILITY.md"
+    ],
+    "workflowFiles": [
+      ".gitignore",
+      "package.json",
+      "tests/codex-routing-cases.json",
+      "tests/codexRouting.eval.test.mjs",
+      "tests/codexRouting.test.mjs",
+      "tests/codexRulesValidator.test.mjs",
+      "tools/codex-routing.mjs",
+      "tools/validate-codex-rules.mjs"
+    ],
+    "excludedPrefixes": [
+      ".astro/",
+      ".codex/chrome-",
+      ".codex/screenshots/",
+      ".git/",
+      ".omo/run-continuation/",
+      ".opencode/",
+      "dist/",
+      "node_modules/"
+    ],
+    "excludedFiles": [
+      ".env",
+      "notes.publish.local.json"
+    ]
+  },
+  "execution": {
+    "root": {
+      "model": "gpt-5.6-terra",
+      "reasoning": "medium"
+    },
+    "maxConcurrentAgents": 3,
+    "maxDelegationDepth": 1,
+    "maxRetainedDiffWriters": 1,
+    "runtimeReasoningCapabilities": {
+      "gpt-5.6-luna": ["low", "medium", "high", "xhigh", "max"],
+      "gpt-5.6-terra": ["low", "medium", "high", "xhigh", "max", "ultra"],
+      "gpt-5.6-sol": ["low", "medium", "high", "xhigh", "max", "ultra"]
+    },
+    "routeEnvelopeFields": [
+      "owner",
+      "phase",
+      "model",
+      "reasoning",
+      "contextMode",
+      "authority",
+      "requiredGate"
+    ]
+  },
+  "ownership": {
+    "architecture": "project_architect",
+    "notes": "obsidian_notes_pipeline",
+    "design": "design_system_curator",
+    "content": "content_ia_editor",
+    "frontend": "frontend_implementer",
+    "qa": "qa_build_reviewer"
+  },
+  "routingInput": {
+    "phases": ["explain", "discover", "decide", "implement", "qa"],
+    "scopes": ["single", "domain", "cross-domain"],
+    "ambiguity": ["low", "contained", "material"],
+    "verification": ["direct", "semantic"],
+    "workloads": ["small", "normal", "large"]
+  },
+  "modelTiers": {
+    "luna": {
+      "model": "gpt-5.6-luna",
+      "reasoning": ["low", "medium", "high"],
+      "authority": "bounded"
+    },
+    "terra": {
+      "model": "gpt-5.6-terra",
+      "reasoning": ["medium", "high"],
+      "authority": "engineering"
+    },
+    "sol": {
+      "model": "gpt-5.6-sol",
+      "reasoning": ["medium", "high", "xhigh", "max"],
+      "authority": "judgment"
+    }
+  },
+  "criticalRisks": [
+    "architecture",
+    "deployment",
+    "privacy",
+    "publication",
+    "schema",
+    "security"
+  ]
+}

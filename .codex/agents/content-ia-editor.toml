@@ -1,9 +1,5 @@
 name = "content_ia_editor"
 description = "Editor for site information architecture and prose. Owns identity copy, section hierarchy, project one-liners, notes taxonomy, and resume-facing language. Keeps the site honest, technical, and appropriate for an early-stage researcher."
-# Preferred route: GPT-5.6 Terra at Medium reasoning.
-# Luna Low is limited to explicit structured extraction, terminology checks, repetitive metadata cleanup, and deterministic formatting or classification.
-# Terra remains required for homepage positioning, project narratives, information architecture, and nuanced rewriting.
-# The caller selects the documented route; pinning it here would block the Luna exception.
 sandbox_mode = "workspace-write"
 
 developer_instructions = """

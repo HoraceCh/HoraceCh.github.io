@@ -1,8 +1,5 @@
 name = "frontend_implementer"
 description = "Executes scoped UI changes in Astro components, layouts, pages, and CSS after project-architect and design-system-curator have defined the direction. Minimal-diff surgeon."
-# Preferred route: GPT-5.6 Terra at Medium reasoning.
-# Upgrade to Sol High for ambiguous multi-file bugs, complex Astro architecture, cross-directory refactors, major interactions, or competing implementation approaches.
-# The caller selects the documented route; pinning it here would block escalation.
 sandbox_mode = "workspace-write"
 
 developer_instructions = """

@@ -34,9 +34,9 @@ Implementation priorities:
 
 ## Codex model and agent workflow
 
-Before planning or implementing, read `docs/CODEX_MODEL_USAGE.md` and `docs/CODEX_AGENT_ROUTING.md`. They are the source of truth for the six agents, Sol/Terra/Luna routing, the compact six-part prompt structure, permissions, and handoffs.
+Before repository-wide discovery, read `docs/CODEX_SCAN_BOUNDARY.md`. Before planning or implementing, read `docs/CODEX_MODEL_USAGE.md` and `docs/CODEX_AGENT_ROUTING.md`. They are the source of truth for safe scan scope, the six agents, Sol/Terra/Luna routing, the compact six-part prompt structure, permissions, and handoffs.
 
-Start at Terra Medium; escalate to Sol High only for material complexity, ambiguity, risk, or polish. Use Luna Low only for explicit, low-risk, mechanically verifiable work. Respect the three-subagent cap and interrupt messages in `.codex/config.toml`. Delegation is depth one, write-capable work is serial-first, and a delegated job must be scoped to finish within 30 minutes; these are workflow policies rather than unsupported configuration keys.
+Keep the root orchestrator at Terra Medium. Maximize Luna workload while minimizing Luna authority: use Luna Low or Medium for bounded discovery, evidence collection, known-path implementation, validation, and first-stage mechanical QA; Luna High is reserved for large, fully specified deterministic transformations with immediate checks. Use Terra Medium for routine engineering synthesis, Terra High for settled but semantically coupled critical implementation, Sol Medium for contained judgment, and Sol High for material ambiguity, cross-domain risk, architecture, privacy, schema, deployment, or critical release decisions. Higher reasoning tiers are exceptional and never substitute for clear scope or the right model. Respect the three-subagent cap and interrupt messages in `.codex/config.toml`. Delegation is depth one, write-capable work is serial-first, and a delegated job must be scoped to finish within 30 minutes; these are workflow policies rather than unsupported configuration keys.
 
 ## Third-party UI skills
 

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "explain-current-policy",
+    "input": { "domain": "architecture", "phase": "explain", "scope": "single", "ambiguity": "low", "verification": "semantic", "workload": "small", "risks": [] },
+    "expected": { "owner": "root", "phase": "explain", "model": "gpt-5.6-terra", "reasoning": "medium", "contextMode": "current", "authority": "answer", "requiredGate": "none" }
+  },
+  {
+    "id": "small-symbol-discovery",
+    "input": { "domain": "frontend", "phase": "discover", "scope": "single", "ambiguity": "low", "verification": "direct", "workload": "small", "risks": [] },
+    "expected": { "owner": "frontend_implementer", "phase": "discover", "model": "gpt-5.6-luna", "reasoning": "low", "contextMode": "fresh-packet", "authority": "evidence", "requiredGate": "none" }
+  },
+  {
+    "id": "privacy-evidence-collection",
+    "input": { "domain": "notes", "phase": "discover", "scope": "domain", "ambiguity": "material", "verification": "direct", "workload": "normal", "risks": ["privacy"] },
+    "expected": { "owner": "obsidian_notes_pipeline", "phase": "discover", "model": "gpt-5.6-luna", "reasoning": "medium", "contextMode": "fresh-packet", "authority": "evidence", "requiredGate": "none" }
+  },
+  {
+    "id": "contained-design-judgment",
+    "input": { "domain": "design", "phase": "decide", "scope": "domain", "ambiguity": "contained", "verification": "semantic", "workload": "normal", "risks": [] },
+    "expected": { "owner": "design_system_curator", "phase": "decide", "model": "gpt-5.6-sol", "reasoning": "medium", "contextMode": "fresh-packet", "authority": "judgment", "requiredGate": "none" }
+  },
+  {
+    "id": "cross-domain-architecture-decision",
+    "input": { "domain": "architecture", "phase": "decide", "scope": "cross-domain", "ambiguity": "material", "verification": "semantic", "workload": "large", "risks": ["architecture"] },
+    "expected": { "owner": "project_architect", "phase": "decide", "model": "gpt-5.6-sol", "reasoning": "high", "contextMode": "fresh-packet", "authority": "judgment", "requiredGate": "none" }
+  },
+  {
+    "id": "tiny-copy-propagation",
+    "input": { "domain": "content", "phase": "implement", "scope": "single", "ambiguity": "low", "verification": "direct", "workload": "small", "risks": [] },
+    "expected": { "owner": "content_ia_editor", "phase": "implement", "model": "gpt-5.6-luna", "reasoning": "low", "contextMode": "fresh-packet", "authority": "execute", "requiredGate": "mechanical" }
+  },
+  {
+    "id": "known-path-notes-fix",
+    "input": { "domain": "notes", "phase": "implement", "scope": "domain", "ambiguity": "low", "verification": "direct", "workload": "normal", "risks": [] },
+    "expected": { "owner": "obsidian_notes_pipeline", "phase": "implement", "model": "gpt-5.6-luna", "reasoning": "medium", "contextMode": "fresh-packet", "authority": "execute", "requiredGate": "mechanical" }
+  },
+  {
+    "id": "large-deterministic-migration",
+    "input": { "domain": "content", "phase": "implement", "scope": "domain", "ambiguity": "low", "verification": "direct", "workload": "large", "risks": [] },
+    "expected": { "owner": "content_ia_editor", "phase": "implement", "model": "gpt-5.6-luna", "reasoning": "high", "contextMode": "fresh-packet", "authority": "execute", "requiredGate": "mechanical" }
+  },
+  {
+    "id": "routine-semantic-frontend-work",
+    "input": { "domain": "frontend", "phase": "implement", "scope": "domain", "ambiguity": "contained", "verification": "semantic", "workload": "normal", "risks": [] },
+    "expected": { "owner": "frontend_implementer", "phase": "implement", "model": "gpt-5.6-terra", "reasoning": "medium", "contextMode": "fresh-packet", "authority": "execute", "requiredGate": "semantic-terra" }
+  },
+  {
+    "id": "settled-schema-implementation",
+    "input": { "domain": "notes", "phase": "implement", "scope": "domain", "ambiguity": "low", "verification": "semantic", "workload": "normal", "risks": ["schema"] },
+    "expected": { "owner": "obsidian_notes_pipeline", "phase": "implement", "model": "gpt-5.6-terra", "reasoning": "high", "contextMode": "fresh-packet", "authority": "execute", "requiredGate": "semantic-sol" }
+  },
+  {
+    "id": "private-publication-boundary",
+    "input": { "domain": "notes", "phase": "implement", "scope": "domain", "ambiguity": "material", "verification": "semantic", "workload": "normal", "risks": ["privacy", "publication"] },
+    "expected": { "owner": "obsidian_notes_pipeline", "phase": "implement", "model": "gpt-5.6-sol", "reasoning": "high", "contextMode": "fresh-packet", "authority": "decision-first", "requiredGate": "semantic-sol" }
+  },
+  {
+    "id": "mechanical-preflight",
+    "input": { "domain": "qa", "phase": "qa", "scope": "domain", "ambiguity": "low", "verification": "direct", "workload": "normal", "risks": [] },
+    "expected": { "owner": "qa_build_reviewer", "phase": "qa", "model": "gpt-5.6-luna", "reasoning": "medium", "contextMode": "fresh-packet", "authority": "mechanical-gate", "requiredGate": "none" }
+  },
+  {
+    "id": "ordinary-semantic-qa",
+    "input": { "domain": "qa", "phase": "qa", "scope": "domain", "ambiguity": "contained", "verification": "semantic", "workload": "normal", "risks": [] },
+    "expected": { "owner": "qa_build_reviewer", "phase": "qa", "model": "gpt-5.6-terra", "reasoning": "medium", "contextMode": "fresh-packet", "authority": "semantic-gate", "requiredGate": "none" }
+  },
+  {
+    "id": "critical-release-gate",
+    "input": { "domain": "qa", "phase": "qa", "scope": "cross-domain", "ambiguity": "material", "verification": "semantic", "workload": "large", "risks": ["deployment"] },
+    "expected": { "owner": "qa_build_reviewer", "phase": "qa", "model": "gpt-5.6-sol", "reasoning": "high", "contextMode": "fresh-packet", "authority": "semantic-gate", "requiredGate": "none" }
+  }
+]

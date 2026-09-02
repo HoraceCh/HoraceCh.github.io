@@ -3,11 +3,26 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
 import {
+  findTomlParserRuntime,
   parseRuleFrontmatter,
   validateScanBoundaryDefinition,
   validateWorkflow,
   validateWorkflowJsonStructure,
 } from '../tools/validate-codex-rules.mjs';
+
+test('TOML validation selects only Python 3.11 or newer', () => {
+  const runtime = findTomlParserRuntime((command) => ({
+    status: 0,
+    stdout: command === 'python' ? 'Python 3.10.14' : 'Python 3.11.9',
+    stderr: '',
+  }));
+
+  assert.deepEqual(runtime, ['py', ['-3']]);
+  assert.equal(
+    findTomlParserRuntime(() => ({ status: 0, stdout: 'Python 3.10.14', stderr: '' })),
+    null,
+  );
+});
 
 test('scan-boundary validation rejects policy files under excluded prefixes', () => {
   const errors = validateScanBoundaryDefinition(

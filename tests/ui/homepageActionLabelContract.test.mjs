@@ -8,6 +8,6 @@ test('selected homepage work exposes content-type-specific action labels', async
   const projectLabels = source.match(/actionLabel: 'View project'/g) ?? [];
   assert.equal(projectLabels.length, 2, 'both curated Project cards must explicitly label their action');
   assert.match(source, /selectedWorkNote\.data\.title,\s+actionLabel: 'Read note'/);
-  assert.match(source, /<span class="card-action">\{item\.actionLabel\}/);
-  assert.doesNotMatch(source, /<span class="card-action">View project/);
+  assert.match(source, /<span class="work-row-action">\{item\.actionLabel\}/);
+  assert.doesNotMatch(source, /class="card-action"/, 'legacy Home card-action markup must remain retired');
 });

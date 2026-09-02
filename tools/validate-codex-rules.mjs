@@ -59,6 +59,20 @@ function unique(values) {
   return new Set(values).size === values.length;
 }
 
+export function findTomlParserRuntime(run = spawnSync) {
+  for (const [command, prefix] of [['python', []], ['py', ['-3']]]) {
+    const result = run(command, [...prefix, '--version'], { encoding: 'utf8', windowsHide: true });
+    const output = `${result.stdout ?? ''}${result.stderr ?? ''}`;
+    const match = output.match(/Python (\d+)\.(\d+)/);
+    const major = Number(match?.[1]);
+    const minor = Number(match?.[2]);
+    if (result.status === 0 && match && (major > 3 || (major === 3 && minor >= 11))) {
+      return [command, prefix];
+    }
+  }
+  return null;
+}
+
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
 }
@@ -133,6 +147,11 @@ export function validateWorkflowJsonStructure(content) {
 }
 
 function parseTomlFiles(paths) {
+  const runtime = findTomlParserRuntime();
+  if (!runtime) {
+    throw new Error('TOML parsing requires Python 3.11+ with tomllib. Install Python 3.11+ and make `python` or `py -3` available.');
+  }
+
   const program = [
     'import json, pathlib, sys, tomllib',
     'result = {}',
@@ -143,17 +162,12 @@ function parseTomlFiles(paths) {
     'print(json.dumps(result))',
   ].join('\n');
 
-  const attempts = [
-    ['python', ['-c', program, ...paths]],
-    ['py', ['-3', '-c', program, ...paths]],
-  ];
-  for (const [command, args] of attempts) {
-    const result = spawnSync(command, args, { encoding: 'utf8', windowsHide: true });
-    if (result.status === 0) {
-      return JSON.parse(result.stdout);
-    }
+  const [command, prefix] = runtime;
+  const result = spawnSync(command, [...prefix, '-c', program, ...paths], { encoding: 'utf8', windowsHide: true });
+  if (result.status === 0) {
+    return JSON.parse(result.stdout);
   }
-  throw new Error('TOML parsing requires Python 3.11+ with tomllib');
+  throw new Error('TOML parsing failed with the selected Python 3.11+ runtime');
 }
 
 export function parseRuleFrontmatter(content) {

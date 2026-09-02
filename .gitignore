@@ -2,7 +2,16 @@ node_modules/
 public/
 dist/
 .astro/
-.codex/
+.codex/*
+!.codex/config.toml
+!.codex/agents/
+.codex/agents/*
+!.codex/agents/README.md
+!.codex/agents/*.toml
+.omo/*
+!.omo/rules/
+.omo/rules/*
+!.omo/rules/*.md
 .npm-cache/
 db.json
 .serena/

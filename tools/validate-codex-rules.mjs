@@ -204,7 +204,10 @@ export function validateScanBoundaryDefinition(scanBoundary, knownFiles, tracked
 
   const normalizedAllowedFiles = allowedFiles.map(normalizePath);
   for (const allowedFile of normalizedAllowedFiles) {
-    if (isAbsolute(allowedFile) || allowedFile.startsWith('../')) {
+    if (
+      isAbsolute(allowedFile) ||
+      allowedFile.split('/').includes('..')
+    ) {
       errors.push(`Allowed path must stay repository-relative: ${allowedFile}`);
     }
     if (!knownFiles.has(allowedFile)) {

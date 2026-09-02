@@ -23,6 +23,20 @@ test('scan-boundary validation rejects policy files under excluded prefixes', ()
   assert.ok(errors.some((error) => error.includes('excluded prefix')));
 });
 
+test('scan-boundary validation rejects embedded parent-directory segments', () => {
+  const errors = validateScanBoundaryDefinition(
+    {
+      policyFiles: ['docs/../AGENTS.md', '.omo/rules/../../AGENTS.md'],
+      excludedPrefixes: [],
+      excludedFiles: [],
+    },
+    new Set(['docs/../AGENTS.md', '.omo/rules/../../AGENTS.md']),
+    [],
+  );
+
+  assert.equal(errors.filter((error) => error.includes('repository-relative')).length, 2);
+});
+
 test('dynamic rules require bounded globs and must not always apply', () => {
   const parsed = parseRuleFrontmatter(`---
 description: Agent policy guard

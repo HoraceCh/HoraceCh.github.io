@@ -7,7 +7,7 @@ const approvedSourceCounts = new Map([
   ['src/components/Header.astro', 2],
   ['src/components/notes/NoteProperties.astro', 1],
   ['src/pages/index.astro', 1],
-  ['src/pages/notes/index.astro', 2],
+  ['src/pages/notes/index.astro', 1],
 ]);
 
 async function collectFiles(directory) {
@@ -65,8 +65,8 @@ test('selective prefetch stays explicit, intent-based, and limited to approved s
   assert.match(noteList, /prefetch\?: boolean/);
   assert.match(noteList, /prefetch = false/);
   assert.match(noteList, /<NoteCard[\s\S]*?prefetch=\{prefetch\}[\s\S]*?\/>/);
-  assert.match(notesIndex, /<NoteList\b[^>]*prefetch=\{true\}[^>]*\/>/);
-  assert.equal(prefetchAnchors(notesIndex).length, 2);
+  assert.doesNotMatch(notesIndex, /<NoteList\b/);
+  assert.equal(prefetchAnchors(notesIndex).length, 1);
   assert.match(
     noteProperties,
     /relatedNotes\.map[\s\S]*?<a href=\{item\.href\} data-astro-prefetch="hover"/,
@@ -107,11 +107,7 @@ test('selective prefetch stays explicit, intent-based, and limited to approved s
     [...source.matchAll(/<NoteList\b[\s\S]*?\/>/g)].map((match) => ({ file, tag: match[0] })));
   assert.equal(noteListCallSites.length, 7);
   for (const { file, tag } of noteListCallSites) {
-    if (file === 'src/pages/notes/index.astro') {
-      assert.match(tag, /prefetch=\{true\}/);
-    } else {
-      assert.doesNotMatch(tag, /\bprefetch=/, `unapproved NoteList context opted into prefetch: ${file}`);
-    }
+    assert.doesNotMatch(tag, /\bprefetch=/, `unapproved NoteList context opted into prefetch: ${file}`);
   }
 
   const layout = sourceByPath.get('src/layouts/Layout.astro');
@@ -161,8 +157,7 @@ test('built HTML exposes hover prefetch only on eligible page-navigation anchors
   assert.ok(noteEntryLinks.every((tag) => /data-astro-prefetch="hover"/.test(tag)));
 
   const notesIndexCards = notes.match(/<article class="card note-card">[\s\S]*?<\/article>/g) ?? [];
-  assert.ok(notesIndexCards.length > 0);
-  assert.ok(notesIndexCards.every((card) => /data-astro-prefetch="hover"/.test(card)));
+  assert.equal(notesIndexCards.length, 0);
 
   const filterFiles = (await collectFiles('dist/notes')).filter((file) =>
     /\/notes\/(?:categories|collections|paths|status|tags|types)\/.+\/index\.html$/.test(file.replaceAll('\\', '/')));

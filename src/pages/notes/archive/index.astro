@@ -1,0 +1,48 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import NoteList from '../../../components/NoteList.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import {
+  isNoteIndexEntry,
+  isOrdinaryNote,
+  isPublicBrowseNote,
+  sortNotesForHierarchy,
+} from '../../../utils/noteModules';
+import { loadNotePublicationModel, noteHref } from '../../../utils/notePublication';
+const model = await loadNotePublicationModel();
+const publicBrowseNotes = model.discoverable.filter(isPublicBrowseNote);
+const ordinaryNotes = publicBrowseNotes.filter(isOrdinaryNote).sort((a, b) => {
+  const categoryCompare = a.data.category.localeCompare(b.data.category);
+  if (categoryCompare !== 0) return categoryCompare;
+  const orderCompare = (a.data.order ?? 999) - (b.data.order ?? 999);
+  if (orderCompare !== 0) return orderCompare;
+  return a.data.title.localeCompare(b.data.title);
+});
+const hierarchyIndexNotes = sortNotesForHierarchy(publicBrowseNotes.filter(isNoteIndexEntry));
+---
+<Layout title="Notes Archive" description="Complete static index of public individual notes and hierarchy index notes.">
+  <section class="article filter-hero notes-browse-hero">
+    <p class="back-link"><a href="/notes/">Back to Notes</a></p>
+    <p class="eyebrow">Notes / Archive</p>
+    <h1>Notes Archive</h1>
+    <p class="lead">A complete static index of public individual notes, separated from the main discovery path.</p>
+    <p>{ordinaryNotes.length} public individual note{ordinaryNotes.length === 1 ? '' : 's'}.</p>
+  </section>
+  <section class="section">
+    <SectionHeading eyebrow="Archive" title="Individual Notes" description="Grouped by category, then ordered by explicit sequence and title." />
+    <NoteList notes={ordinaryNotes} emptyMessage="No public individual notes yet." />
+  </section>
+  {hierarchyIndexNotes.length > 0 && (
+    <section class="section" aria-labelledby="module-index-list-title">
+      <SectionHeading id="module-index-list-title" eyebrow="Indexes" title="Collection and Module Index Notes" description="Readable index documents remain at their canonical flat note URLs." />
+      <div class="compact-note-list">
+        {hierarchyIndexNotes.map((note) => (
+          <a class="compact-note compact-note-muted" href={noteHref(note)}>
+            <span>{note.data.title}</span>
+            <small>{note.data.isIndex ? 'index note' : note.data.noteRole}</small>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+</Layout>

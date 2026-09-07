@@ -67,6 +67,11 @@ const backlinkCount = backlinks.length;
 
 <aside class="note-sidepane" aria-label="Note navigation">
   <div class="note-sidepane-inner">
+    <details class="note-sidepane-section note-sidepane-properties">
+      <summary>Properties</summary>
+      <slot name="properties" />
+    </details>
+
     <details class="note-sidepane-section note-outline-section" open>
       <summary>Outline</summary>
       <NoteOutline outline={outline} />

@@ -71,19 +71,24 @@ const outlineItems = outline
 
 <script>
   const setupNoteOutlineScrollspy = () => {
-    const outline = document.querySelector('[data-note-outline]');
+    if (document.documentElement.dataset.noteOutlineInitialized === 'true') {
+      return;
+    }
+
+    const outlines = Array.from(document.querySelectorAll('[data-note-outline]')).filter(
+      (element): element is HTMLElement => element instanceof HTMLElement,
+    );
     const article = document.querySelector('[data-note-prose]');
 
     if (
-      !(outline instanceof HTMLElement) ||
-      !(article instanceof HTMLElement) ||
-      outline.dataset.scrollspyInitialized === 'true'
+      outlines.length === 0 ||
+      !(article instanceof HTMLElement)
     ) {
       return;
     }
 
-    const links = Array.from(outline.querySelectorAll('a[href^="#"]'));
-    const linkByHeadingId = new Map();
+    const links = outlines.flatMap((outline) => Array.from(outline.querySelectorAll('a[href^="#"]')));
+    const linksByHeadingId = new Map<string, HTMLAnchorElement[]>();
 
     for (const link of links) {
       if (!(link instanceof HTMLAnchorElement) || !link.hash) {
@@ -91,21 +96,23 @@ const outlineItems = outline
       }
 
       try {
-        linkByHeadingId.set(decodeURIComponent(link.hash.slice(1)), link);
+        const headingId = decodeURIComponent(link.hash.slice(1));
+        linksByHeadingId.set(headingId, [...(linksByHeadingId.get(headingId) ?? []), link]);
       } catch {
-        linkByHeadingId.set(link.hash.slice(1), link);
+        const headingId = link.hash.slice(1);
+        linksByHeadingId.set(headingId, [...(linksByHeadingId.get(headingId) ?? []), link]);
       }
     }
 
     const headings = Array.from(article.querySelectorAll('h2[id], h3[id]')).filter((heading) =>
-      linkByHeadingId.has(heading.id),
+      linksByHeadingId.has(heading.id),
     );
 
     if (headings.length === 0) {
       return;
     }
 
-    outline.dataset.scrollspyInitialized = 'true';
+    document.documentElement.dataset.noteOutlineInitialized = 'true';
 
     let activeId = '';
     let frameId = 0;
@@ -131,16 +138,20 @@ const outlineItems = outline
       }
 
       if (activeId) {
-        const previousLink = linkByHeadingId.get(activeId);
-        previousLink?.removeAttribute('aria-current');
-        previousLink?.classList.remove('is-active');
-        previousLink?.closest('.note-outline-item')?.classList.remove('is-active');
+        for (const previousLink of linksByHeadingId.get(activeId) ?? []) {
+          previousLink.removeAttribute('aria-current');
+          previousLink.classList.remove('is-active');
+          previousLink.closest('.note-outline-item')?.classList.remove('is-active');
+        }
       }
 
-      const activeLink = linkByHeadingId.get(headingId);
-      activeLink?.setAttribute('aria-current', 'location');
-      activeLink?.classList.add('is-active');
-      activeLink?.closest('.note-outline-item')?.classList.add('is-active');
+      const activeLinks = linksByHeadingId.get(headingId) ?? [];
+      for (const activeLink of activeLinks) {
+        activeLink.setAttribute('aria-current', 'location');
+        activeLink.classList.add('is-active');
+        activeLink.closest('.note-outline-item')?.classList.add('is-active');
+      }
+      const activeLink = activeLinks[0];
       revealActiveLink(activeLink);
       activeId = headingId;
     };
@@ -179,6 +190,33 @@ const outlineItems = outline
 
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(initializeAfterPaint);
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      const link = target.closest('[data-note-outline] a[href^="#"]');
+
+      if (!(link instanceof HTMLAnchorElement)) {
+        return;
+      }
+
+      const mobileOutline = link.closest('[data-mobile-note-outline]');
+      const headingId = link.hash.slice(1);
+      const heading = document.getElementById(decodeURIComponent(headingId));
+
+      if (mobileOutline instanceof HTMLDetailsElement) {
+        mobileOutline.open = false;
+      }
+
+      if (heading instanceof HTMLElement) {
+        heading.tabIndex = -1;
+        window.requestAnimationFrame(() => heading.focus({ preventScroll: true }));
+      }
     });
   };
 

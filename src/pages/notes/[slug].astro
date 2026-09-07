@@ -1,6 +1,7 @@
 ---
 import { render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import NoteOutline from '../../components/notes/NoteOutline.astro';
 import NoteProperties from '../../components/notes/NoteProperties.astro';
 import NoteSidepane from '../../components/notes/NoteSidepane.astro';
 import type { BacklinksIndex } from '../../utils/noteBacklinks';
@@ -41,6 +42,18 @@ const relatedNotes = note.data.related.map((slug: string) => ({
 const prerequisiteItems = note.data.prerequisites
   .map((slug: string) => routableBySlug.get(slug))
   .filter((item): item is EffectiveNote => Boolean(item));
+const formattedUpdated = note.data.updated
+  ? new Intl.DateTimeFormat('en', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }).format(note.data.updated)
+  : undefined;
+const essentialMetadata = [
+  { label: 'Type', value: note.data.type },
+  { label: 'Level', value: note.data.level },
+  { label: 'Updated', value: formattedUpdated },
+].filter((item): item is { label: string; value: string } => Boolean(item.value));
 const propertyItems = [
   {
     label: 'Category',
@@ -69,13 +82,7 @@ const propertyItems = [
   },
   {
     label: 'Updated',
-    value: note.data.updated
-      ? new Intl.DateTimeFormat('en', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        }).format(note.data.updated)
-      : undefined,
+    value: formattedUpdated,
   },
 ];
 const prerequisiteLinks = prerequisiteItems.map((item) => ({
@@ -104,15 +111,35 @@ const relatedLinks = relatedNotes.map((item) => ({
       </nav>
       <h1>{note.data.title}</h1>
       <p class="lead">{note.data.publicSummary}</p>
+      {
+        essentialMetadata.length > 0 ? (
+          <dl class="note-essential-metadata" aria-label="Essential note metadata">
+            {essentialMetadata.map((item) => (
+              <div>
+                <dt>{item.label}</dt>
+                <dd>{item.value}</dd>
+              </div>
+            ))}
+          </dl>
+        ) : null
+      }
     </div>
+
+    {outlineItems.length >= 2 ? (
+      <details class="note-mobile-outline" data-mobile-note-outline>
+        <summary>On this page</summary>
+        <NoteOutline outline={outlineItems} />
+      </details>
+    ) : null}
 
     <div class="note-reading-layout">
       <div class="note-prose" data-note-prose>
         <Content />
       </div>
 
-      <div class="note-properties-slot">
+      <NoteSidepane outline={outlineItems} backlinks={incomingBacklinks}>
         <NoteProperties
+          slot="properties"
           properties={propertyItems}
           concepts={note.data.concepts}
           prerequisites={prerequisiteLinks}
@@ -120,9 +147,7 @@ const relatedLinks = relatedNotes.map((item) => ({
           tags={note.data.tags}
           status={note.data.status}
         />
-      </div>
-
-      <NoteSidepane outline={outlineItems} backlinks={incomingBacklinks} />
+      </NoteSidepane>
     </div>
   </article>
 

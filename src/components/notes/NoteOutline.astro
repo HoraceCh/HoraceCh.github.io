@@ -151,8 +151,12 @@ const outlineItems = outline
         activeLink.classList.add('is-active');
         activeLink.closest('.note-outline-item')?.classList.add('is-active');
       }
-      const activeLink = activeLinks[0];
-      revealActiveLink(activeLink);
+      for (const activeLink of activeLinks) {
+        if (activeLink.getClientRects().length > 0) {
+          revealActiveLink(activeLink);
+          break;
+        }
+      }
       activeId = headingId;
     };
 

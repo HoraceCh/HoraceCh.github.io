@@ -1168,7 +1168,7 @@ li {
 .module-card,
 .module-summary-card {
   border: 1px solid var(--notes-hairline);
-  border-radius: 24px;
+  border-radius: 8px;
   padding: 20px;
   background: var(--notes-paper);
   color: var(--notes-ink);
@@ -1264,7 +1264,7 @@ li {
   min-height: 36px;
   align-items: center;
   border: 1px solid var(--notes-hairline);
-  border-radius: 18px;
+  border-radius: 8px;
   padding: 0 12px;
   background: var(--notes-surface-alt);
   color: var(--notes-ink);
@@ -2804,7 +2804,7 @@ li {
 
   .module-card,
   .module-summary-card {
-    border-radius: 18px;
+    border-radius: 8px;
     padding: 16px;
   }
 

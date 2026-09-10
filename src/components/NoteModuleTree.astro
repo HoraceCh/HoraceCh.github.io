@@ -6,9 +6,14 @@ import { noteHref } from '../utils/notePublication';
 interface Props {
   nodes: NoteModuleNode[];
   emptyMessage?: string;
+  showChildren?: boolean;
 }
 
-const { nodes, emptyMessage = 'No public collections or modules are available yet.' } = Astro.props;
+const {
+  nodes,
+  emptyMessage = 'No public collections or modules are available yet.',
+  showChildren = true,
+} = Astro.props;
 const formatDate = (date: Date | undefined) =>
   date
     ? new Intl.DateTimeFormat('en', {
@@ -54,7 +59,7 @@ const formatDate = (date: Date | undefined) =>
               {node.indexNote && <a href={noteHref(node.indexNote)}>Index note</a>}
             </div>
 
-            {childModules.length > 0 && (
+            {showChildren && childModules.length > 0 && (
               <ul class="module-card__children" aria-label={`${node.title} child modules`}>
                 {childModules.map((child) => {
                   const depth = Math.min(child.segments.length - node.segments.length - 1, 3);

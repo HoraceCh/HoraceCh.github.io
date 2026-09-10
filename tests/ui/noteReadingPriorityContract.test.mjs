@@ -35,19 +35,18 @@ test('Note detail source and built output prioritize prose before supporting con
 
   const layout = route.slice(layoutStart, layoutEnd);
   const proseIndex = layout.indexOf('class="note-prose"');
-  const propertiesIndex = layout.indexOf('class="note-properties-slot"');
   const sidepaneIndex = layout.indexOf('<NoteSidepane');
-  assert.ok(proseIndex >= 0 && proseIndex < propertiesIndex && propertiesIndex < sidepaneIndex);
+  const propertiesSlotIndex = layout.indexOf('slot="properties"');
+  assert.ok(proseIndex >= 0 && proseIndex < sidepaneIndex && propertiesSlotIndex > sidepaneIndex);
   assert.ok(route.indexOf('class="note-header"') < layoutStart, 'breadcrumb, title, and summary must remain before prose');
 
   for (const slug of representativeRoutes) {
     const html = await readFile(`dist/notes/${slug}/index.html`, 'utf8');
     const builtProse = html.indexOf('class="note-prose"');
-    const builtProperties = html.indexOf('class="note-properties-slot"');
     const builtSidepane = html.indexOf('class="note-sidepane"');
     assert.ok(
-      builtProse >= 0 && builtProse < builtProperties && builtProperties < builtSidepane,
-      `${slug} must render prose, Properties, then sidepane`,
+      builtProse >= 0 && builtProse < builtSidepane,
+      `${slug} must render prose before the sidepane`,
     );
   }
 });
@@ -55,13 +54,13 @@ test('Note detail source and built output prioritize prose before supporting con
 test('Note CSS separates long-form measure from full-width technical content', async () => {
   const css = await readFile('src/styles/global.css', 'utf8');
   const desktopGrid = extractRule(css, '.note-reading-layout');
-  assert.match(desktopGrid, /grid-template-areas:\s*"content sidepane"\s*"properties sidepane";/);
+  assert.match(desktopGrid, /grid-template-areas:\s*"content sidepane";/);
   assert.match(desktopGrid, /grid-template-columns:\s*minmax\(0, 760px\) minmax\(260px, 320px\);/);
   assert.match(desktopGrid, /gap:\s*0 40px;/);
 
   const stacked = extractBlock(css, '@media (max-width: 980px)');
   const stackedGrid = extractRule(stacked, '.note-reading-layout');
-  assert.match(stackedGrid, /grid-template-areas:\s*"content"\s*"properties"\s*"sidepane";/);
+  assert.match(stackedGrid, /grid-template-areas:\s*"content"\s*"sidepane";/);
 
   const measureSelector = '.note-prose > :is(p, ul, ol, blockquote):not(:has(:is(img, picture, figure, table, pre, .note-code-block)))';
   const measureRule = extractRule(css, measureSelector);
@@ -89,14 +88,14 @@ test('Outline reveal preserves document scroll and retains bounded deferred scro
   assert.match(reveal, /window\.scrollTo\(\{ left: documentScrollLeft, top: documentScrollTop, behavior: 'auto' \}\)/);
   assert.match(outline, /revealActiveLink\(activeLink\)/);
 
-  assert.match(outline, /dataset\.scrollspyInitialized === 'true'/);
+  assert.match(outline, /dataset\.noteOutlineInitialized === 'true'/);
   assert.match(outline, /frameId = window\.requestAnimationFrame\(updateActiveHeading\)/);
   assert.match(
     outline,
     /window\.requestAnimationFrame\(\(\) => \{\s*window\.requestAnimationFrame\(initializeAfterPaint\);\s*\}\)/,
   );
   assert.deepEqual(
-    [...outline.matchAll(/(?:window\.)?addEventListener\('([^']+)'/g)].map((match) => match[1]),
+    [...outline.matchAll(/window\.addEventListener\('([^']+)'/g)].map((match) => match[1]),
     ['scroll', 'resize', 'hashchange'],
   );
   assert.doesNotMatch(outline, /setTimeout|setInterval|requestIdleCallback|IntersectionObserver/);

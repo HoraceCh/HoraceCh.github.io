@@ -5,8 +5,8 @@ import test from 'node:test';
 test('Note Outline defers startup geometry and keeps bounded scrollspy updates', async () => {
   const outline = await readFile('src/components/notes/NoteOutline.astro', 'utf8');
 
-  assert.match(outline, /dataset\.scrollspyInitialized === 'true'/, 'repeated setup must be ignored');
-  assert.match(outline, /outline\.dataset\.scrollspyInitialized = 'true'/);
+  assert.match(outline, /dataset\.noteOutlineInitialized === 'true'/, 'repeated setup must be ignored');
+  assert.match(outline, /document\.documentElement\.dataset\.noteOutlineInitialized = 'true'/);
   assert.match(outline, /const initializeAfterPaint = \(\) => \{\s*updateActiveHeading\(\);/);
   assert.match(
     outline,

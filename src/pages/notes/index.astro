@@ -1,26 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import BrowsePills from '../../components/BrowsePills.astro';
-import NoteList from '../../components/NoteList.astro';
 import NoteModuleTree from '../../components/NoteModuleTree.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import {
-  buildPublicTagConcepts,
-  categoryDefinitions,
-  noteHasPublicTag,
-  pathDefinitions,
-  statusDescriptions,
-  typeLabels,
-} from '../../utils/notes';
-import {
   buildNoteModuleTree,
   flattenNoteModuleTree,
-  isNoteIndexEntry,
   isOrdinaryNote,
   isPublicBrowseNote,
-  sortNotesForHierarchy,
 } from '../../utils/noteModules';
-import { slugify } from '../../utils/slugify';
 import { loadNotePublicationModel, noteHref } from '../../utils/notePublication';
 
 const model = await loadNotePublicationModel();
@@ -31,68 +18,15 @@ const publicBrowseNotes = notes.filter(isPublicBrowseNote);
 const noteModules = buildNoteModuleTree(publicBrowseNotes);
 const moduleNodes = flattenNoteModuleTree(noteModules);
 const ordinaryNotes = publicBrowseNotes.filter(isOrdinaryNote);
-const hierarchyIndexNotes = sortNotesForHierarchy(publicBrowseNotes.filter(isNoteIndexEntry));
-
-const categories = categoryDefinitions.map((category) => ({
-  ...category,
-  count: publicBrowseNotes.filter((note) => note.data.category === category.name).length,
-}));
-
-const tagCounts = buildPublicTagConcepts(publicBrowseNotes.flatMap((note) => note.data.tags), slugify)
-  .map((tag) => ({
-    label: tag.label,
-    href: `/notes/tags/${tag.slug}/`,
-    count: publicBrowseNotes.filter((note) => noteHasPublicTag(note.data.tags, tag.label)).length,
-  }));
-
-const pathCounts = pathDefinitions.map((path) => ({
-  label: path.title,
-  href: `/notes/paths/${slugify(path.title)}/`,
-  count: publicBrowseNotes.filter((note) => note.data.path === path.title).length,
-  description: path.purpose,
-}));
-
-const typeCounts = Object.entries(typeLabels).map(([type, label]) => ({
-  label,
-  href: `/notes/types/${slugify(type)}/`,
-  count: publicBrowseNotes.filter((note) => note.data.type === type).length,
-}));
-
-const statusCounts = Object.entries(statusDescriptions).map(([status, description]) => ({
-  label: status,
-  href: `/notes/status/${slugify(status)}/`,
-  count: publicBrowseNotes.filter((note) => note.data.status === status).length,
-  description,
-}));
-
-function primaryDiscoveryItems<T extends { count: number }>(items: T[]) {
-  return items.filter((item) => item.count > 0);
-}
-
-const collectionCounts = noteModules.map((collection) => ({
-  label: collection.title,
-  href: collection.href,
-  count: collection.ordinaryNoteCount,
-  description: collection.indexNote?.data.publicSummary,
-}));
-
-const moduleCounts = moduleNodes
-  .filter((module) => module.segments.length > 1)
-  .map((module) => ({
-    label: module.title,
-    href: module.href,
-    count: module.ordinaryNoteCount,
-    description: module.indexNote?.data.publicSummary,
-  }));
-
 const recentNotes = ordinaryNotes.slice(0, 5);
-const allNotes = [...ordinaryNotes].sort((a, b) => {
-  const categoryCompare = a.data.category.localeCompare(b.data.category);
-  if (categoryCompare !== 0) return categoryCompare;
-  const orderCompare = (a.data.order ?? 999) - (b.data.order ?? 999);
-  if (orderCompare !== 0) return orderCompare;
-  return a.data.title.localeCompare(b.data.title);
-});
+const visibleModules = moduleNodes.filter((module) => module.segments.length > 1);
+const browsePaths = [
+  { label: 'Categories', href: '/notes/explore/#categories', detail: 'Subject areas' },
+  { label: 'Learning paths', href: '/notes/explore/#learning-paths', detail: 'Ordered study routes' },
+  { label: 'Tags', href: '/notes/explore/#tags', detail: 'Specific concepts' },
+  { label: 'Note types', href: '/notes/explore/#note-types', detail: 'Content formats' },
+  { label: 'Statuses', href: '/notes/explore/#statuses', detail: 'Current maturity' },
+];
 ---
 
 <Layout title="Notes" description="Public learning notes organized by collections, modules, topics, and recent updates.">
@@ -108,17 +42,75 @@ const allNotes = [...ordinaryNotes].sort((a, b) => {
     </p>
   </section>
 
+  <section class="section notes-entry-points" aria-labelledby="start-here-title">
+    <SectionHeading
+      id="start-here-title"
+      eyebrow="Start Here"
+      title="Choose a Way In"
+      description="Use the knowledge hierarchy for structured study or recent notes for current work."
+    />
+    <nav aria-label="Notes entry points">
+      <ol class="notes-entry-list">
+        <li>
+          <a href="#collections">
+            <span><strong>Collections</strong><small>Follow the primary subject hierarchy</small></span>
+            <span class="notes-entry-count">{noteModules.length}</span>
+          </a>
+        </li>
+        <li>
+          <a href="#recent-notes">
+            <span><strong>Recent notes</strong><small>Read the latest individual updates</small></span>
+            <span class="notes-entry-count">{recentNotes.length}</span>
+          </a>
+        </li>
+      </ol>
+    </nav>
+  </section>
+
   <section class="section notes-module-overview" id="collections">
     <SectionHeading
-      eyebrow="Structure"
-      title="Collections and Modules"
-      description="Start here for structured browsing. Collections and modules group notes by subject, sequence, and project context."
+      eyebrow="Primary Structure"
+      title="Collections"
+      description="Broad subject areas provide the first level of the public knowledge map."
     />
-    <NoteModuleTree nodes={noteModules} emptyMessage="No public collections or modules are available yet." />
+    <NoteModuleTree
+      nodes={noteModules}
+      emptyMessage="No public collections are available yet."
+      showChildren={false}
+    />
     <p class="module-overview-link"><a href="/notes/collections/">Browse all collections</a></p>
   </section>
 
-  <section class="section recent-notes">
+  <section class="section notes-module-directory" id="modules">
+    <SectionHeading
+      eyebrow="Second Level"
+      title="Modules"
+      description="Focused branches within collections, shown as paths rather than a second wall of cards."
+    />
+    {
+      visibleModules.length > 0 ? (
+        <ol class="module-directory-list" aria-label="Note modules">
+          {visibleModules.map((module) => (
+            <li>
+              <a href={module.href}>
+                <span>
+                  <small>{module.segments.slice(0, -1).join(' / ')}</small>
+                  <strong>{module.title}</strong>
+                </span>
+                <span class="module-directory-count">
+                  {module.ordinaryNoteCount} note{module.ordinaryNoteCount === 1 ? '' : 's'}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p class="empty-state">No public modules are available yet.</p>
+      )
+    }
+  </section>
+
+  <section class="section recent-notes" id="recent-notes">
     <SectionHeading
       eyebrow="Updates"
       title="Recent Notes"
@@ -142,51 +134,28 @@ const allNotes = [...ordinaryNotes].sort((a, b) => {
 
   <section class="section browse-section">
     <SectionHeading
-      eyebrow="Filters"
-      title="Explore by Topic"
-      description="Secondary taxonomy views for narrowing the same public notes by collection, module, category, path, tag, type, or status."
+      eyebrow="Browse"
+      title="Key Browse Paths"
+      description="Taxonomy remains available as a secondary way to narrow the same public notes."
     />
-    <div class="browse-grid">
-      <BrowsePills label="Collections" items={collectionCounts} />
-      <BrowsePills label="Modules" items={moduleCounts} />
-      <BrowsePills
-        label="Categories"
-        items={primaryDiscoveryItems(categories).map((category) => ({
-          label: category.name,
-          href: `/notes/categories/${slugify(category.name)}/`,
-          count: category.count,
-          description: category.description,
-        }))}
-      />
-      <BrowsePills label="Learning paths" items={primaryDiscoveryItems(pathCounts)} />
-      <BrowsePills label="Tags" items={tagCounts} />
-      <BrowsePills label="Note types" items={primaryDiscoveryItems(typeCounts)} />
-      <BrowsePills label="Statuses" items={primaryDiscoveryItems(statusCounts)} />
+    <nav aria-label="Secondary notes browse paths">
+      <ul class="notes-browse-links">
+        {browsePaths.map((path) => (
+          <li><a href={path.href}><span>{path.label}</span><small>{path.detail}</small></a></li>
+        ))}
+      </ul>
+    </nav>
+    <div class="notes-search-entry" role="group" aria-labelledby="notes-search-title">
+      <div>
+        <strong id="notes-search-title">Search Notes</strong>
+        <p id="notes-search-description">Search will be available in a later Notes update. Browse remains available now.</p>
+      </div>
+      <button type="button" disabled aria-describedby="notes-search-description">Search planned</button>
     </div>
-  </section>
-
-  <section class="section" id="all-notes">
-    <SectionHeading
-      eyebrow="Archive"
-      title="Individual Notes Archive"
-      description="Archive-style list of public individual notes. Collection and module index notes and hidden archive branches stay separate."
-    />
-    <NoteList notes={allNotes} emptyMessage="No public individual notes yet." prefetch={true} />
-
-    {
-      hierarchyIndexNotes.length > 0 && (
-        <div class="module-index-list" aria-labelledby="module-index-list-title">
-          <h3 id="module-index-list-title">Collection and Module Index Notes</h3>
-          <div class="compact-note-list">
-            {hierarchyIndexNotes.map((note) => (
-              <a class="compact-note compact-note-muted" href={noteHref(note)} data-astro-prefetch="hover">
-                <span>{note.data.title}</span>
-                <small>{note.data.isIndex ? 'index note' : note.data.noteRole}</small>
-              </a>
-            ))}
-          </div>
-        </div>
-      )
-    }
+    <p class="notes-explore-entry"><a href="/notes/explore/">Explore all browse paths</a></p>
+    <div class="notes-archive-entry">
+      <p><strong>Need the complete list?</strong> The archive keeps every public individual note in one static index.</p>
+      <a href="/notes/archive/">Open the notes archive</a>
+    </div>
   </section>
 </Layout>

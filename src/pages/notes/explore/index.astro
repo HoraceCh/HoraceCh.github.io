@@ -1,0 +1,112 @@
+---
+import BrowsePills from '../../../components/BrowsePills.astro';
+import Layout from '../../../layouts/Layout.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import {
+  buildPublicTagConcepts,
+  categoryDefinitions,
+  noteHasPublicTag,
+  pathDefinitions,
+  statusDescriptions,
+  typeLabels,
+} from '../../../utils/notes';
+import {
+  buildNoteModuleTree,
+  flattenNoteModuleTree,
+  isPublicBrowseNote,
+} from '../../../utils/noteModules';
+import { slugify } from '../../../utils/slugify';
+import { loadNotePublicationModel } from '../../../utils/notePublication';
+
+const model = await loadNotePublicationModel();
+const publicBrowseNotes = model.discoverable.filter(isPublicBrowseNote);
+const noteModules = buildNoteModuleTree(publicBrowseNotes);
+const moduleNodes = flattenNoteModuleTree(noteModules);
+function populated<T extends { count: number }>(items: T[]) {
+  return items.filter((item) => item.count > 0);
+}
+
+const collections = noteModules.map((collection) => ({
+  label: collection.title,
+  href: collection.href,
+  count: collection.ordinaryNoteCount,
+  description: collection.indexNote?.data.publicSummary,
+}));
+const modules = moduleNodes
+  .filter((module) => module.segments.length > 1)
+  .map((module) => ({
+    label: module.segments.join(' / '),
+    href: module.href,
+    count: module.ordinaryNoteCount,
+    description: module.indexNote?.data.publicSummary,
+  }));
+const categories = categoryDefinitions.map((category) => ({
+  label: category.name,
+  href: `/notes/categories/${slugify(category.name)}/`,
+  count: publicBrowseNotes.filter((note) => note.data.category === category.name).length,
+  description: category.description,
+}));
+const paths = pathDefinitions.map((path) => ({
+  label: path.title,
+  href: `/notes/paths/${slugify(path.title)}/`,
+  count: publicBrowseNotes.filter((note) => note.data.path === path.title).length,
+  description: path.purpose,
+}));
+const tags = buildPublicTagConcepts(publicBrowseNotes.flatMap((note) => note.data.tags), slugify)
+  .map((tag) => ({
+    label: tag.label,
+    href: `/notes/tags/${tag.slug}/`,
+    count: publicBrowseNotes.filter((note) => noteHasPublicTag(note.data.tags, tag.label)).length,
+  }));
+const types = Object.entries(typeLabels).map(([type, label]) => ({
+  label,
+  href: `/notes/types/${slugify(type)}/`,
+  count: publicBrowseNotes.filter((note) => note.data.type === type).length,
+}));
+const statuses = Object.entries(statusDescriptions).map(([status, description]) => ({
+  label: status,
+  href: `/notes/status/${slugify(status)}/`,
+  count: publicBrowseNotes.filter((note) => note.data.status === status).length,
+  description,
+}));
+---
+
+<Layout title="Explore Notes" description="Browse public notes by collection, module, category, path, tag, type, or status.">
+  <section class="article filter-hero notes-browse-hero">
+    <p class="back-link"><a href="/notes/">Back to Notes</a></p>
+    <p class="eyebrow">Notes / Explore</p>
+    <h1>Explore Notes</h1>
+    <p class="lead">Use these secondary indexes when you already know the subject, route, format, or maturity you need.</p>
+  </section>
+  <section class="section" id="collections">
+    <SectionHeading eyebrow="Hierarchy" title="Collections and Modules" />
+    <div class="browse-grid">
+      <BrowsePills label="Collections" items={populated(collections)} />
+      <BrowsePills label="Modules" items={populated(modules)} />
+    </div>
+  </section>
+  <section class="section" id="categories">
+    <SectionHeading eyebrow="Subjects" title="Categories" />
+    <BrowsePills label="Categories" items={populated(categories)} />
+  </section>
+  <section class="section" id="learning-paths">
+    <SectionHeading eyebrow="Sequence" title="Learning Paths" />
+    <BrowsePills label="Learning paths" items={populated(paths)} />
+  </section>
+  <section class="section" id="tags">
+    <SectionHeading eyebrow="Concepts" title="Tags" />
+    <BrowsePills label="Tags" items={tags} />
+  </section>
+  <section class="section" id="note-types">
+    <SectionHeading eyebrow="Format" title="Note Types" />
+    <BrowsePills label="Note types" items={populated(types)} />
+  </section>
+  <section class="section" id="statuses">
+    <SectionHeading eyebrow="Maturity" title="Statuses" />
+    <BrowsePills label="Statuses" items={populated(statuses)} />
+  </section>
+  <section class="section notes-archive-entry">
+    <p><strong>Looking for one complete index?</strong> Browse every public individual note in the archive.</p>
+    <a href="/notes/archive/">Open the notes archive</a>
+  </section>
+</Layout>

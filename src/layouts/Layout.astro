@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import SearchDialog from '../components/SearchDialog.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -75,6 +76,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
         <slot />
       </main>
       <Footer />
+      <SearchDialog openOnLoad={Astro.url.pathname === '/search/'} />
     </div>
   </body>
 </html>

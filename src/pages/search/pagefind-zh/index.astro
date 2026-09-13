@@ -1,0 +1,34 @@
+---
+const language = 'zh-CN';
+---
+
+<!doctype html>
+<html lang={language}>
+  <head><meta charset="utf-8" /><meta name="robots" content="noindex" /><title>Chinese search</title></head>
+  <body>
+    <script type="module" define:vars={{ language }}>
+      const origin = window.location.origin;
+      let pagefind;
+      try {
+        pagefind = await import('/pagefind/pagefind.js');
+        await pagefind.init();
+        window.parent.postMessage({ type: 'hc56:ready', language }, origin);
+      } catch {
+        window.parent.postMessage({ type: 'hc56:failure', language }, origin);
+      }
+      window.addEventListener('message', async (event) => {
+        if (event.origin !== origin || event.data?.type !== 'hc56:query' || !pagefind) return;
+        try {
+          const response = await pagefind.search(event.data.query);
+          const results = await Promise.all(response.results.slice(0, event.data.limit).map(async (result) => {
+            const data = await result.data();
+            return { title: data.meta.title, url: data.url, excerpt: data.excerpt };
+          }));
+          window.parent.postMessage({ type: 'hc56:results', language, queryId: event.data.queryId, results }, origin);
+        } catch {
+          window.parent.postMessage({ type: 'hc56:failure', language }, origin);
+        }
+      });
+    </script>
+  </body>
+</html>

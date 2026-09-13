@@ -96,9 +96,9 @@ const relatedLinks = relatedNotes.map((item) => ({
 ---
 
 <Layout title={note.data.title} description={note.data.publicSummary} lang={note.data.language}>
-  <article class="article note-article" lang={note.data.language}>
+  <article class="article note-article" lang={note.data.language} data-pagefind-body>
     <div class="note-header">
-      <nav class="note-breadcrumbs" aria-label="Note breadcrumb">
+      <nav class="note-breadcrumbs" aria-label="Note breadcrumb" data-pagefind-ignore>
         <ol>
           {
             breadcrumbs.map((item) => (
@@ -113,7 +113,7 @@ const relatedLinks = relatedNotes.map((item) => ({
       <p class="lead">{note.data.publicSummary}</p>
       {
         essentialMetadata.length > 0 ? (
-          <dl class="note-essential-metadata" aria-label="Essential note metadata">
+          <dl class="note-essential-metadata" aria-label="Essential note metadata" data-pagefind-ignore>
             {essentialMetadata.map((item) => (
               <div>
                 <dt>{item.label}</dt>
@@ -126,7 +126,7 @@ const relatedLinks = relatedNotes.map((item) => ({
     </div>
 
     {outlineItems.length >= 2 ? (
-      <details class="note-mobile-outline" data-mobile-note-outline>
+      <details class="note-mobile-outline" data-mobile-note-outline data-pagefind-ignore>
         <summary>On this page</summary>
         <NoteOutline outline={outlineItems} />
       </details>

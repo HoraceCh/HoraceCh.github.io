@@ -1,0 +1,43 @@
+---
+interface Props {
+  openOnLoad?: boolean;
+}
+
+const { openOnLoad = false } = Astro.props;
+---
+
+<dialog class="site-search" aria-labelledby="site-search-title" open={openOnLoad} data-search-dialog data-search-open-on-load={openOnLoad ? 'true' : 'false'} data-pagefind-ignore>
+  <div class="site-search__surface">
+    <header class="site-search__header">
+      <div>
+        <p class="site-search__eyebrow">Site search</p>
+        <h2 id="site-search-title">Find projects and notes</h2>
+      </div>
+      <button class="site-search__close" type="button" data-search-close aria-label="Close search">Close</button>
+    </header>
+    <label class="site-search__field" for="site-search-input">
+      <span>Search the public site</span>
+      <input id="site-search-input" data-search-input type="search" autocomplete="off" placeholder="Try VLA, 信息检索, or a title" />
+    </label>
+    <p class="site-search__status" data-search-status role="status" aria-live="polite" hidden></p>
+    <ol class="site-search__results" data-search-results aria-label="Search results"></ol>
+    <p class="site-search__hint">Use ↑ ↓ to move through results. Escape closes search.</p>
+  </div>
+  <iframe data-search-context data-pagefind-language="en" data-search-source="/search/pagefind-en/" title="English search index" tabindex="-1"></iframe>
+  <iframe data-search-context data-pagefind-language="zh-CN" data-search-source="/search/pagefind-zh/" title="Chinese search index" tabindex="-1"></iframe>
+</dialog>
+
+<script>
+  import { installSearchDialog } from '../scripts/searchDialog';
+
+  const install = () => {
+    const dialog = document.querySelector<HTMLDialogElement>('[data-search-dialog]');
+    if (dialog && dialog.dataset.searchInitialized !== 'true') {
+      dialog.dataset.searchInitialized = 'true';
+      installSearchDialog(dialog, dialog.dataset.searchOpenOnLoad === 'true');
+    }
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
+  else install();
+</script>

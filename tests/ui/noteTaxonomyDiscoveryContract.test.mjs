@@ -31,8 +31,7 @@ test('Notes discovery hides zero-count registry entries without removing direct 
   assert.match(index, /const recentNotes = ordinaryNotes\.slice\(0, 5\)/);
   assert.match(index, /href="\/notes\/explore\/"/);
   assert.match(index, /href="\/notes\/archive\/"/);
-  assert.match(index, /<button type="button" disabled aria-describedby="notes-search-description">Search planned<\/button>/);
-  assert.doesNotMatch(index, /\/search\//, 'HC-28 must not preempt HC-56 with a search route');
+  assert.match(index, /<a href="\/search\/" data-search-trigger aria-describedby="notes-search-description">Open Search<\/a>/);
   assert.doesNotMatch(index, /<BrowsePills|<NoteList/, 'the landing page must not expand full taxonomy or archive inventories');
   assert.match(archive, /<NoteList notes=\{ordinaryNotes\}/);
 

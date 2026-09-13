@@ -5,7 +5,7 @@
   "description": "A minimal personal research portfolio website built with Astro.",
   "scripts": {
     "dev": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro dev",
-    "build": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "build": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro build && pagefind --site dist --output-subdir pagefind --root-selector [data-pagefind-body]",
     "preview": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "route:codex": "node tools/codex-routing.mjs",
     "test:routing": "node --test tests/codexRouting.test.mjs tests/codexRouting.eval.test.mjs",
@@ -21,9 +21,9 @@
     "maintenance:index": "node tools/maintenance-log.mjs rebuild-index",
     "test:maintenance": "node --test tests/maintenance/*.test.mjs"
   },
-  "dependencies": {},
   "devDependencies": {
     "astro": "^7.0.3",
-    "cross-env": "^10.1.0"
+    "cross-env": "^10.1.0",
+    "pagefind": "1.5.2"
   }
 }

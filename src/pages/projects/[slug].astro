@@ -20,12 +20,12 @@ const projectTools = project.data.tools.length > 0 ? project.data.tools : projec
 ---
 
 <Layout title={project.data.title} description={project.data.description}>
-  <article class="article">
-    <p class="back-link"><a href="/projects/">Back to Projects</a></p>
-    <p class="eyebrow">{project.data.category}</p>
+  <article class="article" data-pagefind-body>
+    <p class="back-link" data-pagefind-ignore><a href="/projects/">Back to Projects</a></p>
+    <p class="eyebrow" data-pagefind-ignore>{project.data.category}</p>
     <h1>{project.data.title}</h1>
     <p class="lead">{project.data.description}</p>
-    <div class="card-meta article-meta">
+    <div class="card-meta article-meta" data-pagefind-ignore>
       <StatusBadge status={project.data.status} />
       <span>{project.data.category}</span>
       <span>{formatLabel(project.data.maturity)}</span>
@@ -33,10 +33,10 @@ const projectTools = project.data.tools.length > 0 ? project.data.tools : projec
       {project.data.timeframe && <span>{project.data.timeframe}</span>}
       {projectTools.length > 0 && <span>Tools: {projectTools.join(', ')}</span>}
     </div>
-    <TagList tags={project.data.tags} />
+    <div data-pagefind-ignore><TagList tags={project.data.tags} /></div>
     {
       (project.data.links.github || project.data.links.demo || project.data.links.notes) && (
-        <div class="link-row">
+        <div class="link-row" data-pagefind-ignore>
           {project.data.links.github && (
             <a href={project.data.links.github} target="_blank" rel="noopener noreferrer">GitHub</a>
           )}

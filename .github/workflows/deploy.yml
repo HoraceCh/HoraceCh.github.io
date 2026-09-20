@@ -49,3 +49,16 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Checkout release history
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Linear Release
+        uses: linear/linear-release-action@v0.18.0
+        with:
+          access_key: ${{ secrets.LINEAR_ACCESS_KEY }}
+          links: |
+            Production=${{ steps.deployment.outputs.page_url }}
+            GitHub Actions=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

@@ -41,6 +41,19 @@ test('mobile header reveals current and focused links without collateral documen
   assert.match(mobileNav, /padding: 6px 6px 8px/);
   assert.match(mobileNav, /scroll-padding-inline: 6px/);
 
+  const tabletHeader =
+    css.match(/@media \(min-width: 721px\) and \(max-width: 820px\) \{([\s\S]*?)\n\}/)?.[1] ?? '';
+  assert.match(tabletHeader, /\.site-header \{[\s\S]*?flex-direction: column/);
+  assert.match(tabletHeader, /\.header-brand-row \{[\s\S]*?display: flex[\s\S]*?width: 100%/);
+  assert.match(tabletHeader, /\.site-brand \{[\s\S]*?white-space: nowrap/);
+
+  const tabletNav = tabletHeader.match(/\.site-nav \{([\s\S]*?)\n  \}/)?.[1] ?? '';
+  assert.match(tabletNav, /width: 100%/);
+  assert.match(tabletNav, /flex-wrap: nowrap/);
+  assert.match(tabletNav, /justify-content: flex-start/);
+  assert.match(tabletNav, /overflow-x: auto/);
+  assert.match(tabletNav, /scroll-padding-inline: 6px/);
+
   for (const forbidden of ['setTimeout(', 'setInterval(', 'requestIdleCallback(', 'IntersectionObserver(']) {
     assert.doesNotMatch(header, new RegExp(forbidden.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }

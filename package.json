@@ -3,6 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "description": "A minimal personal research portfolio website built with Astro.",
+  "packageManager": "npm@11.19.1",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.14.1",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "npm",
+      "version": "11.19.1",
+      "onFail": "error"
+    }
+  },
   "scripts": {
     "dev": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro dev",
     "build": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro build && pagefind --site dist --output-subdir pagefind --root-selector [data-pagefind-body]",

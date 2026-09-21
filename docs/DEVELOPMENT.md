@@ -9,30 +9,49 @@ This document is for local development and future maintenance of the Horace Chan
 - GitHub Pages
 - GitHub Actions
 
+## Toolchain
+
+The repository pins its development toolchain in `mise.toml`:
+
+- Node.js 24.14.1
+- npm 11.19.1
+- Python 3.11.x
+
+Install the declared versions with [mise](https://mise.jdx.dev/):
+
+```bash
+mise install
+mise exec -- node --version
+mise exec -- npm --version
+mise exec -- python --version
+```
+
+Shell activation is optional. Prefix commands with `mise exec --` when mise is not activated.
+
 ## Local Development
 
 Install dependencies:
 
 ```bash
-npm install
+mise exec -- npm ci
 ```
 
 Run a local preview:
 
 ```bash
-npm.cmd run dev
+mise exec -- npm run dev
 ```
 
 Build the site:
 
 ```bash
-npm.cmd run build
+mise exec -- npm run build
 ```
 
 Preview the production build:
 
 ```bash
-npm.cmd run preview
+mise exec -- npm run preview
 ```
 
 ## Theme Color Modes
@@ -55,7 +74,7 @@ The public site content license is rendered by the active Astro layout/footer UI
 
 GitHub Actions deploys the site to GitHub Pages when changes are pushed to `main` or when the workflow is manually triggered.
 
-The workflow installs dependencies with `npm ci`, runs `npm run build`, and uploads `dist/` as the GitHub Pages artifact.
+The workflows run on Ubuntu 24.04 with Node.js 24.14.1 and npm 11.19.1. Deployment installs dependencies with `npm ci`, runs `npm run build`, uploads `dist/`, and publishes through the protected GitHub Pages environment.
 
 ## Content Structure
 
@@ -79,7 +98,9 @@ docs/
 tools/
 package.json
 package-lock.json
+mise.toml
 .github/workflows/deploy.yml
+.github/workflows/pr-ci.yml
 ```
 
 ## Files Not to Commit

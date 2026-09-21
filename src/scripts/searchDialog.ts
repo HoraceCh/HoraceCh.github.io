@@ -1,4 +1,5 @@
 import { createPagefindSearch, type SearchResult } from './pagefindSearch';
+import { parsePagefindExcerpt } from './pagefindExcerpt';
 
 const focusableSelector = 'a[href], button:not([disabled]), input:not([disabled])';
 
@@ -11,7 +12,12 @@ const displayResults = (list: HTMLElement, results: readonly SearchResult[]) => 
     link.href = result.url;
     link.className = 'search-result';
     title.textContent = result.title;
-    excerpt.textContent = result.excerpt;
+    excerpt.append(...parsePagefindExcerpt(result.excerpt).map((segment) => {
+      if (!segment.highlighted) return document.createTextNode(segment.text);
+      const mark = document.createElement('mark');
+      mark.textContent = segment.text;
+      return mark;
+    }));
     link.append(title, excerpt);
     item.append(link);
     return item;

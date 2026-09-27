@@ -13,6 +13,7 @@
       ".omo/rules/agent-policy.md",
       ".omo/rules/notes-publication.md",
       "AGENTS.md",
+      "config/codex-skill-admission.json",
       "config/codex-workflow.json",
       "docs/AGENT_WORKFLOW.md",
       "docs/CODEX_AGENT_ROUTING.md",

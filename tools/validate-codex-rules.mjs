@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { isDeepStrictEqual } from 'node:util';
@@ -242,6 +242,45 @@ export function validateScanBoundaryDefinition(scanBoundary, knownFiles, tracked
     }
   }
   return errors;
+}
+
+export function validateSkillAdmissionDefinition(admission, presentSkills, approvedSkills) {
+  const errors = [];
+  if (admission?.version !== 1 || !Array.isArray(admission.projectOwned) ||
+    !admission.thirdPartyUi || typeof admission.thirdPartyUi !== 'object' ||
+    Array.isArray(admission.thirdPartyUi)) {
+    return ['Invalid project-local Skill admission contract'];
+  }
+  const dispositions = Object.entries(admission.thirdPartyUi);
+  const admitted = dispositions.filter(([, state]) => state === 'ADMITTED').map(([name]) => name);
+  for (const [name, state] of dispositions) {
+    if (!['ADMITTED', 'EXPLICIT_ONLY', 'DORMANT_NON_DISCOVERABLE', 'REMOVE'].includes(state)) {
+      errors.push(`Invalid Skill disposition: ${name}`);
+    }
+  }
+  if (!unique(admission.projectOwned) || admission.projectOwned.some((name) => name in admission.thirdPartyUi)) {
+    errors.push('Project-owned and third-party Skill names must be unique');
+  }
+  if (!isDeepStrictEqual([...admitted].sort(), [...approvedSkills].sort())) {
+    errors.push('ADMITTED third-party UI Skills do not match AGENTS.md');
+  }
+  const expected = [...admission.projectOwned, ...admitted].sort();
+  if (!isDeepStrictEqual([...presentSkills].sort(), expected)) {
+    errors.push('Discoverable project-local Skill directory differs from admission contract');
+  }
+  return errors;
+}
+
+function validateSkillAdmission(rootDir, errors) {
+  const admission = readJson(resolve(rootDir, 'config/codex-skill-admission.json'));
+  const skillsDir = resolve(rootDir, '.agents/skills');
+  const presentSkills = readdirSync(skillsDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && existsSync(resolve(skillsDir, entry.name, 'SKILL.md')))
+    .map((entry) => entry.name);
+  const agentsText = readFileSync(resolve(rootDir, 'AGENTS.md'), 'utf8');
+  const approvedSection = agentsText.split('Approved project-local UI skills:')[1]?.trimStart().split('\n\n')[0] ?? '';
+  const approvedSkills = [...approvedSection.matchAll(/^- `([a-z0-9-]+)`/gm)].map((match) => match[1]);
+  errors.push(...validateSkillAdmissionDefinition(admission, presentSkills, approvedSkills));
 }
 
 function validateDynamicRules(rootDir, policyFiles, errors) {
@@ -495,6 +534,7 @@ export function validateWorkflow(rootDir = process.cwd()) {
   validateDynamicRules(rootDir, policyFiles, errors);
   validateMarkdownLinks(rootDir, policyFiles, errors);
   validatePolicyText(rootDir, policyFiles, packageScripts, errors);
+  validateSkillAdmission(rootDir, errors);
   validateModelCapabilities(config, errors);
   validateToml(rootDir, config, errors);
   const routingCases = validateRoutingCases(rootDir, errors);

@@ -49,6 +49,8 @@ Approved project-local UI skills:
 - `fixing-metadata`
 - `fixing-motion-performance`
 
+`config/codex-skill-admission.json` is the closed admission list for project-local Skills. Only its `ADMITTED` third-party UI entries may enter the documented normal workflow, subject to the owner boundaries below. `EXPLICIT_ONLY` requires a named task-specific invocation; `DORMANT_NON_DISCOVERABLE` and `REMOVE` must stay outside `.agents/skills/`. A local `SKILL.md` or `skills-lock.json` entry does not grant admission. Validate the directory against the admission list with `npm run rules:validate`.
+
 Do not use `baseline-ui`, `ui-skills-root`, full-registry routing, or unreviewed dynamically retrieved UI skills.
 
 Third-party UI skills must not introduce dependencies, frameworks, or component systems without explicit approval; override the canonical design system; expand the authorized file scope; modify the Obsidian pipeline, content schema, publication contracts, generated content, deployment, or agent routing; or commit, push, or perform external writes.

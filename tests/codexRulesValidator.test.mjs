@@ -6,6 +6,7 @@ import {
   findTomlParserRuntime,
   parseRuleFrontmatter,
   validateScanBoundaryDefinition,
+  validateSkillAdmissionDefinition,
   validateWorkflow,
   validateWorkflowJsonStructure,
 } from '../tools/validate-codex-rules.mjs';
@@ -50,6 +51,20 @@ test('scan-boundary validation rejects embedded parent-directory segments', () =
   );
 
   assert.equal(errors.filter((error) => error.includes('repository-relative')).length, 2);
+});
+
+test('project-local Skill admission rejects an unlisted discoverable snapshot', () => {
+  const admission = {
+    version: 1,
+    projectOwned: ['website-release-gate'],
+    thirdPartyUi: { 'improve-ui': 'ADMITTED', 'gpt-taste': 'REMOVE' },
+  };
+  const errors = validateSkillAdmissionDefinition(
+    admission,
+    ['website-release-gate', 'improve-ui', 'gpt-taste'],
+    ['improve-ui'],
+  );
+  assert.ok(errors.some((error) => error.includes('Discoverable')));
 });
 
 test('dynamic rules require bounded globs and must not always apply', () => {

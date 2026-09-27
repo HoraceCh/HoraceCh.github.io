@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "projectOwned": [
+    "audit-update",
+    "cross-system-release",
+    "incident-record",
+    "interrupted-run-recovery",
+    "maintenance-record",
+    "notes-publication-preflight",
+    "publication-contract-audit",
+    "website-release-gate"
+  ],
+  "thirdPartyUi": {
+    "animation-vocabulary": "REMOVE",
+    "apple-design": "REMOVE",
+    "brandkit": "REMOVE",
+    "design-taste-frontend": "REMOVE",
+    "design-taste-frontend-v1": "REMOVE",
+    "emil-design-eng": "REMOVE",
+    "find-animation-opportunities": "REMOVE",
+    "fixing-accessibility": "ADMITTED",
+    "fixing-metadata": "ADMITTED",
+    "fixing-motion-performance": "ADMITTED",
+    "full-output-enforcement": "REMOVE",
+    "gpt-taste": "REMOVE",
+    "high-end-visual-design": "REMOVE",
+    "image-to-code": "REMOVE",
+    "imagegen-frontend-mobile": "REMOVE",
+    "imagegen-frontend-web": "REMOVE",
+    "improve-animations": "REMOVE",
+    "improve-ui": "ADMITTED",
+    "industrial-brutalist-ui": "REMOVE",
+    "minimalist-ui": "REMOVE",
+    "redesign-existing-projects": "REMOVE",
+    "review-animations": "REMOVE",
+    "stitch-design-taste": "REMOVE"
+  }
+}

@@ -1,6 +1,6 @@
 # Codex Model Usage
 
-This is the model-routing source of truth for the HoraceCh Astro website. The active family is GPT-5.6 Sol, Terra, and Luna. Model capability and reasoning effort are separate routing decisions; an agent name is an ownership boundary, not a permanent capability tier.
+This is the model-routing source of truth for the HoraceCh Astro website. The active adapter is mixed: GPT-6 Sol owns the measured judgment routes, while GPT-5.6 Terra and Luna retain engineering and bounded-worker routes. Model capability and reasoning effort are separate routing decisions; an agent name is an ownership boundary, not a permanent capability tier.
 
 ## Operating doctrine
 
@@ -13,6 +13,8 @@ Keep the six existing agents. Do not add a permanent scout or evidence agent: us
 ## Model and reasoning axes
 
 Use the lowest configuration that can reliably satisfy the success criteria and validation contract.
+
+The HC-126 dispatch-attested benchmark promotes **GPT-6 Sol Medium** for contained judgment and **GPT-6 Sol High** for critical or cross-domain judgment. GPT-5.6 Terra Medium/High remains the engineering route, and the project root remains pinned to Terra Medium. GPT-5.6 Luna Low/Medium/High remains the automatic bounded-worker route. GPT-6 Luna Medium passed bounded implementation twice, but the matched GPT-5.6 Luna Medium baseline was faster and used fewer tokens at the same acceptance quality; it is a qualified comparison candidate, not the Website default. GPT-6 Luna Low was not evaluated, and GPT-6 Luna High failed an exact acceptance criterion. Astra has no permanent route. The measured scope and provenance are in [MODEL_ROUTING_PORTABILITY.md](MODEL_ROUTING_PORTABILITY.md).
 
 | Configuration | Use when | Do not use it to |
 | --- | --- | --- |
@@ -29,7 +31,7 @@ Use the lowest configuration that can reliably satisfy the success criteria and 
 
 Repository TOMLs use `low`, `medium`, or `high` for durable defaults. XHigh, Max, and any Codex-only Ultra control are exceptional session-level comparisons and should not be pinned into project agents. Luna High is a throughput tier for deterministic work, not a semantic escalation. If Luna Medium reaches semantic ambiguity, escalate capability to Terra or Sol before raising Luna reasoning. If Medium underperforms, first repair missing success criteria, authority, scope, dependency context, or validation requirements.
 
-Raise effort only when the same representative cases show a material gain in task success, answer or artifact completeness, and required evidence. Record total tokens, latency, and cost when the runtime exposes them. Compare the current effort with one level lower after model migrations. Lower effort when quality remains at the acceptance bar; do not treat fewer calls or shorter output as an improvement when the final artifact loses required evidence.
+Raise effort only when the same representative cases show a material gain in task success, answer or artifact completeness, and required evidence. Record total tokens, latency, and cost when the runtime exposes them. Compare the current effort with one level lower after model migrations. Lower effort when quality remains at the acceptance bar; do not treat fewer calls or shorter output as an improvement when the final artifact loses required evidence. The active Sol adapter automatically selects only Medium or High; XHigh, Max, and Ultra require a separate exceptional evaluation.
 
 Current Codex surfaces may expose `ultra` as a session thinking control for Terra or Sol, while official API reasoning guidance is portable only through Max; Codex also uses Ultra terminology for multi-agent execution. Treat both meanings as runtime-specific and record which one was used. Use multi-agent execution only when the user or active runtime authorizes it, the task splits into independent workstreams, and the existing three-agent, depth-one, single-writer limits remain intact. Treat Pro or similar quality-first modes as external runtime options that require the same representative evaluation; never pin `ultra` or `pro` in a project agent.
 
@@ -100,6 +102,6 @@ Do not paste raw logs or convert assumptions into decisions. Sol must fresh-read
 
 ## Compatibility and usage policy
 
-Use an older model only when it is explicitly available in the active Codex surface and a pinned workflow or verified regression requires it. Do not add speculative fallback identifiers or automatically downgrade Sol work. Actual usage varies with context, tools, reasoning depth, caching, and output length; do not place temporary numeric budgets in agent TOMLs.
+The GPT-5.6 Terra/Luna routes are retained by the HC-126 comparison, not treated as an automatic downgrade. If GPT-6 Sol is unavailable or fails a repository-specific qualification, record the unavailable route and use the explicit GPT-5.6 Sol baseline only through a reviewed adapter rollback or a manually attested root profile with the same authority and QA gates. Do not silently relabel a requested route as an executed model. Actual usage varies with context, tools, reasoning depth, caching, and output length; do not place temporary numeric budgets in agent TOMLs.
 
 For ownership, permissions, handoffs, and prompt structure, see [CODEX_AGENT_ROUTING.md](CODEX_AGENT_ROUTING.md). For the project workflow, see [AGENT_WORKFLOW.md](AGENT_WORKFLOW.md).

@@ -24,9 +24,11 @@ Map those signals to three portable capability tiers:
 
 | Portable tier | Responsibility | This project |
 | --- | --- | --- |
-| Bounded worker | Discovery, deterministic transformation, validation, evidence compression | Luna |
-| Engineering synthesizer | Routine semantic implementation and review | Terra |
-| Judgment authority | Ambiguity, architecture, contracts, privacy, critical release decisions | Sol |
+| Bounded worker | Discovery, deterministic transformation, validation, evidence compression | GPT-5.6 Luna Low/Medium/High; GPT-6 Luna Medium remains a measured candidate |
+| Engineering synthesizer | Routine semantic implementation and review | GPT-5.6 Terra Medium/High |
+| Judgment authority | Ambiguity, architecture, contracts, privacy, critical release decisions | GPT-6 Sol Medium/High |
+
+The machine keys `luna`, `terra`, and `sol`, plus the existing `semantic-terra` and `semantic-sol` gate values, are Website adapter compatibility names. The portable tiers are the responsibilities in the first column; a future adapter may use other models without inheriting Terra as an architectural authority.
 
 The output is a route envelope: owner, phase, model, reasoning effort, context mode, authority, and required gate. A model change receives a fresh compact evidence packet rather than inherited raw history. One retained-diff writer prevents parallel branches from silently merging incompatible decisions.
 
@@ -34,7 +36,24 @@ The output is a route envelope: owner, phase, model, reasoning effort, context m
 
 Use representative cases from the real repository, not synthetic difficulty labels. Cover every phase, capability tier, important owner, low/high ambiguity, deterministic and semantic verification, settled critical implementation, and critical release review. Each fixture contains structured input and the expected route envelope.
 
-For a new model family, run the same tasks at the current effort and one level lower. Measure task success, artifact or answer completeness, required evidence, total tokens, latency, and cost when available. Promote a model or effort only for a measured quality gain. Lower call count or shorter output is not a win when the acceptance contract is incomplete.
+For a new model family, lock representative tasks and compare only the efforts that could change the route decision; include a lower effort when its adequacy is uncertain. Measure task success, artifact or answer completeness, required evidence, total tokens, latency, and cost when available. Require equal or better quality, authority, and validation before using efficiency to break a tie. Lower call count or shorter output is not a win when the acceptance contract is incomplete.
+
+### HC-126 canonical benchmark and Website adapter (2026-09-27)
+
+The locked four-case pack used fresh disposable copies of Website working-tree baseline SHA-256 `824727612c6a63e090dd92a4c205e1dbefa58c2f5cdef20cfa9c0e5bc72a5170`, including the retained HC-129 and HC-114 changes in that benchmark tree. This delivery lands on remote main and does not include the unrelated local HC-129 root change. The 14 GPT-5.6 routing fixtures remain byte-for-byte as the historical baseline in `tests/codex-routing-cases.json`; `tests/codex-routing-active-models.json` names only the active adapter changes. Runtime `turn_context` records, not requested route envelopes, attest model and effort. The fixed inputs, thresholds, full trial matrix, edit operations, and reports are attached to [HC-126](https://linear.app/baukasten/issue/HC-126) as **HC-126 Phase 2 dispatch-attested trial evidence** and **HC-126 Phase 2 C and D confirmation artifacts**.
+
+| Workload | Matched result and decision |
+| --- | --- |
+| Bounded, directly verifiable implementation | GPT-6 Luna Medium passed twice and GPT-5.6 Luna Medium passed once. Acceptance quality tied; GPT-5.6 used less time and fewer input tokens. Retain GPT-5.6 Luna Medium. GPT-6 Luna High failed the exact CLI message; GPT-6 Luna Low was not tested. |
+| Ordinary multi-file engineering | GPT-6 Sol Medium and GPT-5.6 Terra Medium both passed. Terra was faster with fewer calls and tokens; keep Terra Medium. |
+| Semantic QA judgment | GPT-6 Sol Medium passed twice at the baseline's evidence quality, with fewer calls, time, and tokens than GPT-5.6 Sol Medium. Promote Sol Medium for contained judgment. |
+| Ambiguous cross-domain recovery | GPT-6 Sol High passed twice at the GPT-5.6 Sol High acceptance bar, with lower observed duration. Promote Sol High for critical judgment. GPT-6 Astra Medium passed once but resolved no consequential criterion Sol missed; no permanent Astra tier or Astra High run. |
+
+These decisions do not change domain ownership, the three-agent and depth-one limits, single-writer rule, scan boundary, publication/privacy restrictions, external-write authority, or mechanical plus semantic QA. The active Website route mapping changes only Sol's exact model ID and the `project_architect` pin. The project root remains pinned to GPT-5.6 Terra Medium on this branch; bounded and engineering routes remain GPT-5.6. Automatic Sol efforts are Medium and High. Astra is eligible only for a separately scoped, dispatch-attested exceptional comparison where Sol leaves a material criterion unresolved; model strength alone is not a route.
+
+If an active GPT-6 Sol route is unavailable or fails later qualification, preserve the same judgment authority and QA gates and explicitly roll the adapter back to the GPT-5.6 Sol baseline. A requested model name, agent TOML pin, or `selectRoute` envelope is not execution proof; the benchmark's root-trial runtime records provide the capability attestation. The original GPT-5.6 fixture file remains the reference for rollback; do not remove it on this migration. The earlier disposable trial copies expired before final packaging, so the first archive preserves their edit operations and session hashes rather than final file snapshots. The C and D confirmations preserve complete reports and runtime metadata in the second archive. No monetary cost telemetry was exposed.
+
+Admin must consume this capability decision and qualify a small set of its own auth, security, publication, and external-write flows before changing its adapter; it must not rerun the full family benchmark. Baukasten Press remains HOLD until its project and technical route is re-frozen, then performs its own small qualification without treating Website's result as publication approval. HC-115 Skill admission remains outside this benchmark.
 
 ## 4. Enforce policy mechanically
 

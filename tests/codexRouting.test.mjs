@@ -39,12 +39,38 @@ test('routes critical implementation ambiguity to a Sol decision before writing'
   assert.deepEqual(route, {
     owner: 'obsidian_notes_pipeline',
     phase: 'implement',
-    model: 'gpt-5.6-sol',
+    model: 'gpt-6-sol',
     reasoning: 'high',
     contextMode: 'fresh-packet',
     authority: 'decision-first',
     requiredGate: 'semantic-sol',
   });
+});
+
+test('retains GPT-5.6 Luna for directly verifiable implementation', () => {
+  const medium = selectRoute({
+    domain: 'notes',
+    phase: 'implement',
+    scope: 'domain',
+    ambiguity: 'low',
+    verification: 'direct',
+    workload: 'normal',
+    risks: [],
+  });
+  const high = selectRoute({
+    domain: 'content',
+    phase: 'implement',
+    scope: 'domain',
+    ambiguity: 'low',
+    verification: 'direct',
+    workload: 'large',
+    risks: [],
+  });
+
+  assert.equal(medium.model, 'gpt-5.6-luna');
+  assert.equal(medium.reasoning, 'medium');
+  assert.equal(medium.requiredGate, 'mechanical');
+  assert.equal(high.model, 'gpt-5.6-luna');
 });
 
 test('rejects an unclassified task instead of guessing a route', () => {

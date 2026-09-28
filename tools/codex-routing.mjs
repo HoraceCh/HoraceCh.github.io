@@ -44,6 +44,12 @@ function parseTask(input) {
   for (const risk of input.risks) {
     assertChoice('risk', risk, workflow.criticalRisks);
   }
+  if (
+    input.phase === 'execute' &&
+    (input.authorityState !== 'resolved' || input.ambiguity !== 'low' || input.verification !== 'direct')
+  ) {
+    throw new TypeError('L0 execution requires resolved authority and direct verification');
+  }
 
   return {
     domain: input.domain,
@@ -56,17 +62,25 @@ function parseTask(input) {
   };
 }
 
-function envelope(task, tier, reasoning, authority, requiredGate) {
+function envelope(task, level, authority, requiredGate) {
   const phaseOwner = task.phase === 'qa' ? workflow.ownership.qa : workflow.ownership[task.domain];
+  const activeLevel = level === 'L1' && !workflow.modelAdapter.L1.enabled ? 'L2' : level;
+  const adapter = workflow.modelAdapter[activeLevel];
+  const bypassModel = task.phase === 'explain' || activeLevel === 'L0';
   return {
-    owner: task.phase === 'explain' ? 'root' : phaseOwner,
+    owner: task.phase === 'explain' || activeLevel === 'L0' ? 'root' : phaseOwner,
     phase: task.phase,
-    model: workflow.modelTiers[tier].model,
-    reasoning,
-    contextMode: task.phase === 'explain' ? 'current' : 'fresh-packet',
+    level: activeLevel,
+    model: bypassModel ? null : adapter.model,
+    reasoning: bypassModel ? null : adapter.reasoning,
+    contextMode: task.phase === 'explain' ? 'current' : activeLevel === 'L0' ? 'none' : 'fresh-packet',
     authority,
     requiredGate,
   };
+}
+
+export function isL5Eligible({ consequentialL4Gap = false, measuredAdvantage = false } = {}) {
+  return workflow.modelAdapter.L5.enabled && consequentialL4Gap && measuredAdvantage;
 }
 
 export function selectRoute(input) {
@@ -78,53 +92,56 @@ export function selectRoute(input) {
     task.ambiguity === 'material';
   const requiresCriticalReview = requiresCriticalJudgment || hasCriticalRisk;
 
+  if (input.l5) {
+    if (!isL5Eligible(input.l5)) {
+      throw new TypeError('L5 requires an enabled adapter, a consequential L4 gap, and measured advantage');
+    }
+    return envelope(task, 'L5', 'judgment', 'semantic-l4');
+  }
+
   if (task.phase === 'explain') {
-    return envelope(task, 'terra', 'medium', 'answer', 'none');
+    return envelope(task, requiresCriticalReview ? 'L4' : 'L3', 'answer', 'none');
+  }
+
+  if (task.phase === 'execute') {
+    return envelope(task, 'L0', 'mechanics-only', 'none');
   }
 
   if (task.phase === 'discover') {
     const isSmallDirectScan =
       task.scope === 'single' && task.workload === 'small' && task.verification === 'direct';
-    return envelope(task, 'luna', isSmallDirectScan ? 'low' : 'medium', 'evidence', 'none');
+    return envelope(task, isSmallDirectScan ? 'L1' : 'L2', 'evidence', 'none');
   }
 
   if (task.phase === 'decide') {
     if (requiresCriticalReview) {
-      return envelope(task, 'sol', 'high', 'judgment', 'none');
+      return envelope(task, 'L4', 'judgment', 'none');
     }
-    if (task.ambiguity === 'contained' || task.verification === 'semantic') {
-      return envelope(task, 'sol', 'medium', 'judgment', 'none');
-    }
-    return envelope(task, 'terra', 'medium', 'judgment', 'none');
+    return envelope(task, 'L3', 'judgment', 'none');
   }
 
   if (task.phase === 'implement') {
     if (requiresCriticalJudgment || task.domain === 'design') {
-      return envelope(task, 'sol', 'high', 'decision-first', 'semantic-sol');
+      return envelope(task, 'L4', 'decision-first', 'semantic-l4');
     }
     if (hasCriticalRisk) {
-      return envelope(task, 'terra', 'high', 'execute', 'semantic-sol');
+      return envelope(task, 'L3', 'execute', 'semantic-l4');
     }
     if (task.ambiguity === 'low' && task.verification === 'direct') {
-      const reasoning =
-        task.workload === 'large'
-          ? 'high'
-          : task.workload === 'small' && task.scope === 'single'
-            ? 'low'
-            : 'medium';
-      return envelope(task, 'luna', reasoning, 'execute', 'mechanical');
+      const isSmallDirectEdit = task.workload === 'small' && task.scope === 'single';
+      return envelope(task, isSmallDirectEdit ? 'L1' : 'L2', 'execute', 'mechanical');
     }
-    return envelope(task, 'terra', 'medium', 'execute', 'semantic-terra');
+    return envelope(task, 'L3', 'execute', 'semantic-l3');
   }
 
   if (requiresCriticalReview) {
-    return envelope(task, 'sol', 'high', 'semantic-gate', 'none');
+    return envelope(task, 'L4', 'semantic-gate', 'none');
   }
   if (task.ambiguity === 'low' && task.verification === 'direct') {
-    const reasoning = task.workload === 'small' ? 'low' : 'medium';
-    return envelope(task, 'luna', reasoning, 'mechanical-gate', 'none');
+    const isTinyCheck = task.workload === 'small' && task.scope === 'single';
+    return envelope(task, isTinyCheck ? 'L1' : 'L2', 'mechanical-gate', 'none');
   }
-  return envelope(task, 'terra', 'medium', 'semantic-gate', 'none');
+  return envelope(task, 'L3', 'semantic-gate', 'none');
 }
 
 function parseArguments(argumentsList) {

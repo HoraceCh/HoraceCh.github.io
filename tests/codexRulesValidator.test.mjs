@@ -92,7 +92,8 @@ test('workflow JSON rejects duplicate top-level contract keys', () => {
   "ownership": {},
   "routingInput": {},
   "routingInput": {},
-  "modelTiers": {},
+  "capabilityLevels": {},
+  "modelAdapter": {},
   "criticalRisks": []
 }`);
 

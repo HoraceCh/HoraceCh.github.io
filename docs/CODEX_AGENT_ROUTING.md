@@ -4,9 +4,9 @@ Use the six existing agents only: `project_architect`, `obsidian_notes_pipeline`
 
 ## Routing decisions
 
-- Keep the root at Terra Medium for intake, routing, and ordinary synthesis. Before giving a phase to Terra or Sol, ask whether Luna Low/Medium can complete or prepare it with independent verification; Luna High is allowed only for large deterministic work with strong checks. Luna owns workload, not architecture, contract, privacy, or release authority.
-- Treat model capability and reasoning effort as separate choices. Use Terra Medium for routine engineering, Sol Medium for contained semantic or design judgment, and Sol High for material ambiguity, cross-domain risk, architecture, schema/publication semantics, privacy, deployment, or a critical release gate. Escalate the model before using extreme Luna reasoning to compensate for semantic uncertainty.
-- Route non-trivial work by stage when that saves meaningful context: Luna discovery/evidence, Terra or Sol decision, Luna or Terra bounded implementation, Luna mechanical QA, then Terra/Sol semantic QA only when risk requires it. Do not add a seventh scout agent or fragment a small coherent task merely to follow the pattern.
+- Keep root launch selection with the user. Before assigning a model, ask whether resolved mechanics can run at L0 with direct checks. Use qualified L1/L2 for bounded facts and known-path work, L3 for engineering synthesis, and L4 for high judgment. L5 is disabled until comparative evidence justifies it.
+- Treat capability and reasoning effort as separate choices. Route by semantic need, ambiguity, coupling, reversibility, authority/risk, verification, frequency, latency/cost sensitivity, and output criticality. High impact alone is not a reason to spend L4 on deterministic execution.
+- Route non-trivial work by stage when that saves meaningful context: bounded discovery/evidence, L3 or L4 decision, bounded or engineering implementation, mechanical QA, then semantic QA only when risk requires it. Do not add a seventh scout agent or fragment a small coherent task merely to follow the pattern.
 - Default to one owner and serial handoffs. Parallel work is allowed only for independent, read-only exploration or risk review; implementation remains single-writer and depth one. Only the root orchestrator delegates, and no agent recursively spawns another agent.
 - `project_architect` plans cross-domain, routing, migration, and ownership work. `obsidian_notes_pipeline` owns sync, notes schema, generated content, assets, and privacy boundaries. `design_system_curator` supplies visual specs. `content_ia_editor` owns content and IA. `frontend_implementer` makes scoped UI changes. `qa_build_reviewer` is the only release gate.
 - Use an agent only within its documented lane. A request outside that lane is a handoff, not an expanded scope.
@@ -17,7 +17,8 @@ Use the six existing agents only: `project_architect`, `obsidian_notes_pipeline`
 Route from task shape, not from prose labels such as “important” or “hard.” Classify each independently useful phase with these fields from `config/codex-workflow.json`:
 
 - `domain`: `architecture`, `notes`, `design`, `content`, `frontend`, or `qa`;
-- `phase`: `explain`, `discover`, `decide`, `implement`, or `qa`;
+- `phase`: `explain`, `execute`, `discover`, `decide`, `implement`, or `qa`;
+- `authorityState`: required as `resolved` for L0 `execute`; other phases keep their usual judgment and approval boundaries;
 - `scope`: `single`, `domain`, or `cross-domain`;
 - `ambiguity`: `low`, `contained`, or `material`;
 - `verification`: `direct` when a deterministic check can decide success, otherwise `semantic`;
@@ -26,12 +27,12 @@ Route from task shape, not from prose labels such as “important” or “hard.
 
 Run `npm run route:codex -- [classification flags]` to obtain a route envelope. The envelope is machine-readable and contains `owner`, `phase`, `model`, `reasoning`, `contextMode`, `authority`, and `requiredGate`. Its decision order is deliberate:
 
-1. Explanation stays with the Terra Medium root.
-2. Discovery uses Luna Low for a small direct scan and Luna Medium otherwise, including preparation for high-risk judgment.
-3. Material ambiguity, cross-domain decisions, and critical-risk decisions route judgment to Sol High before implementation.
-4. Contained judgment uses Sol Medium; routine semantic engineering uses Terra Medium. Once a critical contract is settled and ambiguity is low, implementation may use Terra High while retaining a Sol semantic gate.
-5. Explicit directly verifiable implementation uses Luna Low/Medium. Luna High is reserved for large, fully specified deterministic work with immediate checks.
-6. Mechanical QA uses Luna; ordinary semantic QA uses Terra; critical semantic QA uses Sol High.
+1. Explanation stays in the current user-selected root conversation and does not select a routed model.
+2. Resolved `execute` mechanics with low ambiguity and direct verification bypass models at L0, even for high-impact Git, PR, or deployment mechanics. The root orchestrates the specified tool action after required QA and user authorization; L0 grants no approval and never assigns release execution to the QA reviewer.
+3. Small direct discovery and tiny edits use qualified L1; other bounded discovery, direct implementation, and mechanical QA use L2. If L1 is disabled or fails its exact gate, fall back to L2.
+4. Material ambiguity, cross-domain decisions, and critical-risk decisions use L4 before implementation. Contained judgment and ordinary semantic engineering use L3.
+5. After a critical contract is settled, implementation may use L3 with an L4 semantic gate. Large deterministic work stays at L2 Medium when fully specified and directly checked.
+6. Ordinary semantic QA uses L3; critical semantic QA uses L4. L5 is never automatic.
 
 When the envelope selects a different model or owner, start that phase with `contextMode=fresh-packet`: send the compact evidence packet and the six-part prompt, not the complete conversation. If the active runtime cannot honor the selected route, record the route as unavailable and execute only within the current model's authority; never claim that a model handoff occurred when it did not. One retained-diff writer remains the invariant.
 
@@ -41,11 +42,12 @@ Use this header before the six prompt sections:
 Route
 owner=[agent or root]
 phase=[phase]
-model=[exact model id]
-reasoning=[effort]
-contextMode=[current or fresh-packet]
-authority=[answer, evidence, judgment, execute, decision-first, mechanical-gate, or semantic-gate]
-requiredGate=[none, mechanical, semantic-terra, or semantic-sol]
+level=[L0–L5]
+model=[adapter model id or null for root/L0]
+reasoning=[effort or null for root/L0]
+contextMode=[current, none, or fresh-packet]
+authority=[answer, evidence, judgment, execute, mechanics-only, decision-first, mechanical-gate, or semantic-gate]
+requiredGate=[none, mechanical, semantic-l3, or semantic-l4]
 ```
 
 ## Default prompt structure
@@ -104,7 +106,7 @@ Name the specialist and requested decision. A design spec identifies the visual 
 
 ### QA gate
 
-Use `qa_build_reviewer` and the project-local `website-release-gate` Skill. For meaningful changes, run Luna mechanical Gate 1 before expensive semantic review. Gate 1 checks scope, changed files, required commands, exit status, evidence completeness, and obvious omissions; when Gate 2 is still required, it returns `MECHANICAL READY`, `MECHANICAL NOT READY`, or `MECHANICAL BLOCKED`, none of which is a release verdict. If it fails, stop unless Terra/Sol judgment is needed to diagnose the failure. Use Terra for ordinary semantic QA and Sol for critical architecture, privacy, schema/publication, deployment, or release judgment. The repository-facing final report remains exactly one of `PASS`, `PASS WITH WARNINGS`, `FAIL`, or `BLOCKED`; a required but unverified build is `BLOCKED: build not verified`.
+Use `qa_build_reviewer` and the project-local `website-release-gate` Skill. For meaningful changes, run L2 mechanical Gate 1 before semantic review. Gate 1 checks scope, changed files, required commands, exit status, evidence completeness, and obvious omissions; when Gate 2 is still required, it returns `MECHANICAL READY`, `MECHANICAL NOT READY`, or `MECHANICAL BLOCKED`, none of which is a release verdict. If it fails, stop unless L3/L4 judgment is needed to diagnose the failure. Use L3 for ordinary semantic QA and L4 for critical architecture, privacy, schema/publication, deployment, or release judgment. The repository-facing final report remains exactly one of `PASS`, `PASS WITH WARNINGS`, `FAIL`, or `BLOCKED`; a required but unverified build is `BLOCKED: build not verified`.
 
 ### Interrupted work
 

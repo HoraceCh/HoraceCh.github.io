@@ -9,6 +9,7 @@ This is a deterministic discovery view generated from canonical event files. It 
 
 | Event ID | Occurred | Kind | Category | Status | Risk | Summary |
 | --- | --- | --- | --- | --- | --- | --- |
+| [WEB-20260928-0001](events/WEB-20260928-0001.md) | 2026-09-28T05:57:07.717Z | governance | agent-governance | completed | medium | Established HC-131 L0-L5 capability routing and GPT-6-first Website adapter |
 | [WEB-20260921-0002](events/WEB-20260921-0002.md) | 2026-09-21T07:10:57.649Z | change | other | completed | low | Harden Pagefind search failure and retry lifecycle |
 | [WEB-20260921-0001](events/WEB-20260921-0001.md) | 2026-09-21T06:24:16.833Z | change | deployment-release | completed | medium | Pinned the Website toolchain and upgraded GitHub Pages workflows to Node-24-native actions on Ubuntu 24.04. |
 | [WEB-20260728-0001](events/WEB-20260728-0001.md) | 2026-07-28T09:43:14Z | migration | agent-governance | completed | medium | Added a versioned, machine-validatable maintenance-event system while retaining the existing v1 changelog as closed legacy history. |

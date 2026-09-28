@@ -4,41 +4,50 @@ import test from 'node:test';
 
 import { selectRoute } from '../tools/codex-routing.mjs';
 
-const casesPath = new URL('./codex-routing-cases.json', import.meta.url);
-const cases = JSON.parse(await readFile(casesPath, 'utf8'));
+const currentCasesPath = new URL('./codex-routing-current-cases.json', import.meta.url);
+const currentCases = JSON.parse(await readFile(currentCasesPath, 'utf8'));
+const historicalCasesPath = new URL('./codex-routing-cases.json', import.meta.url);
+const historicalCases = JSON.parse(await readFile(historicalCasesPath, 'utf8'));
 const activeModelsPath = new URL('./codex-routing-active-models.json', import.meta.url);
 const activeModels = JSON.parse(await readFile(activeModelsPath, 'utf8'));
 
-test('representative routing cases match the policy', async (context) => {
-  assert.ok(cases.length >= 12, 'the routing set must cover representative phases and risks');
+test('current representative routing cases match the policy', async (context) => {
+  assert.equal(currentCases.length, 14);
 
-  for (const fixture of cases) {
+  for (const fixture of currentCases) {
     await context.test(fixture.id, () => {
-      assert.deepEqual(selectRoute(fixture.input), {
-        ...fixture.expected,
-        model: activeModels[fixture.id] ?? fixture.expected.model,
-      });
+      assert.deepEqual(selectRoute(fixture.input), fixture.expected);
     });
   }
 });
 
-test('routing set covers every phase, model tier, and critical risk family', () => {
-  const phases = new Set(cases.map((fixture) => fixture.input.phase));
-  const baselineModels = new Set(cases.map((fixture) => fixture.expected.model));
-  const activeModelIds = new Set(cases.map((fixture) => activeModels[fixture.id] ?? fixture.expected.model));
-  const risks = new Set(cases.flatMap((fixture) => fixture.input.risks));
-
-  assert.deepEqual([...phases].sort(), ['decide', 'discover', 'explain', 'implement', 'qa']);
+test('historical routing cases retain HC-126 provenance', () => {
+  assert.equal(historicalCases.length, 14);
   assert.deepEqual(
-    [...baselineModels].sort(),
+    [...new Set(historicalCases.map((fixture) => fixture.expected.model).filter(Boolean))].sort(),
     ['gpt-5.6-luna', 'gpt-5.6-sol', 'gpt-5.6-terra'],
   );
   assert.deepEqual(
-    [...activeModelIds].sort(),
-    ['gpt-5.6-luna', 'gpt-5.6-terra', 'gpt-6-sol'],
+    Object.keys(activeModels).sort(),
+    ['contained-design-judgment', 'critical-release-gate', 'cross-domain-architecture-decision', 'private-publication-boundary'],
   );
-  assert.ok(Object.keys(activeModels).every((id) => cases.some((fixture) => fixture.id === id)));
+});
+
+test('current routing set covers phases, risks, levels, models, and historical case IDs', () => {
+  const currentIds = currentCases.map((fixture) => fixture.id).sort();
+  const historicalIds = historicalCases.map((fixture) => fixture.id).sort();
+  const phases = new Set(currentCases.map((fixture) => fixture.input.phase));
+  const levels = new Set(currentCases.map((fixture) => fixture.expected.level));
+  const models = new Set(currentCases.map((fixture) => fixture.expected.model));
+  const risks = new Set(currentCases.flatMap((fixture) => fixture.input.risks));
+
+  assert.deepEqual(currentIds, historicalIds);
+  assert.deepEqual([...phases].sort(), ['decide', 'discover', 'explain', 'implement', 'qa']);
+  assert.deepEqual([...levels].sort(), ['L1', 'L2', 'L3', 'L4']);
+  assert.deepEqual([...models].sort(), ['gpt-6-luna', 'gpt-6-sol', null]);
+  assert.ok(risks.has('architecture'));
+  assert.ok(risks.has('deployment'));
   assert.ok(risks.has('privacy'));
   assert.ok(risks.has('publication'));
-  assert.ok(risks.has('deployment'));
+  assert.ok(risks.has('schema'));
 });

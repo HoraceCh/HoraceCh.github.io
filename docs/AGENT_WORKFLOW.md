@@ -7,7 +7,7 @@ Read [CODEX_MODEL_USAGE.md](CODEX_MODEL_USAGE.md) for model selection and [CODEX
 ## Operating flow
 
 1. Read `CODEX_SCAN_BOUNDARY.md`, then define the outcome, completion bar, evidence, authorized scope, and behavior-matched validation using the route envelope plus six-part prompt in `CODEX_AGENT_ROUTING.md`.
-2. Classify each useful phase and generate its route with `npm run route:codex -- [flags]`. Prefer Luna Low/Medium for independently verifiable information labor, Terra Medium for routine synthesis, Sol Medium for contained judgment, and Sol High for material ambiguity or risk.
+2. Classify each useful phase and generate its route with `npm run route:codex -- [flags]`. Use L0 for resolved mechanics, qualified L1/L2 for bounded work, L3 for engineering synthesis, and L4 for high judgment. L5 remains disabled without consequential comparative evidence.
 3. Make the smallest authorized change or produce the required spec; hand off when another ownership lane, unauthorized file, or product decision is required.
 4. Send multi-file, pipeline, and pre-release work to `qa_build_reviewer` before any authorized release action.
 
@@ -22,7 +22,7 @@ Only the root orchestrator delegates. Delegation depth is one, write-capable wor
 - `frontend_implementer`: makes scoped Astro/UI changes from a clear handoff and preserves the documented design system.
 - `qa_build_reviewer`: validates ownership, behavior, and release readiness.
 
-For a Level 1 explicit and directly verifiable change, use Luna Low/Medium in the owning lane and validate immediately. For a Level 2 single-domain task, use optional Luna discovery, Terra Medium implementation, and Luna mechanical QA when the handoff cost is justified. For Levels 3–4, prepare a compact Luna evidence packet, route contained judgment to Sol Medium and high-risk judgment to Sol High, keep one retained-diff writer, run Luna mechanical Gate 1, and add Terra/Sol semantic Gate 2 when the risk requires it.
+For L1/L2, use the owning lane and validate immediately against exact acceptance. For L3/L4, prepare a compact bounded evidence packet when useful, keep one retained-diff writer, run mechanical Gate 1, and add L3 or L4 semantic Gate 2 when risk requires it. Return to L0 for deterministic checks or mechanics after the governing decision is resolved.
 
 ## Validation and reporting
 

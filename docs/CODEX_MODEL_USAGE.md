@@ -1,107 +1,40 @@
 # Codex Model Usage
 
-This is the model-routing source of truth for the HoraceCh Astro website. The active adapter is mixed: GPT-6 Sol owns the measured judgment routes, while GPT-5.6 Terra and Luna retain engineering and bounded-worker routes. Model capability and reasoning effort are separate routing decisions; an agent name is an ownership boundary, not a permanent capability tier.
+This is the Website adapter for the portable L0–L5 capability framework in [MODEL_ROUTING_PORTABILITY.md](MODEL_ROUTING_PORTABILITY.md). The machine mapping is in config/codex-workflow.json and tools/codex-routing.mjs. Capability and reasoning effort are independent choices. The six agents are domain owners, not model tiers.
 
-## Operating doctrine
+## Active Website adapter
 
-**Maximize Luna workload. Minimize Luna authority.**
-
-The optimization target is not the percentage of complete tasks assigned to Luna. It is the amount of factual, repetitive, read-heavy, mechanically transformable, and independently verifiable work removed from Terra and Sol. Luna should find facts, run checks, perform bounded known-path work, and compress evidence. Terra should perform ordinary engineering synthesis. Sol should resolve uncertainty and retain high-risk judgment.
-
-Keep the six existing agents. Do not add a permanent scout or evidence agent: use Luna as a stage inside the appropriate owner or reviewer lane. The root remains Terra Medium because intake, routing, and handoff decisions require more synthesis than a mechanical worker, while routine delegated phases may use Luna aggressively.
-
-## Model and reasoning axes
-
-Use the lowest configuration that can reliably satisfy the success criteria and validation contract.
-
-The HC-126 dispatch-attested benchmark promotes **GPT-6 Sol Medium** for contained judgment and **GPT-6 Sol High** for critical or cross-domain judgment. GPT-5.6 Terra Medium/High remains the engineering route, and the project root remains pinned to Terra Medium. GPT-5.6 Luna Low/Medium/High remains the automatic bounded-worker route. GPT-6 Luna Medium passed bounded implementation twice, but the matched GPT-5.6 Luna Medium baseline was faster and used fewer tokens at the same acceptance quality; it is a qualified comparison candidate, not the Website default. GPT-6 Luna Low was not evaluated, and GPT-6 Luna High failed an exact acceptance criterion. Astra has no permanent route. The measured scope and provenance are in [MODEL_ROUTING_PORTABILITY.md](MODEL_ROUTING_PORTABILITY.md).
-
-| Configuration | Use when | Do not use it to |
-| --- | --- | --- |
-| Luna Low (`low`; UI may say Light) | Single-file or command-driven work with an explicit procedure and immediate verification | Interpret contracts, choose architecture, or judge release safety |
-| Luna Medium | Multi-file factual discovery, CodeGraph mapping, test triage, evidence compression, deterministic migrations, or bounded implementation with strong checks | Compensate for unresolved semantics by thinking longer |
-| Luna High | Large, fully specified deterministic transformations with strong fixtures and immediate validation, after Luna Medium is measured insufficient | Interpret ambiguity, own critical decisions, or replace a more capable model |
-| Terra Medium | Root orchestration, routine specialist work, ordinary implementation, and normal semantic synthesis | Decide high-risk architecture, privacy, schema, or deployment ambiguity |
-| Terra High | Semantically coupled but well-governed implementation or review where the contract is already settled | Replace Sol when the governing contract itself is uncertain |
-| Sol Medium | Contained architectural, design, product, debugging, contract, or test-sufficiency judgment | Process raw inventories or routine logs that Luna can compress |
-| Sol High | Cross-domain ambiguity, large blast radius, competing approaches, privacy/security boundaries, schema/publication semantics, critical release judgment, or hard root-cause analysis | Serve as the default merely because a task is important |
-| Luna XHigh / Max | Runtime-exposed comparison candidates only when a large deterministic Luna High workload misses its measured bar | Become an automatic route or retain critical authority |
-| Terra / Sol XHigh / Max | Exceptional correctness audits, final architecture adjudication, critical migration go/no-go, or difficult failure-state reasoning | Replace clearer scope, better evidence, tests, or an independent review |
-| Terra / Sol Ultra (Codex session only) | Last-resort session experiment after Max is measurably insufficient and the active surface exposes it | Enter durable agent TOMLs or be confused with multi-agent execution |
-
-Repository TOMLs use `low`, `medium`, or `high` for durable defaults. XHigh, Max, and any Codex-only Ultra control are exceptional session-level comparisons and should not be pinned into project agents. Luna High is a throughput tier for deterministic work, not a semantic escalation. If Luna Medium reaches semantic ambiguity, escalate capability to Terra or Sol before raising Luna reasoning. If Medium underperforms, first repair missing success criteria, authority, scope, dependency context, or validation requirements.
-
-Raise effort only when the same representative cases show a material gain in task success, answer or artifact completeness, and required evidence. Record total tokens, latency, and cost when the runtime exposes them. Compare the current effort with one level lower after model migrations. Lower effort when quality remains at the acceptance bar; do not treat fewer calls or shorter output as an improvement when the final artifact loses required evidence. The active Sol adapter automatically selects only Medium or High; XHigh, Max, and Ultra require a separate exceptional evaluation.
-
-Current Codex surfaces may expose `ultra` as a session thinking control for Terra or Sol, while official API reasoning guidance is portable only through Max; Codex also uses Ultra terminology for multi-agent execution. Treat both meanings as runtime-specific and record which one was used. Use multi-agent execution only when the user or active runtime authorizes it, the task splits into independent workstreams, and the existing three-agent, depth-one, single-writer limits remain intact. Treat Pro or similar quality-first modes as external runtime options that require the same representative evaluation; never pin `ultra` or `pro` in a project agent.
-
-## Luna-first admission rule
-
-Before assigning a phase to Terra or Sol, ask whether Luna can complete or prepare it reliably with independent verification. Prefer Luna when the answer is yes.
-
-Luna-first work includes:
-
-- repository, symbol, caller/callee, ownership, contract, and affected-test discovery;
-- CodeGraph exploration where available, while treating graph output as navigation rather than runtime or contract authority;
-- working-tree, diff, dependency, warning, build, test, lint, typecheck, and artifact inventory;
-- exact-command and exit-status collection plus concise evidence packets;
-- fixtures, metadata, formatting, documentation synchronization, repetitive propagation, and deterministic migrations;
-- known-path local fixes whose desired behavior is explicit, reversible, and directly testable;
-- interrupted-run triage, current-state reconstruction, and handoff compression;
-- first-stage QA for scope, required checks, missing evidence, and obvious incompleteness.
-
-Luna may write only when scope and ownership are explicit, desired behavior is observable, validation is available, failure is reversible, and no architecture, security, privacy, publication, or contract decision remains. It must stop and escalate the exact uncertainty rather than silently choosing an interpretation.
-
-Independent Luna reads may run in parallel when their questions do not depend on one another and the extra delegation will save meaningful context. The three-agent cap is a ceiling, not a utilization target. Retained-diff work remains single-writer.
-
-## Agent defaults
-
-| Agent | Default route | Alternate route | Authority boundary |
+| Capability | Work | Current adapter and starting effort | Gate |
 | --- | --- | --- | --- |
-| `project_architect` | Sol High, pinned | Receive a compact Luna evidence packet before invocation; no lower-tier architecture decision | Cross-domain architecture, migrations, ownership/boundary decisions, and model routing. Read-only. |
-| `obsidian_notes_pipeline` | Terra Medium for a known-contract, reproducible pipeline fix | Luna Low/Medium for discovery or bounded known-path work, Luna High for a large deterministic migration, Terra High after a critical contract is settled, and Sol High for schema, publish input, generated-note overwrite, asset-boundary, privacy, or ambiguous semantics | Pipeline implementation stays with this owner; Luna evidence never authorizes a boundary decision. |
-| `design_system_curator` | Terra Medium | Luna Low/Medium for token/state inventory or checklist evidence; Sol Medium/High for foundational direction, conflicting references, full redesigns, or cross-page systems | Visual judgment and spec only; no direct UI implementation by default. |
-| `content_ia_editor` | Terra Medium | Luna Low/Medium for extraction, terminology, metadata, deterministic classification, or formatting; Luna High for large fully specified transformations; Sol Medium for foundational positioning or materially conflicting evidence | Nuanced copy and IA remain Terra/Sol judgment. Never modifies layout or styling. |
-| `frontend_implementer` | Terra Medium | Luna Low/Medium for explicit bounded fixes, Luna High for large deterministic transformations, Terra High for settled critical implementation, and Sol Medium/High for ambiguous bugs, complex interactions, architecture, or competing approaches | Scoped UI implementation only; protected pipeline, schema, deployment, and agent rules remain excluded. |
-| `qa_build_reviewer` | Luna Medium for mechanical preflight and low-risk final gates | Luna Low for tiny explicit checks; Terra Medium/High for ordinary semantic QA; Sol Medium/High for critical semantic or release gates | Luna collects and checks proof; Terra/Sol interpret proof and release risk. |
+| L0 | Resolved deterministic execution, including tests, builds, validators, Git and PR mechanics, and exact artifact checks | Model bypass through root orchestration after required approval | Verify the specified result directly |
+| L1 | Small extraction, classification, evidence compression, and tiny directly checked edits | GPT-6 Luna Low | Exact-answer or exact-diff check; fall back to L2 on failure |
+| L2 | Bounded reasoning, known-path implementation, and mechanical QA under settled authority | GPT-6 Luna Medium | Direct acceptance and mechanical validation |
+| L3 | Engineering synthesis, ordinary multi-file implementation, debugging, and semantic QA | GPT-6 Sol Medium | Semantic review where required |
+| L4 | Architecture, authority reconciliation, privacy/publication judgment, ambiguous recovery, and critical review | GPT-6 Sol High | Independent critical semantic gate when required |
+| L5 | Exceptional unresolved L4 criterion | Disabled; GPT-6 Astra Medium/High is only a candidate | Enable only after a consequential comparative advantage is demonstrated |
 
-Pin a model or reasoning value in an agent TOML only when that role has no documented alternate tier. Custom-agent values take precedence over spawn-time routing, so variable-tier roles leave them to the caller. The architect remains pinned because invoking that role already signals high-value cross-domain judgment.
+The levels are capability classes, not a mandatory staircase. A known architecture decision can start at L4; its subsequent build or Git operation belongs to L0. High impact alone does not require a stronger model. Quality, authority, and complete validation are admission gates. Use latency or cost to choose only among routes that pass them.
 
-## Task routing matrix
+## Qualification and reasoning
 
-| Level | Work | Preferred route | Required flow |
-| --- | --- | --- | --- |
-| 0 | Explanation only | No delegated agent | Answer in the current conversation. |
-| 1 | Explicit, low-risk, directly verifiable task | Luna Low or Medium, or measured Luna High for a large deterministic workload, in the owning lane | One writer; validate immediately; escalate if semantics appear. |
-| 2 | Ordinary single-domain work | Optional Luna discovery → Terra Medium implementation → Luna mechanical QA | Skip a separate discovery handoff when its overhead exceeds its value. |
-| 3 | Cross-domain, ambiguous, or materially coupled work | Luna evidence packet → Sol Medium/High decision → Terra Medium/High implementation → Luna Gate 1 → Terra/Sol Gate 2 | Keep planning, retained-diff implementation, and independent QA distinct. |
-| 4 | High-risk pipeline, schema, privacy, deployment, or infrastructure work | Luna factual preparation → Sol High authority/plan → Terra High or Sol implementation → Luna Gate 1 → Sol High critical gate | Luna may reduce raw work but never owns the governing decision. |
+HC-126 is the canonical family benchmark and is not rerun here. Its dispatch-attested evidence supports GPT-6 Luna Medium bounded implementation, GPT-6 Sol Medium engineering and semantic synthesis, and GPT-6 Sol High difficult judgment and recovery. Higher effort did not automatically improve quality. Astra did not resolve a consequential criterion beyond Sol High in the tested case.
 
-## Two-stage QA
+HC-131 adds narrow Website qualification. GPT-6 Luna Low produced an exact 39-occurrence GPT-5.6 inventory and category classification, checked against a bounded independent search, and a one-line known-path edit with exact diff and whitespace checks. This admits L1 only for similarly small, directly verifiable work; authority-sensitive interpretation still routes to L3 or L4. GPT-6 Luna Medium migrated the 14 current routing fixtures and evaluator within a locked two-file scope; all 16 direct evaluator checks passed, historical fixtures were unchanged, and the intermediate full routing suite exposed only three stale root-owned assertions later corrected. This adds Website-specific L2 evidence to HC-126. It does not prove Luna Medium suitable for unconstrained semantic engineering.
 
-For meaningful changes, split proof collection from proof interpretation.
+The residual large deterministic route uses L2 Medium with immediate checks, rather than an automatic High effort. Ordinary Terra-like semantic engineering uses L3 Sol Medium because HC-126 directly qualified Sol Medium and did not qualify Luna Medium for that semantic bar. Settled critical implementation can execute at L3 after L4 resolves the governing decision, then receives an L4 semantic gate. L5 remains disabled. Do not create automatic xhigh or max routes; compare higher effort only against representative acceptance evidence.
 
-**Gate 1 — Luna mechanical QA** checks authorized files, dirty-tree contamination, diff whitespace, required commands, exit status, expected tests, build artifacts, acceptance-criteria evidence, and obvious omissions. For work that still requires Gate 2, it produces a compact packet labeled `MECHANICAL READY`, `MECHANICAL NOT READY`, or `MECHANICAL BLOCKED`; these labels are not release verdicts. Do not spend semantic-review capacity on a failed candidate unless Terra or Sol is needed to diagnose the failure.
+Token, duration, and monetary cost telemetry were not exposed by the HC-131 targeted subruns. Their pass decisions rest on artifact quality, scope, and exact checks, not an unmeasured cost claim.
 
-**Gate 2 — semantic QA** is required when release confidence depends on architecture, privacy/security, schema/publication semantics, hidden invariants, test sufficiency, difficult design judgment, or cross-component behavior. Use Terra for ordinary semantic review and Sol for critical or ambiguous review. Gate 2 reads the compact evidence plus the authoritative contracts and source whose semantics affect the decision; it does not blindly repeat Gate 1.
+## Launch, ownership, and handoffs
 
-For low-risk work, a Luna-routed `qa_build_reviewer` may complete both the mechanical checks and the final gate in one pass. Do not create a separate QA delegation for a trivial change when the same evidence can be checked directly. `qa_build_reviewer` remains the only agent that issues the repository verdict `PASS`, `PASS WITH WARNINGS`, `FAIL`, or `BLOCKED`.
+The user's root conversation model is selected at launch. Project config does not pin it, and an explanation in the current conversation does not silently switch models. Exact routed model IDs live in the Website adapter and the architect agent TOML. If a runtime cannot perform a requested routed subrun, report the unavailable route and keep the authority boundary; a route envelope is not proof of execution.
 
-## Escalation packet
+Keep the six owners and one retained-diff writer. L1/L2 may gather facts or perform explicit reversible edits, but may not settle architecture, design direction, schema, privacy, publication, or release ambiguity. The architect owns cross-domain decisions. The notes owner retains publication and generated-content boundaries. The design curator supplies visual direction, the content editor owns claims and IA, the frontend implementer owns scoped UI changes, and the QA reviewer alone issues the repository readiness verdict.
 
-When Luna or Terra escalates, pass only decision-relevant material:
+For meaningful changes, mechanical Gate 1 checks scope, exact commands, exit status, diff, and acceptance evidence. Semantic Gate 2 checks the governing contracts and sufficient behavior evidence at L3 or L4 according to risk. A mechanical pass is not a release verdict. Keep fresh handoff packets compact and re-read decision-critical authority.
 
-- verified facts and current repository state;
-- governing authority and exact files or symbols;
-- observed implementation and validation already run;
-- the precise uncertainty or conflict;
-- plausible interpretations when more than one survives;
-- the decision required and recommended model/reasoning tier.
+## Provenance and rollback
 
-Do not paste raw logs or convert assumptions into decisions. Sol must fresh-read governing contracts and decision-critical source even when a packet is available.
+The 14 GPT-5.6 cases in tests/codex-routing-cases.json and the HC-126 active-model comparison map remain historical benchmark evidence. They are not active execution. The HC-58 and HC-126 decisions and dispatch evidence remain in [MODEL_ROUTING_PORTABILITY.md](MODEL_ROUTING_PORTABILITY.md) and the HC-126 issue attachments. If a GPT-6 route later fails representative qualification, record the exception and use an explicitly reviewed adapter rollback with the same authority and QA gates; never silently relabel the executed model.
 
-## Compatibility and usage policy
-
-The GPT-5.6 Terra/Luna routes are retained by the HC-126 comparison, not treated as an automatic downgrade. If GPT-6 Sol is unavailable or fails a repository-specific qualification, record the unavailable route and use the explicit GPT-5.6 Sol baseline only through a reviewed adapter rollback or a manually attested root profile with the same authority and QA gates. Do not silently relabel a requested route as an executed model. Actual usage varies with context, tools, reasoning depth, caching, and output length; do not place temporary numeric budgets in agent TOMLs.
-
-For ownership, permissions, handoffs, and prompt structure, see [CODEX_AGENT_ROUTING.md](CODEX_AGENT_ROUTING.md). For the project workflow, see [AGENT_WORKFLOW.md](AGENT_WORKFLOW.md).
+For ownership, permissions, prompt shape, and safe scans, see [CODEX_AGENT_ROUTING.md](CODEX_AGENT_ROUTING.md), [AGENT_WORKFLOW.md](AGENT_WORKFLOW.md), and [CODEX_SCAN_BOUNDARY.md](CODEX_SCAN_BOUNDARY.md).

@@ -16,7 +16,7 @@ You perform either a scoped mechanical preflight or the final readiness gate aft
 
 ## Context and evidence
 
-Use Luna Medium for mechanical Gate 1 and interrupted-run classification; Luna Low is sufficient only for tiny explicit checks. Use Terra Medium or High for semantic multi-file, responsive, theme, content/schema, or cross-component review. Use Sol Medium or High for critical pipeline, schema, dependency, workflow, deployment, generated-content, or private-content judgment.
+Use L2 for mechanical Gate 1 and interrupted-run classification; L1 is sufficient only for tiny exact checks. Use L3 for ordinary semantic multi-file, responsive, theme, content/schema, or cross-component review. Use L4 for critical pipeline, schema, dependency, workflow, deployment, generated-content, or private-content judgment.
 
 Review the working-tree diff, the relevant owner definition, supplied handoff, and changed behavior. Generated notes carry the line-one sync marker. UI evidence includes `docs/design/UI_DESIGN.md` and rendered light/dark/mobile states. When a result is empty or suspicious, use one or two targeted fallbacks such as checking the staged diff, file contents, build artifact, or directly affected route.
 

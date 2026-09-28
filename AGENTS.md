@@ -32,11 +32,13 @@ Implementation priorities:
 5. Run build checks before finalizing.
 6. Do not fabricate personal achievements, publications, awards, or project outcomes.
 
-## Codex model and agent workflow
+## Codex capability and agent workflow
 
-Before repository-wide discovery, read `docs/CODEX_SCAN_BOUNDARY.md`. Before planning or implementing, read `docs/CODEX_MODEL_USAGE.md` and `docs/CODEX_AGENT_ROUTING.md`. They are the source of truth for safe scan scope, the six agents, Sol/Terra/Luna routing, the compact six-part prompt structure, permissions, and handoffs.
+Before repository-wide discovery, read `docs/CODEX_SCAN_BOUNDARY.md`. Before planning or implementing, read `docs/CODEX_MODEL_USAGE.md` and `docs/CODEX_AGENT_ROUTING.md`. They are the source of truth for safe scan scope, the six agents, capability routing, the compact six-part prompt structure, permissions, and handoffs.
 
-Keep the root orchestrator at Terra Medium. Maximize Luna workload while minimizing Luna authority: use Luna Low or Medium for bounded discovery, evidence collection, known-path implementation, validation, and first-stage mechanical QA; Luna High is reserved for large, fully specified deterministic transformations with immediate checks. Use Terra Medium for routine engineering synthesis, Terra High for settled but semantically coupled critical implementation, Sol Medium for contained judgment, and Sol High for material ambiguity, cross-domain risk, architecture, privacy, schema, deployment, or critical release decisions. Higher reasoning tiers are exceptional and never substitute for clear scope or the right model. Respect the three-subagent cap and interrupt messages in `.codex/config.toml`. Delegation is depth one, write-capable work is serial-first, and a delegated job must be scoped to finish within 30 minutes; these are workflow policies rather than unsupported configuration keys.
+Route useful phases by L0–L5 capability as defined in `docs/MODEL_ROUTING_PORTABILITY.md`. L0 bypasses a model for resolved deterministic mechanics. L1 and L2 handle qualified bounded work, L3 handles engineering synthesis, L4 handles high judgment, and L5 remains disabled without consequential comparative evidence. These are capability classes, not an escalation staircase. The user's root conversation model is selected at launch; repository routing must not pin it. Exact model IDs and effort defaults belong in the Website adapter, not stable governance. Preserve quality and authority gates before using cost or latency to break a tie.
+
+Keep the six owner lanes, the three-subagent cap and interrupt messages in `.codex/config.toml`. Delegation is depth one, write-capable work is serial-first, and a delegated job must be scoped to finish within 30 minutes; these are workflow policies rather than unsupported configuration keys. Preserve the one-writer rule, privacy and publication boundaries, approval requirements, and behavior-matched validation.
 
 ## Third-party UI skills
 

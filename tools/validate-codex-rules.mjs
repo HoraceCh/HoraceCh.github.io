@@ -40,7 +40,8 @@ const WORKFLOW_TOP_LEVEL_KEYS = [
   'execution',
   'ownership',
   'routingInput',
-  'modelTiers',
+  'capabilityLevels',
+  'modelAdapter',
   'criticalRisks',
 ];
 const SECRET_PATTERNS = [
@@ -387,11 +388,8 @@ function validateToml(rootDir, config, errors) {
     errors.push('Missing parsed .codex/config.toml');
     return;
   }
-  if (
-    rootConfig.model !== config.execution.root.model ||
-    rootConfig.model_reasoning_effort !== config.execution.root.reasoning
-  ) {
-    errors.push('Root model route does not match config/codex-workflow.json');
+  if ('model' in rootConfig || 'model_reasoning_effort' in rootConfig) {
+    errors.push('Project config must not pin the user-selected root model or reasoning');
   }
   if (rootConfig.agents?.max_concurrent_threads_per_session !== config.execution.maxConcurrentAgents) {
     errors.push('Root agent concurrency does not match config/codex-workflow.json');
@@ -415,8 +413,9 @@ function validateToml(rootDir, config, errors) {
       }
     }
     if (agent.name === 'project_architect') {
-      if (agent.model !== 'gpt-6-sol' || agent.model_reasoning_effort !== 'high') {
-        errors.push('project_architect must remain pinned to gpt-6-sol/high');
+      const highJudgment = config.modelAdapter.L4;
+      if (agent.model !== highJudgment.model || agent.model_reasoning_effort !== highJudgment.reasoning) {
+        errors.push('project_architect must match the enabled L4 adapter');
       }
     } else if ('model' in agent || 'model_reasoning_effort' in agent) {
       errors.push(`Variable-route agent must not pin model or reasoning: ${agent.name}`);
@@ -430,31 +429,43 @@ function validateModelCapabilities(config, errors) {
     errors.push('execution.runtimeReasoningCapabilities must be an object');
     return;
   }
+  if ('root' in config.execution) {
+    errors.push('Workflow must not pin the user-selected root launch model');
+  }
 
-  for (const [tier, policy] of Object.entries(config.modelTiers ?? {})) {
+  const expectedLevels = ['L0', 'L1', 'L2', 'L3', 'L4', 'L5'];
+  if (!isDeepStrictEqual(Object.keys(config.capabilityLevels ?? {}).sort(), expectedLevels)) {
+    errors.push('Capability framework must define exactly L0-L5');
+  }
+  if (!isDeepStrictEqual(Object.keys(config.modelAdapter ?? {}).sort(), expectedLevels.slice(1))) {
+    errors.push('Model adapter must define exactly L1-L5; L0 bypasses models');
+  }
+  for (const [tier, policy] of Object.entries(config.modelAdapter ?? {})) {
     const available = capabilities[policy.model];
     if (!Array.isArray(available)) {
       errors.push(`Missing runtime reasoning capabilities for ${policy.model}`);
       continue;
     }
-    for (const reasoning of policy.reasoning ?? []) {
-      if (!available.includes(reasoning)) {
-        errors.push(`Unsupported automatic reasoning tier ${tier}/${reasoning}`);
-      }
+    if (!available.includes(policy.reasoning)) {
+      errors.push(`Unsupported automatic reasoning tier ${tier}/${policy.reasoning}`);
     }
-    if ((policy.reasoning ?? []).includes('ultra')) {
-      errors.push(`Ultra must remain session-only, not an automatic ${tier} route`);
+    if (['xhigh', 'max', 'ultra'].includes(policy.reasoning)) {
+      errors.push(`Exceptional reasoning must not be an automatic ${tier} route`);
+    }
+    if (tier !== 'L5' && !policy.enabled) {
+      errors.push(`Active capability ${tier} must have an enabled adapter`);
+    }
+    if (tier !== 'L5' && policy.model.startsWith('gpt-5.6-')) {
+      errors.push(`Active capability ${tier} must not select GPT-5.6`);
     }
   }
-
-  const rootCapabilities = capabilities[config.execution.root.model] ?? [];
-  if (!rootCapabilities.includes(config.execution.root.reasoning)) {
-    errors.push('Root reasoning is not supported by the declared runtime capabilities');
+  if (config.modelAdapter?.L5?.enabled !== false) {
+    errors.push('L5 must remain disabled without consequential comparative evidence');
   }
 }
 
 function validateRoutingCases(rootDir, errors) {
-  const casesPath = resolve(rootDir, 'tests/codex-routing-cases.json');
+  const casesPath = resolve(rootDir, 'tests/codex-routing-current-cases.json');
   if (!existsSync(casesPath)) {
     errors.push('Missing representative routing cases');
     return 0;
@@ -467,23 +478,10 @@ function validateRoutingCases(rootDir, errors) {
   if (!unique(cases.map((fixture) => fixture.id))) {
     errors.push('Routing evaluation case ids must be unique');
   }
-  const activeModelsPath = resolve(rootDir, 'tests/codex-routing-active-models.json');
-  if (!existsSync(activeModelsPath)) {
-    errors.push('Missing active routing model overrides');
-    return cases.length;
-  }
-  const activeModels = readJson(activeModelsPath);
-  const caseIds = new Set(cases.map((fixture) => fixture.id));
-  for (const id of Object.keys(activeModels)) {
-    if (!caseIds.has(id)) {
-      errors.push(`Unknown active routing case: ${id}`);
-    }
-  }
   for (const fixture of cases) {
     try {
       const actual = selectRoute(fixture.input);
-      const expected = { ...fixture.expected, model: activeModels[fixture.id] ?? fixture.expected.model };
-      if (!isDeepStrictEqual(actual, expected)) {
+      if (!isDeepStrictEqual(actual, fixture.expected)) {
         errors.push(`Routing evaluation mismatch: ${fixture.id}`);
       }
     } catch (error) {
@@ -505,7 +503,7 @@ export function validateWorkflow(rootDir = process.cwd()) {
   const configContent = readFileSync(configPath, 'utf8');
   errors.push(...validateWorkflowJsonStructure(configContent));
   const config = JSON.parse(configContent);
-  if (config.schemaVersion !== 1) {
+  if (config.schemaVersion !== 2) {
     errors.push(`Unsupported workflow schemaVersion: ${String(config.schemaVersion)}`);
   }
   const policyFiles = config.scanBoundary?.policyFiles ?? [];

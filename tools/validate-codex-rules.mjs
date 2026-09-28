@@ -415,8 +415,8 @@ function validateToml(rootDir, config, errors) {
       }
     }
     if (agent.name === 'project_architect') {
-      if (agent.model !== 'gpt-5.6-sol' || agent.model_reasoning_effort !== 'high') {
-        errors.push('project_architect must remain pinned to gpt-5.6-sol/high');
+      if (agent.model !== 'gpt-6-sol' || agent.model_reasoning_effort !== 'high') {
+        errors.push('project_architect must remain pinned to gpt-6-sol/high');
       }
     } else if ('model' in agent || 'model_reasoning_effort' in agent) {
       errors.push(`Variable-route agent must not pin model or reasoning: ${agent.name}`);
@@ -467,10 +467,23 @@ function validateRoutingCases(rootDir, errors) {
   if (!unique(cases.map((fixture) => fixture.id))) {
     errors.push('Routing evaluation case ids must be unique');
   }
+  const activeModelsPath = resolve(rootDir, 'tests/codex-routing-active-models.json');
+  if (!existsSync(activeModelsPath)) {
+    errors.push('Missing active routing model overrides');
+    return cases.length;
+  }
+  const activeModels = readJson(activeModelsPath);
+  const caseIds = new Set(cases.map((fixture) => fixture.id));
+  for (const id of Object.keys(activeModels)) {
+    if (!caseIds.has(id)) {
+      errors.push(`Unknown active routing case: ${id}`);
+    }
+  }
   for (const fixture of cases) {
     try {
       const actual = selectRoute(fixture.input);
-      if (!isDeepStrictEqual(actual, fixture.expected)) {
+      const expected = { ...fixture.expected, model: activeModels[fixture.id] ?? fixture.expected.model };
+      if (!isDeepStrictEqual(actual, expected)) {
         errors.push(`Routing evaluation mismatch: ${fixture.id}`);
       }
     } catch (error) {

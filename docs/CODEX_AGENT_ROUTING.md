@@ -25,7 +25,7 @@ Route from task shape, not from prose labels such as “important” or “hard.
 - `workload`: `small`, `normal`, or `large`;
 - `risks`: only verified architecture, deployment, privacy, publication, schema, or security risk flags.
 
-Run `npm run route:codex -- [classification flags]` to obtain a route envelope. The envelope is machine-readable and contains `owner`, `phase`, `model`, `reasoning`, `contextMode`, `authority`, and `requiredGate`. Its decision order is deliberate:
+Run `npm run route:codex -- [classification flags]` to obtain a route envelope. It contains the owner, phase, capability level, semantic `modelLane`, `bindingState`, effective `model`, reasoning, `contextTier`, `contextMode`, runtime constraint, attestation requirement, authority, and gate. Its decision order is deliberate:
 
 1. Explanation stays in the current user-selected root conversation and does not select a routed model.
 2. Resolved `execute` mechanics with low ambiguity and direct verification bypass models at L0, even for high-impact Git, PR, or deployment mechanics. The root orchestrates the specified tool action after required QA and user authorization; L0 grants no approval and never assigns release execution to the QA reviewer.
@@ -36,6 +36,8 @@ Run `npm run route:codex -- [classification flags]` to obtain a route envelope. 
 
 When the envelope selects a different model or owner, start that phase with `contextMode=fresh-packet`: send the compact evidence packet and the six-part prompt, not the complete conversation. If the active runtime cannot honor the selected route, record the route as unavailable and execute only within the current model's authority; never claim that a model handoff occurred when it did not. One retained-diff writer remains the invariant.
 
+The derived registry snapshot resolves `fast`, `standard`, and `deep` bindings after capability classification. Only a routed L4 `project_architect` child receives the Website GPT-6.1 Sol High pilot override. It requires native CLI, an aligned root/role/explicit-child tuple, and a fresh child runtime record before consequential work. Use the snapshot rollback binding on failed attestation. Other L4 owners retain GPT-6 Sol High; L3 retains GPT-6 Sol Medium. C0–C3 context tiers are automatic metadata; C4 long context and C5 continuity require explicit admission.
+
 Use this header before the six prompt sections:
 
 ```text
@@ -43,9 +45,14 @@ Route
 owner=[agent or root]
 phase=[phase]
 level=[L0–L5]
+modelLane=[fast, standard, deep, frontier, or null]
+bindingState=[active, website-pilot, root-selected, or bypass]
 model=[adapter model id or null for root/L0]
 reasoning=[effort or null for root/L0]
+contextTier=[C0–C3 automatic; C4/C5 explicit only]
 contextMode=[current, none, or fresh-packet]
+runtimeConstraint=[native-cli-aligned-tuple or null]
+attestationRequired=[true or false]
 authority=[answer, evidence, judgment, execute, mechanics-only, decision-first, mechanical-gate, or semantic-gate]
 requiredGate=[none, mechanical, semantic-l3, or semantic-l4]
 ```

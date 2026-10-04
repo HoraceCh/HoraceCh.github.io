@@ -3,6 +3,8 @@ import { fileURLToPath } from 'node:url';
 
 const WORKFLOW_PATH = new URL('../config/codex-workflow.json', import.meta.url);
 const workflow = JSON.parse(readFileSync(WORKFLOW_PATH, 'utf8'));
+const REGISTRY_PATH = new URL('../config/codex-model-registry.snapshot.json', import.meta.url);
+const registrySnapshot = JSON.parse(readFileSync(REGISTRY_PATH, 'utf8'));
 
 const REQUIRED_FIELDS = [
   'domain',
@@ -62,18 +64,58 @@ function parseTask(input) {
   };
 }
 
+export function resolveBinding(level, owner, registry = registrySnapshot) {
+  const adapter = workflow.modelAdapter[level];
+  const lane = adapter?.lane;
+  const active = registry?.activeBindings?.[lane];
+  if (!active || active.status !== 'active' || !active.model || !active.reasoning?.includes(adapter.reasoning)) {
+    throw new TypeError(`Missing or invalid active registry binding for ${String(level)}/${String(lane)}`);
+  }
+  const override = registry.websitePilotOverrides?.[`${owner}:${lane}`];
+  if (!override) {
+    return { model: active.model, reasoning: adapter.reasoning, bindingState: 'active', runtimeConstraint: null, attestationRequired: false };
+  }
+  const rollback = registry.rollbackBindings?.[`${owner}:${lane}`];
+  if (level !== 'L4' || owner !== 'project_architect' || override.status !== 'pilot-active' ||
+      override.model !== registry.qualifiedCandidates?.deep?.model ||
+      override.reasoning !== adapter.reasoning || !override.attestationRequired ||
+      !override.evidence?.length || !rollback?.model || !rollback?.reasoning ||
+      override.runtimeAttestation?.actualModel !== override.model ||
+      override.runtimeAttestation?.actualReasoning !== override.reasoning ||
+      override.runtimeAttestation?.roleInstructionsLoaded !== true ||
+      !override.runtimeAttestation?.childSession) {
+    throw new TypeError('Invalid Website pilot override or missing rollback/evidence');
+  }
+  return { model: override.model, reasoning: override.reasoning, bindingState: 'website-pilot',
+    runtimeConstraint: override.runtimeConstraint, attestationRequired: true };
+}
+
+function contextTier(task, level) {
+  if (level === 'L0') return 'C0';
+  if (task.scope === 'cross-domain' || task.ambiguity === 'material' || task.workload === 'large') return 'C3';
+  if (task.workload === 'small' && task.scope === 'single') return 'C1';
+  return 'C2';
+}
+
 function envelope(task, level, authority, requiredGate) {
   const phaseOwner = task.phase === 'qa' ? workflow.ownership.qa : workflow.ownership[task.domain];
   const activeLevel = level === 'L1' && !workflow.modelAdapter.L1.enabled ? 'L2' : level;
   const adapter = workflow.modelAdapter[activeLevel];
   const bypassModel = task.phase === 'explain' || activeLevel === 'L0';
+  const owner = bypassModel ? 'root' : phaseOwner;
+  const binding = bypassModel ? null : resolveBinding(activeLevel, owner);
   return {
-    owner: task.phase === 'explain' || activeLevel === 'L0' ? 'root' : phaseOwner,
+    owner,
     phase: task.phase,
     level: activeLevel,
-    model: bypassModel ? null : adapter.model,
-    reasoning: bypassModel ? null : adapter.reasoning,
+    modelLane: adapter?.lane ?? null,
+    bindingState: task.phase === 'explain' ? 'root-selected' : activeLevel === 'L0' ? 'bypass' : binding.bindingState,
+    model: binding?.model ?? null,
+    reasoning: binding?.reasoning ?? null,
+    contextTier: contextTier(task, activeLevel),
     contextMode: task.phase === 'explain' ? 'current' : activeLevel === 'L0' ? 'none' : 'fresh-packet',
+    runtimeConstraint: binding?.runtimeConstraint ?? null,
+    attestationRequired: binding?.attestationRequired ?? false,
     authority,
     requiredGate,
   };

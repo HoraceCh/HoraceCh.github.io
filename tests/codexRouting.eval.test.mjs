@@ -44,7 +44,7 @@ test('current routing set covers phases, risks, levels, models, and historical c
   assert.deepEqual(currentIds, historicalIds);
   assert.deepEqual([...phases].sort(), ['decide', 'discover', 'explain', 'implement', 'qa']);
   assert.deepEqual([...levels].sort(), ['L1', 'L2', 'L3', 'L4']);
-  assert.deepEqual([...models].sort(), ['gpt-6-luna', 'gpt-6-sol', null]);
+  assert.deepEqual([...models].sort(), ['gpt-6-luna', 'gpt-6-sol', 'gpt-6.1-sol', null]);
   assert.ok(risks.has('architecture'));
   assert.ok(risks.has('deployment'));
   assert.ok(risks.has('privacy'));

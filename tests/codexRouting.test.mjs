@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { isL5Eligible, selectRoute } from '../tools/codex-routing.mjs';
+import { readFileSync } from 'node:fs';
+import { isL5Eligible, resolveBinding, selectRoute } from '../tools/codex-routing.mjs';
+
+const registry = JSON.parse(readFileSync(new URL('../config/codex-model-registry.snapshot.json', import.meta.url)));
 
 test('routes a small direct discovery phase to qualified L1', () => {
   const route = selectRoute({
@@ -18,9 +21,14 @@ test('routes a small direct discovery phase to qualified L1', () => {
     owner: 'frontend_implementer',
     phase: 'discover',
     level: 'L1',
+    modelLane: 'fast',
+    bindingState: 'active',
     model: 'gpt-6-luna',
     reasoning: 'low',
+    contextTier: 'C1',
     contextMode: 'fresh-packet',
+    runtimeConstraint: null,
+    attestationRequired: false,
     authority: 'evidence',
     requiredGate: 'none',
   });
@@ -41,9 +49,14 @@ test('routes critical implementation ambiguity to a Sol decision before writing'
     owner: 'obsidian_notes_pipeline',
     phase: 'implement',
     level: 'L4',
+    modelLane: 'deep',
+    bindingState: 'active',
     model: 'gpt-6-sol',
     reasoning: 'high',
+    contextTier: 'C3',
     contextMode: 'fresh-packet',
+    runtimeConstraint: null,
+    attestationRequired: false,
     authority: 'decision-first',
     requiredGate: 'semantic-l4',
   });
@@ -93,9 +106,14 @@ test('bypasses the model for resolved deterministic deployment mechanics', () =>
     owner: 'root',
     phase: 'execute',
     level: 'L0',
+    modelLane: null,
+    bindingState: 'bypass',
     model: null,
     reasoning: null,
+    contextTier: 'C0',
     contextMode: 'none',
+    runtimeConstraint: null,
+    attestationRequired: false,
     authority: 'mechanics-only',
     requiredGate: 'none',
   });
@@ -141,4 +159,45 @@ test('rejects an unclassified task instead of guessing a route', () => {
     () => selectRoute({ domain: 'frontend', phase: 'implement' }),
     /Missing routing field/,
   );
+});
+
+test('keeps L3 standard on GPT-6 Sol Medium and never admits C4 automatically', () => {
+  const input = { domain: 'frontend', phase: 'implement', scope: 'domain', ambiguity: 'contained',
+    verification: 'semantic', workload: 'normal', risks: [] };
+  const standard = selectRoute(input);
+  assert.deepEqual([standard.level, standard.modelLane, standard.model, standard.reasoning, standard.contextTier],
+    ['L3', 'standard', 'gpt-6-sol', 'medium', 'C2']);
+  const extended = selectRoute({ ...input, workload: 'large' });
+  assert.equal(extended.contextTier, 'C3');
+});
+
+test('limits GPT-6.1 to attested project_architect deep routing', () => {
+  const input = { domain: 'architecture', phase: 'decide', scope: 'cross-domain',
+    ambiguity: 'material', verification: 'semantic', workload: 'large', risks: ['architecture'] };
+  const architect = selectRoute(input);
+  assert.deepEqual([architect.level, architect.modelLane, architect.bindingState, architect.model, architect.reasoning],
+    ['L4', 'deep', 'website-pilot', 'gpt-6.1-sol', 'high']);
+  assert.equal(architect.runtimeConstraint, 'native-cli-aligned-tuple');
+  assert.equal(architect.attestationRequired, true);
+  assert.equal(architect.contextTier, 'C3');
+  const other = selectRoute({ ...input, domain: 'notes' });
+  assert.deepEqual([other.model, other.reasoning, other.bindingState], ['gpt-6-sol', 'high', 'active']);
+});
+
+test('invalid or missing active registry bindings fail closed', () => {
+  const missing = structuredClone(registry);
+  delete missing.activeBindings.standard;
+  assert.throws(() => resolveBinding('L3', 'frontend_implementer', missing), /Missing or invalid active/);
+  const invalid = structuredClone(registry);
+  invalid.activeBindings.deep.reasoning = [];
+  assert.throws(() => resolveBinding('L4', 'qa_build_reviewer', invalid), /Missing or invalid active/);
+});
+
+test('pilot override without rollback or evidence fails closed', () => {
+  const missingRollback = structuredClone(registry);
+  delete missingRollback.rollbackBindings['project_architect:deep'];
+  assert.throws(() => resolveBinding('L4', 'project_architect', missingRollback), /Invalid Website pilot/);
+  const missingEvidence = structuredClone(registry);
+  missingEvidence.websitePilotOverrides['project_architect:deep'].evidence = [];
+  assert.throws(() => resolveBinding('L4', 'project_architect', missingEvidence), /Invalid Website pilot/);
 });

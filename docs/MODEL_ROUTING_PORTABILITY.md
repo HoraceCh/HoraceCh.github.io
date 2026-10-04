@@ -64,6 +64,12 @@ The active Website adapter is L1 Luna Low, L2 Luna Medium, L3 Sol Medium, and L4
 
 Admin must consume this capability decision and qualify a small set of its own auth, security, publication, and external-write flows before changing its adapter; it must not rerun the full family benchmark. Baukasten Press remains HOLD until its project and technical route is re-frozen, then performs its own small qualification without treating Website's result as publication approval. HC-115 Skill admission remains outside this benchmark.
 
+### HC-162 Website central-registry pilot (2026-10-04)
+
+The active Website adapter now selects semantic lanes in `config/codex-workflow.json`; the derived `config/codex-model-registry.snapshot.json` resolves lane bindings under EO-16 authority. L1/L2 stay on GPT-6 Luna Low/Medium, L3 on GPT-6 Sol Medium, and ordinary L4 on GPT-6 Sol High. EO-18 qualified GPT-6.1 Sol Medium/High without globally activating either. The only Website-local override is `project_architect`/deep at GPT-6.1 Sol High, using the EO-19 native-CLI aligned-tuple policy and a fresh HC-162 child runtime attestation. A failed attestation returns that role to GPT-6 Sol High. L5 remains disabled.
+
+Context tiers C0–C5 are independent of capability levels. Normal routing may attach C0–C3 metadata; C4 long context and C5 durable continuity require explicit policy admission. Delegation remains depth one with one retained-diff writer, at most three concurrent agents, a soft total of six children, and one automatic retry per lane. The HC-126 and HC-131 benchmark artifacts above remain historical provenance rather than new GPT-6.1 execution evidence.
+
 ## 4. Enforce policy mechanically
 
 Use one deterministic command to parse real configuration formats and verify:

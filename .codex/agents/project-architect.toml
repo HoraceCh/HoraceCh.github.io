@@ -1,6 +1,6 @@
 name = "project_architect"
 description = "Repository-aware architect that decides where changes belong before implementation. Owns Astro/Hexo boundary, IA layout, and Obsidian pipeline placement. Read-only planner."
-model = "gpt-6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 

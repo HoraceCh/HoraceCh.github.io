@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "derivedFrom": {
+    "authority": "EO-16",
+    "baseline": "Central Model Registry — Baseline Matrix v1",
+    "qualityEvidence": ["HC-126", "HC-131", "EO-18"],
+    "runtimeEvidence": "EO-19",
+    "pilotAuthority": "HC-162"
+  },
+  "semanticLanes": ["fast", "standard", "deep", "frontier"],
+  "activeBindings": {
+    "fast": { "model": "gpt-6-luna", "reasoning": ["low", "medium"], "status": "active" },
+    "standard": { "model": "gpt-6-sol", "reasoning": ["medium"], "status": "active" },
+    "deep": { "model": "gpt-6-sol", "reasoning": ["high"], "status": "active" },
+    "frontier": { "model": null, "reasoning": [], "status": "disabled" }
+  },
+  "qualifiedCandidates": {
+    "standard": { "model": "gpt-6.1-sol", "reasoning": "medium", "status": "qualified-not-active", "evidence": "EO-18-G1" },
+    "deep": { "model": "gpt-6.1-sol", "reasoning": "high", "status": "qualified-not-active", "evidence": "EO-18-G2" }
+  },
+  "rollbackBindings": {
+    "project_architect:deep": { "model": "gpt-6-sol", "reasoning": "high", "evidence": "HC-126/HC-131" }
+  },
+  "websitePilotOverrides": {
+    "project_architect:deep": {
+      "level": "L4",
+      "model": "gpt-6.1-sol",
+      "reasoning": "high",
+      "status": "pilot-active",
+      "evidence": ["EO-18-G2", "EO-19", "HC-162-runtime"],
+      "runtimeConstraint": "native-cli-aligned-tuple",
+      "attestationRequired": true,
+      "runtimeAttestation": {
+        "surface": "Codex CLI 0.160.0",
+        "parentSession": "01a104f2-06ee-79e0-9b2e-426cc4a2c4e9",
+        "childSession": "01a104f2-cb58-7a61-be1f-e649bce4c200",
+        "actualModel": "gpt-6.1-sol",
+        "actualReasoning": "high",
+        "roleInstructionsLoaded": true,
+        "baselineHead": "73c558f2ba871251354893f05237e0881cf17294"
+      }
+    }
+  },
+  "runtimePolicy": {
+    "surface": "Codex CLI",
+    "alignedTuple": ["root", "role-pin", "explicit-child-request"],
+    "attestationFields": ["role", "actual-model", "actual-reasoning", "role-instructions-loaded"],
+    "onAttestationFailure": "rollback-binding",
+    "desktopHeterogeneousOverride": "unsupported"
+  }
+}

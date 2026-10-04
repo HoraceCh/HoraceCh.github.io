@@ -4,7 +4,7 @@ This file defines what an agent may load when it audits this repository's Codex 
 
 ## Policy audit boundary
 
-`config/codex-workflow.json` is the machine-readable allowlist. `scanBoundary.policyFiles` contains text that may govern an agent; `scanBoundary.workflowFiles` contains the router, validator, fixtures, tests, and script wiring needed to audit that policy. A workflow audit reads only the union of those lists. Do not recursively search `.codex/`, `.omo/`, the repository root, or a user directory to discover more policy sources.
+`config/codex-workflow.json` is the machine-readable allowlist. Its policy files include the derived `config/codex-model-registry.snapshot.json`; the snapshot is project state, not independent central authority. `scanBoundary.workflowFiles` contains the router, validator, fixtures, tests, and script wiring needed to audit that policy. A workflow audit reads only the union of those lists. Do not recursively search `.codex/`, `.omo/`, the repository root, or a user directory to discover more policy sources.
 
 Use these rules:
 

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
@@ -9,6 +10,7 @@ import {
   validateSkillAdmissionDefinition,
   validateWorkflow,
   validateWorkflowJsonStructure,
+  validateRegistrySnapshot,
 } from '../tools/validate-codex-rules.mjs';
 
 test('TOML validation selects only Python 3.11 or newer', () => {
@@ -107,4 +109,15 @@ test('the checked-in workflow is internally consistent', () => {
   assert.deepEqual(result.errors, []);
   assert.equal(result.ok, true);
   assert.equal(result.routingCases, 14);
+});
+
+test('registry validation rejects global candidate activation and missing pilot rollback', () => {
+  const root = new URL('../', import.meta.url);
+  const workflow = JSON.parse(readFileSync(new URL('config/codex-workflow.json', root)));
+  const registry = JSON.parse(readFileSync(new URL('config/codex-model-registry.snapshot.json', root)));
+  registry.activeBindings.standard.model = 'gpt-6.1-sol';
+  delete registry.rollbackBindings['project_architect:deep'];
+  const errors = validateRegistrySnapshot(workflow, registry);
+  assert.ok(errors.some((error) => error.includes('globally active')));
+  assert.ok(errors.some((error) => error.includes('rollback binding')));
 });

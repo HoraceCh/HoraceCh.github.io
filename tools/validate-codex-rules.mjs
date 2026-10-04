@@ -42,6 +42,7 @@ const WORKFLOW_TOP_LEVEL_KEYS = [
   'routingInput',
   'capabilityLevels',
   'modelAdapter',
+  'contextTiers',
   'criticalRisks',
 ];
 const SECRET_PATTERNS = [
@@ -367,7 +368,7 @@ function validatePolicyText(rootDir, policyFiles, packageScripts, errors) {
   }
 }
 
-function validateToml(rootDir, config, errors) {
+function validateToml(rootDir, config, registry, errors) {
   const tomlFiles = config.scanBoundary.policyFiles.filter((file) => file.endsWith('.toml'));
   const absolutePaths = tomlFiles.map((file) => resolve(rootDir, file));
   if (absolutePaths.some((path) => !existsSync(path))) {
@@ -413,9 +414,9 @@ function validateToml(rootDir, config, errors) {
       }
     }
     if (agent.name === 'project_architect') {
-      const highJudgment = config.modelAdapter.L4;
-      if (agent.model !== highJudgment.model || agent.model_reasoning_effort !== highJudgment.reasoning) {
-        errors.push('project_architect must match the enabled L4 adapter');
+      const pilot = registry.websitePilotOverrides?.['project_architect:deep'];
+      if (agent.model !== pilot?.model || agent.model_reasoning_effort !== pilot?.reasoning) {
+        errors.push('project_architect pin must match the approved Website pilot override');
       }
     } else if ('model' in agent || 'model_reasoning_effort' in agent) {
       errors.push(`Variable-route agent must not pin model or reasoning: ${agent.name}`);
@@ -423,12 +424,69 @@ function validateToml(rootDir, config, errors) {
   }
 }
 
-function validateModelCapabilities(config, errors) {
-  const capabilities = config.execution?.runtimeReasoningCapabilities;
-  if (!capabilities || typeof capabilities !== 'object' || Array.isArray(capabilities)) {
-    errors.push('execution.runtimeReasoningCapabilities must be an object');
-    return;
+export function validateRegistrySnapshot(config, registry, errors = []) {
+  if (registry?.schemaVersion !== 1 || registry.derivedFrom?.authority !== 'EO-16' ||
+      registry.derivedFrom?.pilotAuthority !== 'HC-162') {
+    errors.push('Invalid derived registry authority or schema');
+    return errors;
   }
+  const lanes = ['deep', 'fast', 'frontier', 'standard'];
+  if (!isDeepStrictEqual([...registry.semanticLanes].sort(), lanes) ||
+      !isDeepStrictEqual(Object.keys(registry.activeBindings ?? {}).sort(), lanes)) {
+    errors.push('Registry must define exactly the four semantic lanes');
+  }
+  for (const [level, policy] of Object.entries(config.modelAdapter ?? {})) {
+    if ('model' in policy || !lanes.includes(policy.lane)) {
+      errors.push(`Capability ${level} must reference a semantic lane, not a concrete model`);
+      continue;
+    }
+    const binding = registry.activeBindings?.[policy.lane];
+    if (level === 'L5') {
+      if (policy.enabled !== false || binding?.status !== 'disabled' || binding?.model !== null) {
+        errors.push('L5/frontier must remain disabled');
+      }
+      continue;
+    }
+    if (!policy.enabled || !binding?.model || binding.status !== 'active' ||
+        !binding.reasoning?.includes(policy.reasoning) || ['xhigh', 'max', 'ultra'].includes(policy.reasoning)) {
+      errors.push(`Invalid active registry binding for ${level}/${policy.lane}`);
+    }
+  }
+  if (!isDeepStrictEqual(Object.keys(registry.qualifiedCandidates ?? {}).sort(), ['deep', 'standard'])) {
+    errors.push('Registry must retain both qualified Sol candidates');
+  }
+  for (const [lane, candidate] of Object.entries(registry.qualifiedCandidates ?? {})) {
+    if (candidate.status !== 'qualified-not-active' || candidate.model === registry.activeBindings?.[lane]?.model) {
+      errors.push(`Qualified candidate must not become globally active: ${lane}`);
+    }
+  }
+  const overrideKeys = Object.keys(registry.websitePilotOverrides ?? {});
+  if (!isDeepStrictEqual(overrideKeys, ['project_architect:deep'])) {
+    errors.push('Only project_architect/deep may have a Website pilot override');
+  }
+  const pilot = registry.websitePilotOverrides?.['project_architect:deep'];
+  const rollback = registry.rollbackBindings?.['project_architect:deep'];
+  const deep = registry.activeBindings?.deep;
+  if (!pilot || pilot.level !== 'L4' || pilot.status !== 'pilot-active' ||
+      pilot.model !== registry.qualifiedCandidates?.deep?.model || pilot.reasoning !== 'high' ||
+      pilot.runtimeConstraint !== 'native-cli-aligned-tuple' || pilot.attestationRequired !== true ||
+      !['EO-18-G2', 'EO-19', 'HC-162-runtime'].every((ref) => pilot.evidence?.includes(ref)) ||
+      pilot.runtimeAttestation?.actualModel !== pilot.model ||
+      pilot.runtimeAttestation?.actualReasoning !== pilot.reasoning ||
+      pilot.runtimeAttestation?.roleInstructionsLoaded !== true ||
+      !pilot.runtimeAttestation?.childSession || !pilot.runtimeAttestation?.parentSession ||
+      rollback?.model !== deep?.model || rollback?.reasoning !== 'high' || !rollback.evidence) {
+    errors.push('Pilot override requires approved evidence, runtime constraint, and active rollback binding');
+  }
+  if (registry.runtimePolicy?.surface !== 'Codex CLI' ||
+      registry.runtimePolicy?.onAttestationFailure !== 'rollback-binding' ||
+      registry.runtimePolicy?.desktopHeterogeneousOverride !== 'unsupported') {
+    errors.push('Registry runtime policy must enforce EO-19 fallback');
+  }
+  return errors;
+}
+
+function validateModelCapabilities(config, registry, errors) {
   if ('root' in config.execution) {
     errors.push('Workflow must not pin the user-selected root launch model');
   }
@@ -440,28 +498,21 @@ function validateModelCapabilities(config, errors) {
   if (!isDeepStrictEqual(Object.keys(config.modelAdapter ?? {}).sort(), expectedLevels.slice(1))) {
     errors.push('Model adapter must define exactly L1-L5; L0 bypasses models');
   }
-  for (const [tier, policy] of Object.entries(config.modelAdapter ?? {})) {
-    const available = capabilities[policy.model];
-    if (!Array.isArray(available)) {
-      errors.push(`Missing runtime reasoning capabilities for ${policy.model}`);
-      continue;
-    }
-    if (!available.includes(policy.reasoning)) {
-      errors.push(`Unsupported automatic reasoning tier ${tier}/${policy.reasoning}`);
-    }
-    if (['xhigh', 'max', 'ultra'].includes(policy.reasoning)) {
-      errors.push(`Exceptional reasoning must not be an automatic ${tier} route`);
-    }
-    if (tier !== 'L5' && !policy.enabled) {
-      errors.push(`Active capability ${tier} must have an enabled adapter`);
-    }
-    if (tier !== 'L5' && policy.model.startsWith('gpt-5.6-')) {
-      errors.push(`Active capability ${tier} must not select GPT-5.6`);
-    }
+  if (!isDeepStrictEqual(Object.keys(config.contextTiers ?? {}).sort(), ['C0', 'C1', 'C2', 'C3', 'C4', 'C5'])) {
+    errors.push('Context policy must define exactly C0-C5');
   }
-  if (config.modelAdapter?.L5?.enabled !== false) {
-    errors.push('L5 must remain disabled without consequential comparative evidence');
+  const expectedFields = ['owner', 'phase', 'level', 'modelLane', 'bindingState', 'model', 'reasoning',
+    'contextTier', 'contextMode', 'runtimeConstraint', 'attestationRequired', 'authority', 'requiredGate'];
+  if (!isDeepStrictEqual(config.execution.routeEnvelopeFields, expectedFields)) {
+    errors.push('Route envelope fields do not match the semantic-lane contract');
   }
+  if (config.execution.maxDelegationDepth !== 1 || config.execution.maxRetainedDiffWriters !== 1 ||
+      config.execution.maxConcurrentAgents !== 3 || config.execution.maxTotalChildrenSoft !== 6 ||
+      config.execution.defaultForkPolicy !== 'none' || config.execution.automaticRetryPerLane !== 1 ||
+      config.execution.requireResultAndDeliveryEvidence !== true) {
+    errors.push('Bounded delegation, retry, or evidence policy is invalid');
+  }
+  validateRegistrySnapshot(config, registry, errors);
 }
 
 function validateRoutingCases(rootDir, errors) {
@@ -506,6 +557,14 @@ export function validateWorkflow(rootDir = process.cwd()) {
   if (config.schemaVersion !== 2) {
     errors.push(`Unsupported workflow schemaVersion: ${String(config.schemaVersion)}`);
   }
+  const registryPath = resolve(rootDir, 'config/codex-model-registry.snapshot.json');
+  let registry;
+  try {
+    registry = readJson(registryPath);
+  } catch {
+    errors.push('Missing or invalid derived registry snapshot');
+    return { ok: false, errors, warnings, checkedFiles: 0, routingCases: 0 };
+  }
   const policyFiles = config.scanBoundary?.policyFiles ?? [];
   const workflowFiles = config.scanBoundary?.workflowFiles ?? [];
   const allowedFiles = [...policyFiles, ...workflowFiles];
@@ -546,8 +605,8 @@ export function validateWorkflow(rootDir = process.cwd()) {
   validateMarkdownLinks(rootDir, policyFiles, errors);
   validatePolicyText(rootDir, policyFiles, packageScripts, errors);
   validateSkillAdmission(rootDir, errors);
-  validateModelCapabilities(config, errors);
-  validateToml(rootDir, config, errors);
+  validateModelCapabilities(config, registry, errors);
+  validateToml(rootDir, config, registry, errors);
   const routingCases = validateRoutingCases(rootDir, errors);
 
   return {

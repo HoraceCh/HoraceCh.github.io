@@ -2,7 +2,9 @@
 
 This directory defines six non-overlapping agents. Read `AGENTS.md` first. `docs/CODEX_MODEL_USAGE.md` is the model-routing source of truth; `docs/CODEX_AGENT_ROUTING.md` defines prompt structure and handoffs; `docs/AGENT_WORKFLOW.md` defines execution and validation.
 
-Use one primary owner by default. Route qualified bounded work to L1 or L2, engineering synthesis to L3, and difficult judgment to L4. L0 runs resolved mechanics without a model; L5 is disabled by default. Independent read-only exploration may run in parallel, while implementation has one writer and delegation depth one. Do not add a permanent scout agent. Only the architect pins its adapter model and reasoning in TOML; other roles leave stage- and risk-matched routing to the caller.
+Use one primary owner by default. Route qualified bounded work to L1 or L2, engineering synthesis to L3, and difficult judgment to L4. L0 runs resolved mechanics without a model; L5 is disabled by default. Independent read-only exploration may run in parallel, while implementation has one writer and delegation depth one. Do not add a permanent scout agent. Only the architect carries a runtime compatibility pin in TOML; the derived registry snapshot controls its Website pilot override. Other roles leave stage- and risk-matched routing to the caller.
+
+The `project_architect` pin is the EO-19 native-CLI aligned-tuple exception. Root model and effort, this pin, and the explicit child request must all be GPT-6.1 Sol High. A fresh child runtime record must attest the role, model, reasoning, and loaded instructions before consequential work. If attestation fails, use the registry rollback binding. Desktop heterogeneous per-role overrides are not an accepted path.
 
 ## The six agents
 

@@ -13,6 +13,7 @@
       ".omo/rules/agent-policy.md",
       ".omo/rules/notes-publication.md",
       "AGENTS.md",
+      "config/codex-model-registry.snapshot.json",
       "config/codex-skill-admission.json",
       "config/codex-workflow.json",
       "docs/AGENT_WORKFLOW.md",
@@ -52,18 +53,22 @@
     "maxConcurrentAgents": 3,
     "maxDelegationDepth": 1,
     "maxRetainedDiffWriters": 1,
-    "runtimeReasoningCapabilities": {
-      "gpt-6-luna": ["low", "medium", "high", "xhigh", "max"],
-      "gpt-6-sol": ["low", "medium", "high", "xhigh", "max", "ultra"],
-      "gpt-6-astra": ["medium", "high", "xhigh", "max", "ultra"]
-    },
+    "defaultForkPolicy": "none",
+    "maxTotalChildrenSoft": 6,
+    "automaticRetryPerLane": 1,
+    "requireResultAndDeliveryEvidence": true,
     "routeEnvelopeFields": [
       "owner",
       "phase",
       "level",
+      "modelLane",
+      "bindingState",
       "model",
       "reasoning",
+      "contextTier",
       "contextMode",
+      "runtimeConstraint",
+      "attestationRequired",
       "authority",
       "requiredGate"
     ]
@@ -93,11 +98,19 @@
     "L5": "Exceptional escalation only after a consequential L4 gap and comparative evidence"
   },
   "modelAdapter": {
-    "L1": { "model": "gpt-6-luna", "reasoning": "low", "enabled": true },
-    "L2": { "model": "gpt-6-luna", "reasoning": "medium", "enabled": true },
-    "L3": { "model": "gpt-6-sol", "reasoning": "medium", "enabled": true },
-    "L4": { "model": "gpt-6-sol", "reasoning": "high", "enabled": true },
-    "L5": { "model": "gpt-6-astra", "reasoning": "medium", "enabled": false }
+    "L1": { "lane": "fast", "reasoning": "low", "enabled": true },
+    "L2": { "lane": "fast", "reasoning": "medium", "enabled": true },
+    "L3": { "lane": "standard", "reasoning": "medium", "enabled": true },
+    "L4": { "lane": "deep", "reasoning": "high", "enabled": true },
+    "L5": { "lane": "frontier", "reasoning": null, "enabled": false }
+  },
+  "contextTiers": {
+    "C0": "Deterministic execution without model context",
+    "C1": "Compact fresh packet",
+    "C2": "Focused working set",
+    "C3": "Extended cross-domain working set",
+    "C4": "Long-context admission only; never automatic",
+    "C5": "Durable multi-window continuity; explicit only"
   },
   "criticalRisks": [
     "architecture",

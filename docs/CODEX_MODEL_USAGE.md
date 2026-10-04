@@ -1,6 +1,6 @@
 # Codex Model Usage
 
-This is the Website adapter for the portable L0–L5 capability framework in [MODEL_ROUTING_PORTABILITY.md](MODEL_ROUTING_PORTABILITY.md). The machine mapping is in config/codex-workflow.json and tools/codex-routing.mjs. Capability and reasoning effort are independent choices. The six agents are domain owners, not model tiers.
+This is the Website adapter for the portable L0–L5 capability framework in [MODEL_ROUTING_PORTABILITY.md](MODEL_ROUTING_PORTABILITY.md). `config/codex-workflow.json` maps capabilities to semantic lanes; `config/codex-model-registry.snapshot.json` derives concrete bindings from EO-16; `tools/codex-routing.mjs` resolves them. Capability, context tier, and reasoning effort are independent choices. The six agents are domain owners, not model tiers.
 
 ## Active Website adapter
 
@@ -10,7 +10,7 @@ This is the Website adapter for the portable L0–L5 capability framework in [MO
 | L1 | Small extraction, classification, evidence compression, and tiny directly checked edits | GPT-6 Luna Low | Exact-answer or exact-diff check; fall back to L2 on failure |
 | L2 | Bounded reasoning, known-path implementation, and mechanical QA under settled authority | GPT-6 Luna Medium | Direct acceptance and mechanical validation |
 | L3 | Engineering synthesis, ordinary multi-file implementation, debugging, and semantic QA | GPT-6 Sol Medium | Semantic review where required |
-| L4 | Architecture, authority reconciliation, privacy/publication judgment, ambiguous recovery, and critical review | GPT-6 Sol High | Independent critical semantic gate when required |
+| L4 | Architecture, authority reconciliation, privacy/publication judgment, ambiguous recovery, and critical review | GPT-6 Sol High; only `project_architect` has a Website-local GPT-6.1 Sol High pilot override | Independent critical semantic gate when required; architect pilot requires fresh native-CLI attestation |
 | L5 | Exceptional unresolved L4 criterion | Disabled; GPT-6 Astra Medium/High is only a candidate | Enable only after a consequential comparative advantage is demonstrated |
 
 The levels are capability classes, not a mandatory staircase. A known architecture decision can start at L4; its subsequent build or Git operation belongs to L0. High impact alone does not require a stronger model. Quality, authority, and complete validation are admission gates. Use latency or cost to choose only among routes that pass them.
@@ -27,7 +27,11 @@ Token, duration, and monetary cost telemetry were not exposed by the HC-131 targ
 
 ## Launch, ownership, and handoffs
 
-The user's root conversation model is selected at launch. Project config does not pin it, and an explanation in the current conversation does not silently switch models. Exact routed model IDs live in the Website adapter and the architect agent TOML. If a runtime cannot perform a requested routed subrun, report the unavailable route and keep the authority boundary; a route envelope is not proof of execution.
+The user's root conversation model is selected at launch. Project config does not pin it, and an explanation in the current conversation does not silently switch models. Normal L1–L5 routing selects `fast`, `standard`, `deep`, or disabled `frontier`; the derived registry snapshot resolves each active lane. GPT-6.1 Sol Medium remains qualified but inactive for L3. The architect TOML pin is an EO-19 runtime compatibility exception, not registry authority. If a runtime cannot perform a requested routed subrun, report the unavailable route and keep the authority boundary; a route envelope is not proof of execution.
+
+For the architect/deep pilot, use native Codex CLI with root model/effort, role pin, and explicit child request aligned to GPT-6.1 Sol High. Inspect fresh child `session_meta` and `turn_context` before consequential work. If role, model, reasoning, or role instructions cannot be attested, use the snapshot's GPT-6 Sol High rollback binding. Other named L4 roles remain GPT-6 Sol High. Desktop heterogeneous per-role overrides are unsupported for this pilot.
+
+Context Tier metadata is orthogonal to model capability: C0 is deterministic, C1 a compact fresh packet, C2 a focused working set, and C3 an extended cross-domain working set. C4 is long-context admission only and is never selected automatically; C5 is explicit durable multi-window continuity. Delegation defaults to a fresh packet with no history fork, depth one, a soft total child cap of six, one retained-diff writer, one automatic retry per lane, and result/delivery evidence. The configured concurrent-agent cap remains three.
 
 Keep the six owners and one retained-diff writer. L1/L2 may gather facts or perform explicit reversible edits, but may not settle architecture, design direction, schema, privacy, publication, or release ambiguity. The architect owns cross-domain decisions. The notes owner retains publication and generated-content boundaries. The design curator supplies visual direction, the content editor owns claims and IA, the frontend implementer owns scoped UI changes, and the QA reviewer alone issues the repository readiness verdict.
 

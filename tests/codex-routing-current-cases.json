@@ -13,12 +13,17 @@
     "expected": {
       "owner": "root",
       "phase": "explain",
+      "level": "L4",
+      "modelLane": "deep",
+      "bindingState": "root-selected",
       "model": null,
       "reasoning": null,
+      "contextTier": "C1",
       "contextMode": "current",
+      "runtimeConstraint": null,
+      "attestationRequired": false,
       "authority": "answer",
-      "requiredGate": "none",
-      "level": "L4"
+      "requiredGate": "none"
     }
   },
   {
@@ -35,12 +40,17 @@
     "expected": {
       "owner": "frontend_implementer",
       "phase": "discover",
+      "level": "L1",
+      "modelLane": "fast",
+      "bindingState": "active",
       "model": "gpt-6-luna",
       "reasoning": "low",
+      "contextTier": "C1",
       "contextMode": "fresh-packet",
+      "runtimeConstraint": null,
+      "attestationRequired": false,
       "authority": "evidence",
-      "requiredGate": "none",
-      "level": "L1"
+      "requiredGate": "none"
     }
   },
   {
@@ -59,12 +69,17 @@
     "expected": {
       "owner": "obsidian_notes_pipeline",
       "phase": "discover",
+      "level": "L2",
+      "modelLane": "fast",
+      "bindingState": "active",
       "model": "gpt-6-luna",
       "reasoning": "medium",
+      "contextTier": "C3",
       "contextMode": "fresh-packet",
+      "runtimeConstraint": null,
+      "attestationRequired": false,
       "authority": "evidence",
-      "requiredGate": "none",
-      "level": "L2"
+      "requiredGate": "none"
     }
   },
   {
@@ -81,12 +96,17 @@
     "expected": {
       "owner": "design_system_curator",
       "phase": "decide",
+      "level": "L3",
+      "modelLane": "standard",
+      "bindingState": "active",
       "model": "gpt-6-sol",
       "reasoning": "medium",
+      "contextTier": "C2",
       "contextMode": "fresh-packet",
+      "runtimeConstraint": null,
+      "attestationRequired": false,
       "authority": "judgment",
-      "requiredGate": "none",
-      "level": "L3"
+      "requiredGate": "none"
     }
   },
   {
@@ -105,12 +125,17 @@
     "expected": {
       "owner": "project_architect",
       "phase": "decide",
-      "model": "gpt-6-sol",
+      "level": "L4",
+      "modelLane": "deep",
+      "bindingState": "website-pilot",
+      "model": "gpt-6.1-sol",
       "reasoning": "high",
+      "contextTier": "C3",
       "contextMode": "fresh-packet",
+      "runtimeConstraint": "native-cli-aligned-tuple",
+      "attestationRequired": true,
       "authority": "judgment",
-      "requiredGate": "none",
-      "level": "L4"
+      "requiredGate": "none"
     }
   },
   {
@@ -127,12 +152,17 @@
     "expected": {
       "owner": "content_ia_editor",
       "phase": "implement",
+      "level": "L1",
+      "modelLane": "fast",
+      "bindingState": "active",
       "model": "gpt-6-luna",
       "reasoning": "low",
+      "contextTier": "C1",
       "contextMode": "fresh-packet",
+      "runtimeConstraint": null,
+      "attestationRequired": false,
       "authority": "execute",
-      "requiredGate": "mechanical",
-      "level": "L1"
+      "requiredGate": "mechanical"
     }
   },
   {
@@ -149,12 +179,17 @@
     "expected": {
       "owner": "obsidian_notes_pipeline",
       "phase": "implement",
+      "level": "L2",
+      "modelLane": "fast",
+      "bindingState": "active",
       "model": "gpt-6-luna",
       "reasoning": "medium",
+      "contextTier": "C2",
       "contextMode": "fresh-packet",
+      "runtimeConstraint": null,
+      "attestationRequired": false,
       "authority": "execute",
-      "requiredGate": "mechanical",
-      "level": "L2"
+      "requiredGate": "mechanical"
     }
   },
   {
@@ -171,12 +206,17 @@
     "expected": {
       "owner": "content_ia_editor",
       "phase": "implement",
+      "level": "L2",
+      "modelLane": "fast",
+      "bindingState": "active",
       "model": "gpt-6-luna",
       "reasoning": "medium",
+      "contextTier": "C3",
       "contextMode": "fresh-packet",
+      "runtimeConstraint": null,
+      "attestationRequired": false,
       "authority": "execute",
-      "requiredGate": "mechanical",
-      "level": "L2"
+      "requiredGate": "mechanical"
     }
   },
   {
@@ -193,12 +233,17 @@
     "expected": {
       "owner": "frontend_implementer",
       "phase": "implement",
+      "level": "L3",
+      "modelLane": "standard",
+      "bindingState": "active",
       "model": "gpt-6-sol",
       "reasoning": "medium",
+      "contextTier": "C2",
       "contextMode": "fresh-packet",
+      "runtimeConstraint": null,
+      "attestationRequired": false,
       "authority": "execute",
-      "requiredGate": "semantic-l3",
-      "level": "L3"
+      "requiredGate": "semantic-l3"
     }
   },
   {
@@ -217,12 +262,17 @@
     "expected": {
       "owner": "obsidian_notes_pipeline",
       "phase": "implement",
+      "level": "L3",
+      "modelLane": "standard",
+      "bindingState": "active",
       "model": "gpt-6-sol",
       "reasoning": "medium",
+      "contextTier": "C2",
       "contextMode": "fresh-packet",
+      "runtimeConstraint": null,
+      "attestationRequired": false,
       "authority": "execute",
-      "requiredGate": "semantic-l4",
-      "level": "L3"
+      "requiredGate": "semantic-l4"
     }
   },
   {
@@ -242,12 +292,17 @@
     "expected": {
       "owner": "obsidian_notes_pipeline",
       "phase": "implement",
+      "level": "L4",
+      "modelLane": "deep",
+      "bindingState": "active",
       "model": "gpt-6-sol",
       "reasoning": "high",
+      "contextTier": "C3",
       "contextMode": "fresh-packet",
+      "runtimeConstraint": null,
+      "attestationRequired": false,
       "authority": "decision-first",
-      "requiredGate": "semantic-l4",
-      "level": "L4"
+      "requiredGate": "semantic-l4"
     }
   },
   {
@@ -264,12 +319,17 @@
     "expected": {
       "owner": "qa_build_reviewer",
       "phase": "qa",
+      "level": "L2",
+      "modelLane": "fast",
+      "bindingState": "active",
       "model": "gpt-6-luna",
       "reasoning": "medium",
+      "contextTier": "C2",
       "contextMode": "fresh-packet",
+      "runtimeConstraint": null,
+      "attestationRequired": false,
       "authority": "mechanical-gate",
-      "requiredGate": "none",
-      "level": "L2"
+      "requiredGate": "none"
     }
   },
   {
@@ -286,12 +346,17 @@
     "expected": {
       "owner": "qa_build_reviewer",
       "phase": "qa",
+      "level": "L3",
+      "modelLane": "standard",
+      "bindingState": "active",
       "model": "gpt-6-sol",
       "reasoning": "medium",
+      "contextTier": "C2",
       "contextMode": "fresh-packet",
+      "runtimeConstraint": null,
+      "attestationRequired": false,
       "authority": "semantic-gate",
-      "requiredGate": "none",
-      "level": "L3"
+      "requiredGate": "none"
     }
   },
   {
@@ -310,12 +375,17 @@
     "expected": {
       "owner": "qa_build_reviewer",
       "phase": "qa",
+      "level": "L4",
+      "modelLane": "deep",
+      "bindingState": "active",
       "model": "gpt-6-sol",
       "reasoning": "high",
+      "contextTier": "C3",
       "contextMode": "fresh-packet",
+      "runtimeConstraint": null,
+      "attestationRequired": false,
       "authority": "semantic-gate",
-      "requiredGate": "none",
-      "level": "L4"
+      "requiredGate": "none"
     }
   }
 ]

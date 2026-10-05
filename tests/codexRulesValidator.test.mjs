@@ -8,6 +8,7 @@ import {
   parseRuleFrontmatter,
   validateScanBoundaryDefinition,
   validateSkillAdmissionDefinition,
+  validateRootInterruptMessage,
   validateWorkflow,
   validateWorkflowJsonStructure,
   validateRegistrySnapshot,
@@ -24,6 +25,21 @@ test('TOML validation selects only Python 3.11 or newer', () => {
   assert.equal(
     findTomlParserRuntime(() => ({ status: 0, stdout: 'Python 3.10.14', stderr: '' })),
     null,
+  );
+});
+
+test('root interrupt messages must be explicitly enabled', () => {
+  assert.deepEqual(validateRootInterruptMessage({ agents: { interrupt_message: true } }), []);
+  for (const value of [false, undefined, 'true', 1]) {
+    const agents = value === undefined ? {} : { interrupt_message: value };
+    assert.deepEqual(
+      validateRootInterruptMessage({ agents }),
+      ['Root agent interrupt setting must remain enabled'],
+    );
+  }
+  assert.deepEqual(
+    validateRootInterruptMessage({}),
+    ['Root agent interrupt setting must remain enabled'],
   );
 });
 

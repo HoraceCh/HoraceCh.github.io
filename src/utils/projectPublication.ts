@@ -50,6 +50,8 @@ export function createProjectPublicationModel(entries: readonly ProjectEntry[]):
     addUnique(routes, projectHref(project), project, 'duplicate-project-route', 'slug', issues);
   }
 
+  if (issues.some((issue) => issue.severity === 'error')) throw new ProjectPublicationContractError(issues);
+
   const validRoutable = all.filter((project) => project.published && !hasError(project, issues));
   const routable = [...validRoutable].sort(compareProjectsForPublication);
   const listed = routable.filter((project) => project.entry.data.visibility !== 'hidden');

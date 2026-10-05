@@ -8,16 +8,14 @@ import {
   categoryDefinitions,
   noteHasPublicTag,
 } from '../../src/utils/notes.ts';
+import { loadNotePublicationOverrides } from '../../src/utils/notePublication.ts';
 import { slugify } from '../../src/utils/slugify.ts';
-
-type PublicationOverride = { slug: string; published?: boolean };
 
 test('every published Note category has one canonical generated category route', async () => {
   const notesRoot = resolve('src/content/notes');
-  const overrides = JSON.parse(await readFile(resolve('src/data/note-publication-overrides.json'), 'utf8')) as {
-    records: PublicationOverride[];
-  };
-  const overridesBySlug = new Map(overrides.records.map((record) => [record.slug, record]));
+  const overrides = await loadNotePublicationOverrides();
+  assert.deepEqual(overrides.issues.filter((issue) => issue.severity === 'error'), []);
+  const overridesBySlug = new Map(overrides.artifact.records.map((record) => [record.slug, record]));
   const categoryNames = new Set(categoryDefinitions.map((category) => category.name));
   const routes = categoryDefinitions.map((category) => slugify(category.name));
 

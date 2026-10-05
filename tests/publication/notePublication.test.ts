@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import test from 'node:test';
-import { createNotePublicationModel, parseNotePublicationOverrides, selectHomepageNotes } from '../../src/utils/notePublication.ts';
+import { createNotePublicationModel, loadNotePublicationOverrides, NotePublicationContractError, parseNotePublicationOverrides, selectHomepageNotes } from '../../src/utils/notePublication.ts';
 
 function note(id: string, data: Record<string, unknown> = {}) {
   return { id, data: { description: 'Generated summary', date: new Date('2026-01-01'), featured: false, draft: false, ...data } } as never;
@@ -13,6 +16,19 @@ test('valid artifacts include empty and canonical example records', () => {
   const result = parsed({ formatVersion: 1, records: [{ slug: 'ai-assisted-literature-workflow', homepageSlot: 'selected-work-03', publicSummary: 'A cautious process.' }] });
   assert.equal(result.issues.length, 0);
   assert.equal(result.artifact.records[0].homepageSlot, 'selected-work-03');
+});
+
+test('missing override artifact uses generated publication defaults', async (t) => {
+  const emptyRoot = await mkdtemp(join(tmpdir(), 'horace-note-overrides-'));
+  t.mock.method(process, 'cwd', () => emptyRoot);
+  try {
+    const overrides = await loadNotePublicationOverrides();
+    assert.deepEqual(overrides, { artifact: { formatVersion: 1, records: [] }, issues: [] });
+    const model = createNotePublicationModel([note('public.md'), note('draft.md', { draft: true })], overrides);
+    assert.deepEqual(model.routable.map((item) => item.slug), ['public']);
+  } finally {
+    await rm(emptyRoot, { recursive: true, force: true });
+  }
 });
 
 test('parser reports malformed artifacts and every invalid contract category', () => {
@@ -30,11 +46,42 @@ test('parser reports malformed artifacts and every invalid contract category', (
 });
 
 test('noncanonical ordering and orphan records warn without retargeting', () => {
-  const overrides = parsed({ formatVersion: 1, records: [{ slug: 'zeta' }, { slug: 'alpha' }] });
+  const overrides = parsed({ formatVersion: 1, records: [{ slug: 'zeta' }, { slug: 'different-v2', published: false }] });
   assert.ok(codes(overrides).includes('noncanonical-note-override-order'));
   const model = createNotePublicationModel([note('different.md')], overrides);
   assert.ok(model.issues.some((item) => item.code === 'orphan-note-override'));
   assert.equal(model.all[0].data.published, true);
+  assert.deepEqual(model.routable.map((item) => item.slug), ['different']);
+});
+
+test('unsafe Note artifacts fail model construction with their diagnostic codes', () => {
+  const cases = [
+    ['malformed-note-publication-json', parseNotePublicationOverrides('{')],
+    ['unsupported-note-publication-version', parsed({ formatVersion: 2, records: [] })],
+    ['unknown-note-record-field', parsed({ formatVersion: 1, records: [{ slug: 'valid', extra: true }] })],
+    ['invalid-note-visibility', parsed({ formatVersion: 1, records: [{ slug: 'valid', visibility: 'private' }] })],
+    ['duplicate-note-override-slug', parsed({ formatVersion: 1, records: [{ slug: 'valid' }, { slug: 'valid' }] })],
+    ['duplicate-note-homepage-slot', parsed({ formatVersion: 1, records: [
+      { slug: 'valid', homepageSlot: 'selected-work-01' },
+      { slug: 'other', homepageSlot: 'selected-work-01' },
+    ] })],
+  ] as const;
+  for (const [code, overrides] of cases) {
+    assert.throws(
+      () => createNotePublicationModel([note('valid.md'), note('other.md')], overrides),
+      (error: unknown) => error instanceof NotePublicationContractError
+        && error.issues.some((item) => item.code === code),
+      code,
+    );
+  }
+});
+
+test('duplicate generated Note slugs fail model construction', () => {
+  assert.throws(
+    () => createNotePublicationModel([note('same.md'), note('same.mdx')], { formatVersion: 1, records: [] }),
+    (error: unknown) => error instanceof NotePublicationContractError
+      && error.issues.some((item) => item.code === 'duplicate-note-slug'),
+  );
 });
 
 test('Note defaults, overrides, and sets preserve source data', () => {

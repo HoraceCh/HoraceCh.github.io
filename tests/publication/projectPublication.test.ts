@@ -49,17 +49,23 @@ test('invalid explicit Project identities are rejected', () => {
 });
 
 test('duplicate explicit Project IDs and slugs fail', () => {
-  const ids = createProjectPublicationModel([
-    project('a.md', { id: 'same', slug: 'a', published: true }),
-    project('b.md', { id: 'same', slug: 'b', published: true }),
-  ]);
-  const slugs = createProjectPublicationModel([
-    project('a.md', { id: 'a', slug: 'same', published: true }),
-    project('b.md', { id: 'b', slug: 'same', published: true }),
-  ]);
-  assert.ok(ids.issues.some((item) => item.code === 'duplicate-project-id'));
-  assert.ok(slugs.issues.some((item) => item.code === 'duplicate-project-slug'));
-  assert.ok(slugs.issues.some((item) => item.code === 'duplicate-project-route'));
+  assert.throws(
+    () => createProjectPublicationModel([
+      project('a.md', { id: 'same', slug: 'a', published: true }),
+      project('b.md', { id: 'same', slug: 'b', published: true }),
+    ]),
+    (error: unknown) => error instanceof ProjectPublicationContractError
+      && error.issues.some((item) => item.code === 'duplicate-project-id'),
+  );
+  assert.throws(
+    () => createProjectPublicationModel([
+      project('a.md', { id: 'a', slug: 'same', published: true }),
+      project('b.md', { id: 'b', slug: 'same', published: true }),
+    ]),
+    (error: unknown) => error instanceof ProjectPublicationContractError
+      && error.issues.some((item) => item.code === 'duplicate-project-slug')
+      && error.issues.some((item) => item.code === 'duplicate-project-route'),
+  );
 });
 
 test('Project sorting is deterministic and homepage selection preserves requested order', () => {

@@ -132,6 +132,8 @@ export function createNotePublicationModel(entries: readonly NoteEntry[], input:
     if (bySlug.has(note.slug)) issues.push(issue('error', 'duplicate-note-slug', `Duplicate generated Note slug: ${note.slug}.`, note.source.id, note.slug));
     else bySlug.set(note.slug, note);
   }
+  if (issues.some((item) => item.severity === 'error')) throw new NotePublicationContractError(issues);
+
   const routable = all.filter((note) => note.data.published && !hasNoteError(note, issues));
   const discoverable = routable.filter((note) => note.data.visibility !== 'hidden');
   const homepage = routable.filter((note) => note.data.visibility === 'public' && note.data.homepageSlot).sort(compareHomepageSlots);
@@ -217,3 +219,13 @@ function hasNoteError(note: EffectiveNote, issues: PublicationIssue[]) { return 
 function compareHomepageSlots(a: EffectiveNote, b: EffectiveNote) { return (a.data.homepageSlot ?? '').localeCompare(b.data.homepageSlot ?? '', 'en') || a.slug.localeCompare(b.slug, 'en'); }
 function dateValue(value: Date | undefined) { return value instanceof Date && !Number.isNaN(value.valueOf()) ? value.valueOf() : 0; }
 function issue(severity: 'warning' | 'error', code: string, message: string, source: string, slug?: string, field?: string): PublicationIssue { return { severity, code, message, source, slug, field }; }
+
+export class NotePublicationContractError extends Error {
+  readonly issues: readonly PublicationIssue[];
+
+  constructor(issues: readonly PublicationIssue[]) {
+    super(issues.filter((item) => item.severity === 'error').map((item) => item.code).join(', '));
+    this.name = 'NotePublicationContractError';
+    this.issues = issues;
+  }
+}

@@ -368,6 +368,12 @@ function validatePolicyText(rootDir, policyFiles, packageScripts, errors) {
   }
 }
 
+export function validateRootInterruptMessage(rootConfig) {
+  return rootConfig.agents?.interrupt_message === true
+    ? []
+    : ['Root agent interrupt setting must remain enabled'];
+}
+
 function validateToml(rootDir, config, registry, errors) {
   const tomlFiles = config.scanBoundary.policyFiles.filter((file) => file.endsWith('.toml'));
   const absolutePaths = tomlFiles.map((file) => resolve(rootDir, file));
@@ -395,6 +401,7 @@ function validateToml(rootDir, config, registry, errors) {
   if (rootConfig.agents?.max_concurrent_threads_per_session !== config.execution.maxConcurrentAgents) {
     errors.push('Root agent concurrency does not match config/codex-workflow.json');
   }
+  errors.push(...validateRootInterruptMessage(rootConfig));
 
   const agentDocuments = absolutePaths
     .filter((path) => normalizePath(relative(rootDir, path)).startsWith('.codex/agents/'))

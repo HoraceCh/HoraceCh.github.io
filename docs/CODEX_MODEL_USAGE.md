@@ -39,6 +39,6 @@ For meaningful changes, mechanical Gate 1 checks scope, exact commands, exit sta
 
 ## Provenance and rollback
 
-The 14 GPT-5.6 cases in tests/codex-routing-cases.json and the HC-126 active-model comparison map remain historical benchmark evidence. They are not active execution. The HC-58 and HC-126 decisions and dispatch evidence remain in [MODEL_ROUTING_PORTABILITY.md](MODEL_ROUTING_PORTABILITY.md) and the HC-126 issue attachments. If a GPT-6 route later fails representative qualification, record the exception and use an explicitly reviewed adapter rollback with the same authority and QA gates; never silently relabel the executed model.
+The 14 GPT-5.6 cases in tests/codex-routing-cases.json remain historical benchmark evidence, not active execution. The former HC-126 active-model comparison map is preserved in Git history and HC-126 issue evidence; it is no longer a current routing fixture. The HC-58 and HC-126 decisions and dispatch evidence remain in [MODEL_ROUTING_PORTABILITY.md](MODEL_ROUTING_PORTABILITY.md) and the HC-126 issue attachments. If a GPT-6 route later fails representative qualification, record the exception and use an explicitly reviewed adapter rollback with the same authority and QA gates; never silently relabel the executed model.
 
 For ownership, permissions, prompt shape, and safe scans, see [CODEX_AGENT_ROUTING.md](CODEX_AGENT_ROUTING.md), [AGENT_WORKFLOW.md](AGENT_WORKFLOW.md), and [CODEX_SCAN_BOUNDARY.md](CODEX_SCAN_BOUNDARY.md).

@@ -12,6 +12,7 @@ import {
   validateWorkflow,
   validateWorkflowJsonStructure,
   validateRegistrySnapshot,
+  validateAgentModelPin,
 } from '../tools/validate-codex-rules.mjs';
 
 test('TOML validation selects only Python 3.11 or newer', () => {
@@ -136,4 +137,50 @@ test('registry validation rejects global candidate activation and missing pilot 
   const errors = validateRegistrySnapshot(workflow, registry);
   assert.ok(errors.some((error) => error.includes('globally active')));
   assert.ok(errors.some((error) => error.includes('rollback binding')));
+});
+
+test('synthetic active binding passes without a second concrete model authority', () => {
+  const root = new URL('../', import.meta.url);
+  const workflow = JSON.parse(readFileSync(new URL('config/codex-workflow.json', root)));
+  const registry = JSON.parse(readFileSync(new URL('config/codex-model-registry.snapshot.json', root)));
+  registry.activeBindings.standard.model = 'synthetic-vNext';
+  assert.deepEqual(validateRegistrySnapshot(workflow, registry), []);
+  registry.activeBindings.standard.model = 'synthetic-other';
+  assert.deepEqual(validateRegistrySnapshot(workflow, registry), []);
+  registry.activeBindings.standard.model = 'synthetic-vNext';
+  registry.activeBindings.standard.status = 'qualified-not-active';
+  assert.ok(validateRegistrySnapshot(workflow, registry).some((error) => error.includes('Invalid active')));
+  registry.activeBindings.standard.status = 'active';
+  registry.activeBindings.deep.model = 'synthetic-deep-vNext';
+  assert.ok(validateRegistrySnapshot(workflow, registry).some((error) => error.includes('rollback binding')));
+  registry.rollbackBindings['project_architect:deep'].model = 'synthetic-deep-vNext';
+  assert.deepEqual(validateRegistrySnapshot(workflow, registry), []);
+});
+
+test('registry drift and malformed evidence fail closed', () => {
+  const root = new URL('../', import.meta.url);
+  const workflow = JSON.parse(readFileSync(new URL('config/codex-workflow.json', root)));
+  const baseline = JSON.parse(readFileSync(new URL('config/codex-model-registry.snapshot.json', root)));
+  const cases = [
+    [(registry) => { delete registry.activeBindings.standard; }, 'semantic lanes'],
+    [(registry) => { registry.activeBindings.standard.reasoning = ['low']; }, 'Invalid active'],
+    [(registry) => { registry.activeBindings.standard.status = 'disabled'; }, 'Invalid active'],
+    [(registry) => { registry.derivedFrom.baseline = 'stale'; }, 'authority or schema'],
+    [(registry) => { registry.derivedFrom.qualityEvidence = ['HC-126']; }, 'authority or schema'],
+    [(registry) => { registry.derivedFrom.runtimeEvidence = 'stale'; }, 'authority or schema'],
+    [(registry) => { registry.activeBindings.standard.model = registry.qualifiedCandidates.standard.model; }, 'globally active'],
+    [(registry) => { delete registry.websitePilotOverrides['project_architect:deep'].runtimeAttestation; }, 'runtime constraint'],
+    [(registry) => { registry.websitePilotOverrides['project_architect:deep'].evidence = []; }, 'runtime constraint'],
+    [(registry) => { registry.rollbackBindings['project_architect:deep'].model = 'stale'; }, 'rollback binding'],
+  ];
+  for (const [mutate, message] of cases) {
+    const registry = structuredClone(baseline);
+    mutate(registry);
+    assert.ok(validateRegistrySnapshot(workflow, registry).some((error) => error.includes(message)), message);
+  }
+  assert.deepEqual(validateAgentModelPin({ name: 'frontend_implementer', model: 'unauthorized' }, baseline),
+    ['Variable-route agent must not pin model or reasoning: frontend_implementer']);
+  assert.deepEqual(validateAgentModelPin({ name: 'project_architect', model: 'unauthorized',
+    model_reasoning_effort: 'high' }, baseline),
+    ['project_architect pin must match the approved Website pilot override']);
 });

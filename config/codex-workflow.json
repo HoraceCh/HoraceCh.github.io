@@ -25,7 +25,6 @@
     "workflowFiles": [
       ".gitignore",
       "package.json",
-      "tests/codex-routing-active-models.json",
       "tests/codex-routing-cases.json",
       "tests/codex-routing-current-cases.json",
       "tests/codexRouting.eval.test.mjs",

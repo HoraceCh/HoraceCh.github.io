@@ -374,6 +374,16 @@ export function validateRootInterruptMessage(rootConfig) {
     : ['Root agent interrupt setting must remain enabled'];
 }
 
+export function validateAgentModelPin(agent, registry) {
+  if (agent.name === 'project_architect') {
+    const pilot = registry.websitePilotOverrides?.['project_architect:deep'];
+    return agent.model === pilot?.model && agent.model_reasoning_effort === pilot?.reasoning
+      ? [] : ['project_architect pin must match the approved Website pilot override'];
+  }
+  return 'model' in agent || 'model_reasoning_effort' in agent
+    ? [`Variable-route agent must not pin model or reasoning: ${agent.name}`] : [];
+}
+
 function validateToml(rootDir, config, registry, errors) {
   const tomlFiles = config.scanBoundary.policyFiles.filter((file) => file.endsWith('.toml'));
   const absolutePaths = tomlFiles.map((file) => resolve(rootDir, file));
@@ -420,25 +430,22 @@ function validateToml(rootDir, config, registry, errors) {
         errors.push(`Agent ${agent.name} is missing prompt section: ${section}`);
       }
     }
-    if (agent.name === 'project_architect') {
-      const pilot = registry.websitePilotOverrides?.['project_architect:deep'];
-      if (agent.model !== pilot?.model || agent.model_reasoning_effort !== pilot?.reasoning) {
-        errors.push('project_architect pin must match the approved Website pilot override');
-      }
-    } else if ('model' in agent || 'model_reasoning_effort' in agent) {
-      errors.push(`Variable-route agent must not pin model or reasoning: ${agent.name}`);
-    }
+    errors.push(...validateAgentModelPin(agent, registry));
   }
 }
 
 export function validateRegistrySnapshot(config, registry, errors = []) {
   if (registry?.schemaVersion !== 1 || registry.derivedFrom?.authority !== 'EO-16' ||
+      registry.derivedFrom?.baseline !== 'Central Model Registry — Baseline Matrix v1' ||
+      !isDeepStrictEqual(registry.derivedFrom?.qualityEvidence, ['HC-126', 'HC-131', 'EO-18']) ||
+      registry.derivedFrom?.runtimeEvidence !== 'EO-19' ||
       registry.derivedFrom?.pilotAuthority !== 'HC-162') {
     errors.push('Invalid derived registry authority or schema');
     return errors;
   }
   const lanes = ['deep', 'fast', 'frontier', 'standard'];
-  if (!isDeepStrictEqual([...registry.semanticLanes].sort(), lanes) ||
+  if (!Array.isArray(registry.semanticLanes) ||
+      !isDeepStrictEqual([...registry.semanticLanes].sort(), lanes) ||
       !isDeepStrictEqual(Object.keys(registry.activeBindings ?? {}).sort(), lanes)) {
     errors.push('Registry must define exactly the four semantic lanes');
   }
@@ -454,8 +461,11 @@ export function validateRegistrySnapshot(config, registry, errors = []) {
       }
       continue;
     }
-    if (!policy.enabled || !binding?.model || binding.status !== 'active' ||
-        !binding.reasoning?.includes(policy.reasoning) || ['xhigh', 'max', 'ultra'].includes(policy.reasoning)) {
+    if (!policy.enabled || typeof binding?.model !== 'string' || !binding.model ||
+        binding.status !== 'active' || !Array.isArray(binding.reasoning) ||
+        !binding.reasoning.includes(policy.reasoning) ||
+        binding.reasoning.some((effort) => !['low', 'medium', 'high'].includes(effort)) ||
+        ['xhigh', 'max', 'ultra'].includes(policy.reasoning)) {
       errors.push(`Invalid active registry binding for ${level}/${policy.lane}`);
     }
   }
@@ -463,7 +473,9 @@ export function validateRegistrySnapshot(config, registry, errors = []) {
     errors.push('Registry must retain both qualified Sol candidates');
   }
   for (const [lane, candidate] of Object.entries(registry.qualifiedCandidates ?? {})) {
-    if (candidate.status !== 'qualified-not-active' || candidate.model === registry.activeBindings?.[lane]?.model) {
+    if (candidate?.status !== 'qualified-not-active' || !candidate.model ||
+        candidate.evidence !== (lane === 'deep' ? 'EO-18-G2' : 'EO-18-G1') ||
+        Object.values(registry.activeBindings ?? {}).some((binding) => binding?.model === candidate.model)) {
       errors.push(`Qualified candidate must not become globally active: ${lane}`);
     }
   }
@@ -482,7 +494,8 @@ export function validateRegistrySnapshot(config, registry, errors = []) {
       pilot.runtimeAttestation?.actualReasoning !== pilot.reasoning ||
       pilot.runtimeAttestation?.roleInstructionsLoaded !== true ||
       !pilot.runtimeAttestation?.childSession || !pilot.runtimeAttestation?.parentSession ||
-      rollback?.model !== deep?.model || rollback?.reasoning !== 'high' || !rollback.evidence) {
+      rollback?.model !== deep?.model || rollback?.reasoning !== 'high' ||
+      rollback?.evidence !== 'HC-126/HC-131') {
     errors.push('Pilot override requires approved evidence, runtime constraint, and active rollback binding');
   }
   if (registry.runtimePolicy?.surface !== 'Codex CLI' ||
@@ -522,7 +535,7 @@ function validateModelCapabilities(config, registry, errors) {
   validateRegistrySnapshot(config, registry, errors);
 }
 
-function validateRoutingCases(rootDir, errors) {
+function validateRoutingCases(rootDir, registry, errors) {
   const casesPath = resolve(rootDir, 'tests/codex-routing-current-cases.json');
   if (!existsSync(casesPath)) {
     errors.push('Missing representative routing cases');
@@ -538,8 +551,18 @@ function validateRoutingCases(rootDir, errors) {
   }
   for (const fixture of cases) {
     try {
+      if ('model' in fixture.expected && fixture.expected.bindingState !== 'root-selected') {
+        errors.push(`Routing case must derive active model from registry: ${fixture.id}`);
+        continue;
+      }
+      const expected = 'model' in fixture.expected ? fixture.expected : {
+        ...fixture.expected,
+        model: fixture.expected.bindingState === 'website-pilot'
+          ? registry.websitePilotOverrides?.[`${fixture.expected.owner}:${fixture.expected.modelLane}`]?.model
+          : registry.activeBindings?.[fixture.expected.modelLane]?.model,
+      };
       const actual = selectRoute(fixture.input);
-      if (!isDeepStrictEqual(actual, fixture.expected)) {
+      if (!isDeepStrictEqual(actual, expected)) {
         errors.push(`Routing evaluation mismatch: ${fixture.id}`);
       }
     } catch (error) {
@@ -614,7 +637,7 @@ export function validateWorkflow(rootDir = process.cwd()) {
   validateSkillAdmission(rootDir, errors);
   validateModelCapabilities(config, registry, errors);
   validateToml(rootDir, config, registry, errors);
-  const routingCases = validateRoutingCases(rootDir, errors);
+  const routingCases = validateRoutingCases(rootDir, registry, errors);
 
   return {
     ok: errors.length === 0,

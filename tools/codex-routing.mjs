@@ -68,7 +68,8 @@ export function resolveBinding(level, owner, registry = registrySnapshot) {
   const adapter = workflow.modelAdapter[level];
   const lane = adapter?.lane;
   const active = registry?.activeBindings?.[lane];
-  if (!active || active.status !== 'active' || !active.model || !active.reasoning?.includes(adapter.reasoning)) {
+  if (!active || active.status !== 'active' || typeof active.model !== 'string' || !active.model ||
+      !Array.isArray(active.reasoning) || !active.reasoning.includes(adapter.reasoning)) {
     throw new TypeError(`Missing or invalid active registry binding for ${String(level)}/${String(lane)}`);
   }
   const override = registry.websitePilotOverrides?.[`${owner}:${lane}`];
@@ -79,7 +80,8 @@ export function resolveBinding(level, owner, registry = registrySnapshot) {
   if (level !== 'L4' || owner !== 'project_architect' || override.status !== 'pilot-active' ||
       override.model !== registry.qualifiedCandidates?.deep?.model ||
       override.reasoning !== adapter.reasoning || !override.attestationRequired ||
-      !override.evidence?.length || !rollback?.model || !rollback?.reasoning ||
+      !override.evidence?.length || rollback?.model !== active.model ||
+      rollback?.reasoning !== adapter.reasoning || !rollback.evidence ||
       override.runtimeAttestation?.actualModel !== override.model ||
       override.runtimeAttestation?.actualReasoning !== override.reasoning ||
       override.runtimeAttestation?.roleInstructionsLoaded !== true ||
@@ -97,13 +99,13 @@ function contextTier(task, level) {
   return 'C2';
 }
 
-function envelope(task, level, authority, requiredGate) {
+function envelope(task, level, authority, requiredGate, registry) {
   const phaseOwner = task.phase === 'qa' ? workflow.ownership.qa : workflow.ownership[task.domain];
   const activeLevel = level === 'L1' && !workflow.modelAdapter.L1.enabled ? 'L2' : level;
   const adapter = workflow.modelAdapter[activeLevel];
   const bypassModel = task.phase === 'explain' || activeLevel === 'L0';
   const owner = bypassModel ? 'root' : phaseOwner;
-  const binding = bypassModel ? null : resolveBinding(activeLevel, owner);
+  const binding = bypassModel ? null : resolveBinding(activeLevel, owner, registry);
   return {
     owner,
     phase: task.phase,
@@ -125,7 +127,7 @@ export function isL5Eligible({ consequentialL4Gap = false, measuredAdvantage = f
   return workflow.modelAdapter.L5.enabled && consequentialL4Gap && measuredAdvantage;
 }
 
-export function selectRoute(input) {
+export function selectRoute(input, registry = registrySnapshot) {
   const task = parseTask(input);
   const hasCriticalRisk = task.risks.length > 0;
   const requiresCriticalJudgment =
@@ -138,52 +140,52 @@ export function selectRoute(input) {
     if (!isL5Eligible(input.l5)) {
       throw new TypeError('L5 requires an enabled adapter, a consequential L4 gap, and measured advantage');
     }
-    return envelope(task, 'L5', 'judgment', 'semantic-l4');
+    return envelope(task, 'L5', 'judgment', 'semantic-l4', registry);
   }
 
   if (task.phase === 'explain') {
-    return envelope(task, requiresCriticalReview ? 'L4' : 'L3', 'answer', 'none');
+    return envelope(task, requiresCriticalReview ? 'L4' : 'L3', 'answer', 'none', registry);
   }
 
   if (task.phase === 'execute') {
-    return envelope(task, 'L0', 'mechanics-only', 'none');
+    return envelope(task, 'L0', 'mechanics-only', 'none', registry);
   }
 
   if (task.phase === 'discover') {
     const isSmallDirectScan =
       task.scope === 'single' && task.workload === 'small' && task.verification === 'direct';
-    return envelope(task, isSmallDirectScan ? 'L1' : 'L2', 'evidence', 'none');
+    return envelope(task, isSmallDirectScan ? 'L1' : 'L2', 'evidence', 'none', registry);
   }
 
   if (task.phase === 'decide') {
     if (requiresCriticalReview) {
-      return envelope(task, 'L4', 'judgment', 'none');
+      return envelope(task, 'L4', 'judgment', 'none', registry);
     }
-    return envelope(task, 'L3', 'judgment', 'none');
+    return envelope(task, 'L3', 'judgment', 'none', registry);
   }
 
   if (task.phase === 'implement') {
     if (requiresCriticalJudgment || task.domain === 'design') {
-      return envelope(task, 'L4', 'decision-first', 'semantic-l4');
+      return envelope(task, 'L4', 'decision-first', 'semantic-l4', registry);
     }
     if (hasCriticalRisk) {
-      return envelope(task, 'L3', 'execute', 'semantic-l4');
+      return envelope(task, 'L3', 'execute', 'semantic-l4', registry);
     }
     if (task.ambiguity === 'low' && task.verification === 'direct') {
       const isSmallDirectEdit = task.workload === 'small' && task.scope === 'single';
-      return envelope(task, isSmallDirectEdit ? 'L1' : 'L2', 'execute', 'mechanical');
+      return envelope(task, isSmallDirectEdit ? 'L1' : 'L2', 'execute', 'mechanical', registry);
     }
-    return envelope(task, 'L3', 'execute', 'semantic-l3');
+    return envelope(task, 'L3', 'execute', 'semantic-l3', registry);
   }
 
   if (requiresCriticalReview) {
-    return envelope(task, 'L4', 'semantic-gate', 'none');
+    return envelope(task, 'L4', 'semantic-gate', 'none', registry);
   }
   if (task.ambiguity === 'low' && task.verification === 'direct') {
     const isTinyCheck = task.workload === 'small' && task.scope === 'single';
-    return envelope(task, isTinyCheck ? 'L1' : 'L2', 'mechanical-gate', 'none');
+    return envelope(task, isTinyCheck ? 'L1' : 'L2', 'mechanical-gate', 'none', registry);
   }
-  return envelope(task, 'L3', 'semantic-gate', 'none');
+  return envelope(task, 'L3', 'semantic-gate', 'none', registry);
 }
 
 function parseArguments(argumentsList) {

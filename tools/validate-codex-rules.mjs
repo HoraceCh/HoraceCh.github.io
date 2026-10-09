@@ -5,6 +5,7 @@ import { isDeepStrictEqual } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
 import { selectRoute } from './codex-routing.mjs';
+import { validatePinnedWebsite, parseStrictJson } from './central-registry-integrity.mjs';
 
 const REQUIRED_AGENT_SECTIONS = [
   '## Role and goal',
@@ -590,10 +591,19 @@ export function validateWorkflow(rootDir = process.cwd()) {
   const registryPath = resolve(rootDir, 'config/codex-model-registry.snapshot.json');
   let registry;
   try {
-    registry = readJson(registryPath);
+    registry = parseStrictJson(readFileSync(registryPath));
   } catch {
     errors.push('Missing or invalid derived registry snapshot');
     return { ok: false, errors, warnings, checkedFiles: 0, routingCases: 0 };
+  }
+  // HC-181: deterministic pinned Release integrity; no private network or tokens.
+  try {
+    const validated = validatePinnedWebsite({ snapshot: registry });
+    if (validated.status !== 'LOCAL_INTEGRITY_OK') {
+      errors.push('Website central Registry pinned integrity failed');
+    }
+  } catch (error) {
+    errors.push(`Website central Registry pinned integrity failed: ${error instanceof Error ? error.message : String(error)}`);
   }
   const policyFiles = config.scanBoundary?.policyFiles ?? [];
   const workflowFiles = config.scanBoundary?.workflowFiles ?? [];

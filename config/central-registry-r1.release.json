@@ -1,0 +1,78 @@
+{
+  "registryRevision": "mra-r000001",
+  "predecessorRevision": null,
+  "transition": {
+    "kind": "baseline",
+    "approvalEvidence": "https://linear.app/baukasten/issue/EO-16#comment-375ceef6-4827-49f7-ad13-02b02c3950f1"
+  },
+  "fingerprint": "013755d5ea42c6105b36c320fa75d1fcb1cf01fbb0bfd9543cdaa0d093c3b64d",
+  "centralPayload": {
+    "schemaVersion": 1,
+    "authority": "EO-16",
+    "status": "active",
+    "qualificationEvidence": {
+      "baselineDocument": "Central Model Registry — Baseline Matrix v1",
+      "candidateDecision": "EO-18"
+    },
+    "ordinaryLanes": {
+      "L0": {
+        "lane": "deterministic",
+        "active": null,
+        "state": "active"
+      },
+      "L1": {
+        "lane": "fast",
+        "active": {
+          "model": "gpt-6-luna",
+          "reasoning": "low"
+        },
+        "state": "active"
+      },
+      "L2": {
+        "lane": "fast",
+        "active": {
+          "model": "gpt-6-luna",
+          "reasoning": "medium"
+        },
+        "state": "active"
+      },
+      "L3": {
+        "lane": "standard",
+        "active": {
+          "model": "gpt-6-sol",
+          "reasoning": "medium"
+        },
+        "state": "active"
+      },
+      "L4": {
+        "lane": "deep",
+        "active": {
+          "model": "gpt-6-sol",
+          "reasoning": "high"
+        },
+        "state": "active"
+      },
+      "L5": {
+        "lane": "frontier",
+        "active": null,
+        "state": "disabled"
+      }
+    },
+    "qualifiedCandidates": {
+      "L3": {
+        "lane": "standard",
+        "model": "gpt-6.1-sol",
+        "reasoning": "medium",
+        "state": "qualified-not-active",
+        "evidence": "EO-18-G1"
+      },
+      "L4": {
+        "lane": "deep",
+        "model": "gpt-6.1-sol",
+        "reasoning": "high",
+        "state": "qualified-not-active",
+        "evidence": "EO-18-G2"
+      }
+    }
+  }
+}

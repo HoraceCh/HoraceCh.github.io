@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "approvedRevision": "mra-r000001",
+  "fingerprint": "013755d5ea42c6105b36c320fa75d1fcb1cf01fbb0bfd9543cdaa0d093c3b64d",
+  "approvalReference": "https://linear.app/baukasten/issue/EO-16#comment-375ceef6-4827-49f7-ad13-02b02c3950f1",
+  "tag": "mra-r000001",
+  "releaseCommitSha": "dc9f8486c4ac3968ccda42539c1bc9e2b1a82afd"
+}

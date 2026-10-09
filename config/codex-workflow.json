@@ -14,6 +14,9 @@
       ".omo/rules/notes-publication.md",
       "AGENTS.md",
       "config/codex-model-registry.snapshot.json",
+      "config/central-registry-r1.release.json",
+      "config/central-registry-r1.approval.json",
+      "config/central-registry-r1.latest.json",
       "config/codex-skill-admission.json",
       "config/codex-workflow.json",
       "docs/AGENT_WORKFLOW.md",
@@ -30,6 +33,8 @@
       "tests/codexRouting.eval.test.mjs",
       "tests/codexRouting.test.mjs",
       "tests/codexRulesValidator.test.mjs",
+      "tools/central-registry-integrity.mjs",
+      "tests/centralRegistryIntegrity.test.mjs",
       "tools/codex-routing.mjs",
       "tools/validate-codex-rules.mjs"
     ],

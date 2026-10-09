@@ -7,6 +7,25 @@
     "runtimeEvidence": "EO-19",
     "pilotAuthority": "HC-162"
   },
+  "centralRegistry": {
+    "schemaVersion": 1,
+    "authority": "EO-16",
+    "registryRevision": "mra-r000001",
+    "fingerprint": "013755d5ea42c6105b36c320fa75d1fcb1cf01fbb0bfd9543cdaa0d093c3b64d",
+    "release": {
+      "repository": "HoraceCh/Model-Routing-Registry",
+      "tag": "mra-r000001",
+      "releaseCommitSha": "dc9f8486c4ac3968ccda42539c1bc9e2b1a82afd",
+      "approvalReference": "https://linear.app/baukasten/issue/EO-16#comment-375ceef6-4827-49f7-ad13-02b02c3950f1",
+      "releaseSha256": "66a18b03c210f9949c26bfeddd0c389da30a21bf58359ff3bdea8edf24d4c9cb",
+      "approvalSha256": "c253938340b6d9f9880ee540d707565f9c5529b184ac763a41a1a1a003990983",
+      "latestSha256": "29f652de1ee00bc0d793da9ca0b002bed74664ccb4953bbec1da66a976a4c766"
+    },
+    "websiteAdoption": {
+      "issue": "HC-181",
+      "state": "derived"
+    }
+  },
   "semanticLanes": ["fast", "standard", "deep", "frontier"],
   "activeBindings": {
     "fast": { "model": "gpt-6-luna", "reasoning": ["low", "medium"], "status": "active" },

@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "authority": "EO-16",
+  "decision": "approved",
+  "registryRevision": "mra-r000001",
+  "fingerprint": "013755d5ea42c6105b36c320fa75d1fcb1cf01fbb0bfd9543cdaa0d093c3b64d",
+  "releaseSha256": "66a18b03c210f9949c26bfeddd0c389da30a21bf58359ff3bdea8edf24d4c9cb",
+  "approvalReference": "https://linear.app/baukasten/issue/EO-16#comment-375ceef6-4827-49f7-ad13-02b02c3950f1"
+}

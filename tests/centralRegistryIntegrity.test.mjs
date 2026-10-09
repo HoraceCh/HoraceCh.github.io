@@ -143,6 +143,23 @@ test('real-time R1 authenticated fixed-path GET reconciliation yields UP_TO_DATE
   assert.equal(f.visited.filter(x=>x==='/git/ref/tags/mra-r000001').length,2);
   assert.equal(f.visited.length,9);
 });
+test('same R1 revision and fingerprint with changed source identity fails closed',async()=>{
+  const sha='4'.repeat(40);
+  const changedRelease=Buffer.from(JSON.stringify(rel));
+  const changedApproval=Buffer.from(JSON.stringify({...approval,releaseSha256:digest(changedRelease)}));
+  const changedLatest=Buffer.from(JSON.stringify({...latest,releaseCommitSha:sha}));
+  assert.notEqual(digest(changedRelease),digest(RB));
+  const revision=rel.registryRevision;
+  const f=mock({changes:{
+    [`/contents/latest.json?ref=${main}`]:encode(changedLatest),
+    [`/git/ref/tags/${revision}`]:{object:{type:'commit',sha}},
+    [`/contents/releases/${revision}.json?ref=${sha}`]:encode(changedRelease),
+    [`/contents/approvals/${revision}.json?ref=${sha}`]:encode(changedApproval),
+    [`/contents/releases/${revision}.json?ref=${main}`]:encode(changedRelease),
+    [`/contents/approvals/${revision}.json?ref=${main}`]:encode(changedApproval)
+  }});
+  assert.equal((await check(f.fetchImpl)).status,'AUTHORITY_CONFLICT');
+});
 test('read-only transport not accessible fails CENTRAL_AUTHORITY_UNAVAILABLE',async()=>{
   const f=mock({changes:{'/git/ref/heads/main':{httpError:403}}});
   assert.equal((await check(f.fetchImpl)).status,'CENTRAL_AUTHORITY_UNAVAILABLE');

@@ -217,7 +217,11 @@ export function validatePinnedWebsite({snapshot, releaseBytes, approvalBytes, la
   demand(latest.approvedRevision===rel.registryRevision && latest.fingerprint===rel.fingerprint &&
     latest.approvalReference===app.approvalReference && latest.tag===rel.registryRevision, 'Pinned latest/release/approval mismatch');
   projectWebsite(snapshot,rel.centralPayload);
-  return {status:'LOCAL_INTEGRITY_OK',registryRevision:rel.registryRevision,fingerprint:rel.fingerprint,releaseSha256:digest(releaseBytes)};
+  return {
+    status:'LOCAL_INTEGRITY_OK',registryRevision:rel.registryRevision,fingerprint:rel.fingerprint,
+    releaseSha256:digest(releaseBytes),approvalSha256:digest(approvalBytes),
+    latestSha256:digest(latestBytes),releaseCommitSha:latest.releaseCommitSha
+  };
 }
 
 // Owner-operated, read-only private API calls; NEVER run this from public Website PR CI.
@@ -268,7 +272,16 @@ export async function checkLiveFreshness({snapshot,fetchImpl,token}={}) {
     const again=await get('/git/ref/heads/main');
     const retag=await get(`/git/ref/tags/${latest.tag}`);
     demand(again.object?.sha===mainSha && retag.object?.sha===tag.object.sha && retag.object?.type==='commit','Central refs moved during read');
-    const status=local.registryRevision===latest.approvedRevision && local.fingerprint===latest.fingerprint ? 'UP_TO_DATE':'STALE';
+    let status='STALE';
+    if (local.registryRevision===latest.approvedRevision) {
+      demand(local.fingerprint===latest.fingerprint &&
+        local.releaseCommitSha===tag.object.sha &&
+        local.releaseSha256===digest(releaseBytes) &&
+        local.approvalSha256===digest(approvalBytes) &&
+        local.latestSha256===digest(latestBytes),
+        'Current source identity differs from pinned Website provenance');
+      status='UP_TO_DATE';
+    }
     return {status,observedAt:new Date().toISOString(),mainCommitSha:mainSha,approvedRevision:latest.approvedRevision,fingerprint:latest.fingerprint};
   } catch(error) {
     return {status:error?.unavailable?'CENTRAL_AUTHORITY_UNAVAILABLE':'AUTHORITY_CONFLICT',reason:error instanceof Error?error.message:'Unexpected authority failure'};

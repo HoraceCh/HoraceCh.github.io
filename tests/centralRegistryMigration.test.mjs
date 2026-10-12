@@ -1,10 +1,17 @@
 import assert from 'node:assert/strict';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import test from 'node:test';
+import { pathToFileURL } from 'node:url';
 import {
   checkLiveFreshness, digest, fingerprint, parseStrictJson, projectWebsite,
   validatePinnedWebsite, validateRelease,
 } from '../tools/central-registry-integrity.mjs';
 import { deriveWebsite, r1Release, r1Website, r2, r3 } from './fixtures/centralRegistryMigration.mjs';
+
+const checkerBytes = readFileSync(new URL('../tools/central-registry-integrity.mjs', import.meta.url));
+const checkerSha256 = '59b829144f2a72f7e3f990103a8204350d1e0368ae5f2cfa8cf41061c682c5ca';
 
 // Fixed test-only raw-byte anchors. No synthetic release is accepted by the production R1 pin.
 const trusted = {
@@ -67,6 +74,45 @@ function pinned(authority) {
     latestBytes: authority.latestBytes,
   });
 }
+
+async function withSyntheticPinned(authority, run) {
+  assertTrustedSynthetic(authority);
+  const directory = mkdtempSync(join(tmpdir(), 'hc-211-website-'));
+  try {
+    const tools = join(directory, 'tools');
+    const config = join(directory, 'config');
+    mkdirSync(tools);
+    mkdirSync(config);
+    const checkerPath = join(tools, 'central-registry-integrity.mjs');
+    assert.equal(digest(checkerBytes), checkerSha256);
+    writeFileSync(checkerPath, checkerBytes);
+    assert.deepEqual(readFileSync(checkerPath), checkerBytes);
+    assert.equal(digest(readFileSync(checkerPath)), checkerSha256);
+    const paths = {
+      release: join(config, 'central-registry-r1.release.json'),
+      approval: join(config, 'central-registry-r1.approval.json'),
+      latest: join(config, 'central-registry-r1.latest.json'),
+    };
+    for (const kind of ['release', 'approval', 'latest']) {
+      const bytes = authority[`${kind}Bytes`];
+      writeFileSync(paths[kind], bytes);
+      assert.deepEqual(readFileSync(paths[kind]), bytes);
+      assert.equal(digest(readFileSync(paths[kind])), trusted[authority.release.registryRevision][kind]);
+    }
+    const checker = await import(pathToFileURL(checkerPath).href);
+    return await run(checker, paths);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+}
+
+function overrideCentral(fetchImpl, path, value) {
+  return (url, options) => url.endsWith(path)
+    ? fetchImpl(url, options).then(() => ({ ok: true, json: async () => structuredClone(value) }))
+    : fetchImpl(url, options);
+}
+
+const encoded = bytes => ({ type: 'file', encoding: 'base64', content: bytes.toString('base64') });
 
 test('R1 production pins remain valid while test-only R2 changes only ordinary L3', () => {
   assert.equal(validatePinnedWebsite().status, 'LOCAL_INTEGRITY_OK');
@@ -167,4 +213,79 @@ test('missing or unavailable central authority never satisfies freshness', async
 test('production R1 live checker does not silently repin to a synthetic R2 Website', async () => {
   const result = await checkLiveFreshness({ snapshot: deriveWebsite(r2), fetchImpl: fakeCentral(r2), token: 'TEST_READ_ONLY' });
   assert.equal(result.status, 'AUTHORITY_CONFLICT');
+});
+
+test('unchanged production checker accepts only explicitly pinned synthetic R2 and R3 as locally valid and simulated current', async () => {
+  for (const authority of [r2, r3]) {
+    await withSyntheticPinned(authority, async checker => {
+      const snapshot = deriveWebsite(authority);
+      const local = checker.validatePinnedWebsite({ snapshot });
+      assert.equal(local.status, 'LOCAL_INTEGRITY_OK');
+      assert.equal(local.registryRevision, authority.release.registryRevision);
+      assert.equal(local.releaseSha256, trusted[local.registryRevision].release);
+      assert.equal(local.approvalSha256, trusted[local.registryRevision].approval);
+      assert.equal(local.latestSha256, trusted[local.registryRevision].latest);
+      assert.deepEqual(snapshot.websitePilotOverrides, r1Website.websitePilotOverrides);
+      assert.deepEqual(snapshot.qualifiedCandidates, r1Website.qualifiedCandidates);
+      assert.equal(snapshot.activeBindings.fast.model, r1Website.activeBindings.fast.model);
+      assert.deepEqual(snapshot.activeBindings.fast.reasoning, ['low', 'medium']);
+      assert.equal(snapshot.activeBindings.frontier.status, 'disabled');
+      const current = await checker.checkLiveFreshness({ snapshot, fetchImpl: fakeCentral(authority), token: 'TEST_READ_ONLY' });
+      assert.equal(current.status, 'UP_TO_DATE');
+      assert.equal(current.approvedRevision, authority.release.registryRevision);
+      assert.equal(current.fingerprint, authority.release.fingerprint);
+    });
+  }
+  assert.equal(r3.release.fingerprint, r1Release.fingerprint);
+});
+
+test('fixture-backed production checker fails closed on damaged local pins and source identity', async () => {
+  await withSyntheticPinned(r2, async (checker, paths) => {
+    const snapshot = deriveWebsite(r2);
+    writeFileSync(paths.release, Buffer.from(`${r2.releaseBytes.toString()}\n`));
+    assert.throws(() => checker.validatePinnedWebsite({ snapshot }), /Release\/approval mismatch/);
+    assert.equal((await checker.checkLiveFreshness({ snapshot, fetchImpl: fakeCentral(r2), token: 'TEST_READ_ONLY' })).status, 'AUTHORITY_CONFLICT');
+    writeFileSync(paths.release, r2.releaseBytes);
+    const rejected = { ...parseStrictJson(r2.approvalBytes), decision: 'rejected' };
+    writeFileSync(paths.approval, Buffer.from(JSON.stringify(rejected)));
+    assert.throws(() => checker.validatePinnedWebsite({ snapshot }), /Unapproved Registry revision/);
+    assert.equal((await checker.checkLiveFreshness({ snapshot, fetchImpl: fakeCentral(r2), token: 'TEST_READ_ONLY' })).status, 'AUTHORITY_CONFLICT');
+    writeFileSync(paths.approval, r2.approvalBytes);
+    const forged = structuredClone(snapshot);
+    forged.centralRegistry.release.repository = 'HoraceCh/Untrusted-Registry';
+    assert.throws(() => checker.validatePinnedWebsite({ snapshot: forged }), /Website provenance\/Release mismatch/);
+    assert.equal((await checker.checkLiveFreshness({ snapshot: forged, fetchImpl: fakeCentral(r2), token: 'TEST_READ_ONLY' })).status, 'AUTHORITY_CONFLICT');
+    rmSync(paths.latest);
+    assert.equal((await checker.checkLiveFreshness({ snapshot, fetchImpl: fakeCentral(r2), token: 'TEST_READ_ONLY' })).status, 'AUTHORITY_CONFLICT');
+  });
+});
+
+test('fixture-backed production checker rejects central tag, release, and same-revision source conflicts', async () => {
+  await withSyntheticPinned(r2, async checker => {
+    const snapshot = deriveWebsite(r2);
+    const args = { snapshot, token: 'TEST_READ_ONLY' };
+    const tagPath = `/git/ref/tags/${r2.release.registryRevision}`;
+    const badTag = overrideCentral(fakeCentral(r2), tagPath, { object: { type: 'commit', sha: '4'.repeat(40) } });
+    assert.equal((await checker.checkLiveFreshness({ ...args, fetchImpl: badTag })).status, 'AUTHORITY_CONFLICT');
+    const releasePath = `/contents/releases/${r2.release.registryRevision}.json?ref=${r2.releaseCommitSha}`;
+    const badRelease = overrideCentral(fakeCentral(r2), releasePath, encoded(Buffer.from(`${r2.releaseBytes.toString()}\n`)));
+    assert.equal((await checker.checkLiveFreshness({ ...args, fetchImpl: badRelease })).status, 'AUTHORITY_CONFLICT');
+    const main = '6'.repeat(40);
+    const latestPath = `/contents/latest.json?ref=${main}`;
+    const changedLatest = overrideCentral(fakeCentral(r2), latestPath, encoded(Buffer.from(`${r2.latestBytes.toString()}\n`)));
+    const conflict = await checker.checkLiveFreshness({ ...args, fetchImpl: changedLatest });
+    assert.equal(conflict.status, 'AUTHORITY_CONFLICT');
+    assert.match(conflict.reason, /Current source identity differs/);
+    assert.equal((await checker.checkLiveFreshness({ snapshot })).status, 'FRESHNESS_UNKNOWN');
+    assert.equal((await checker.checkLiveFreshness({ ...args, fetchImpl: async () => ({ ok: false, status: 503 }) })).status, 'CENTRAL_AUTHORITY_UNAVAILABLE');
+  });
+});
+
+test('fixture-backed module and pins are removed after a failed assertion', async () => {
+  let pinnedPath;
+  await assert.rejects(withSyntheticPinned(r2, async (_checker, paths) => {
+    pinnedPath = paths.release;
+    assert.fail('cleanup probe');
+  }), /cleanup probe/);
+  assert.equal(existsSync(pinnedPath), false);
 });

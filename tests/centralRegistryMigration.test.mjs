@@ -11,7 +11,15 @@ import {
 import { deriveWebsite, r1Release, r1Website, r2, r3 } from './fixtures/centralRegistryMigration.mjs';
 
 const checkerBytes = readFileSync(new URL('../tools/central-registry-integrity.mjs', import.meta.url));
-const checkerSha256 = '59b829144f2a72f7e3f990103a8204350d1e0368ae5f2cfa8cf41061c682c5ca';
+const checkerLineEndings = checkerBytes.toString('latin1').match(/\r\n|\r|\n/g) ?? [];
+assert.ok(
+  checkerLineEndings.length > 0 && checkerLineEndings.every((ending) => ending === checkerLineEndings[0]),
+  'checker source has mixed or missing line endings',
+);
+assert.ok(checkerLineEndings[0] === '\r\n' || checkerLineEndings[0] === '\n', 'checker source has unsupported line endings');
+const checkerSha256 = checkerLineEndings[0] === '\r\n'
+  ? '59b829144f2a72f7e3f990103a8204350d1e0368ae5f2cfa8cf41061c682c5ca'
+  : 'ceea5e9cc670ed99246c858254188d6649dd2270cf2aa4cd847c7c113b8fa51f';
 
 // Fixed test-only raw-byte anchors. No synthetic release is accepted by the production R1 pin.
 const trusted = {

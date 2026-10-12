@@ -1,2 +1,5 @@
 .agents/maintenance/*.md text eol=lf
 .agents/maintenance/**/*.md text eol=lf
+config/central-registry-r1.approval.json text eol=lf
+config/central-registry-r1.latest.json text eol=lf
+config/central-registry-r1.release.json text eol=lf

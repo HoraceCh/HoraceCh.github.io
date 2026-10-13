@@ -997,6 +997,19 @@ li {
   font-size: clamp(2.2rem, 6vw, 4rem);
 }
 
+.article h1.type-index-heading,
+.notes-hero h1.type-index-heading {
+  font-size: 40px;
+  line-height: 1.10;
+  overflow-wrap: anywhere;
+}
+
+.article h1.type-project-entity-title {
+  font-size: 36px;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
 .article h2 {
   margin-top: 40px;
 }
@@ -2764,6 +2777,13 @@ li {
 }
 
 @media (max-width: 720px) {
+  .article h1.type-index-heading,
+  .notes-hero h1.type-index-heading,
+  .article h1.type-project-entity-title {
+    font-size: 30px;
+    line-height: 1.15;
+  }
+
   .site-shell {
     width: calc(100% - 24px);
     max-width: var(--max-width);

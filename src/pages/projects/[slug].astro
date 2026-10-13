@@ -23,7 +23,7 @@ const projectTools = project.data.tools.length > 0 ? project.data.tools : projec
   <article class="article" data-pagefind-body>
     <p class="back-link" data-pagefind-ignore><a href="/projects/">Back to Projects</a></p>
     <p class="eyebrow" data-pagefind-ignore>{project.data.category}</p>
-    <h1>{project.data.title}</h1>
+    <h1 class="type-project-entity-title">{project.data.title}</h1>
     <p class="lead">{project.data.description}</p>
     <div class="card-meta article-meta" data-pagefind-ignore>
       <StatusBadge status={project.data.status} />

@@ -250,7 +250,11 @@ button:focus-visible {
 
 .notes-hero {
   max-width: 820px;
-  padding: 40px 0 52px;
+  padding: 24px 0;
+}
+
+.section.notes-module-overview {
+  padding-top: 32px;
 }
 
 .eyebrow,
@@ -2926,6 +2930,10 @@ li {
   .hero,
   .notes-hero {
     padding: 28px 0 44px;
+  }
+
+  .notes-hero {
+    padding: 20px 0 24px;
   }
 
   .note-header h1 {

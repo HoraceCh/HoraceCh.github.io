@@ -21,7 +21,17 @@ test('Notes discovery hides zero-count registry entries without removing direct 
   }
   assert.match(explore, /label="Tags" items=\{tags\}/, 'tag discovery remains governed by published tags');
 
-  const sectionOrder = ['Start Here', 'Primary Structure', 'Second Level', 'Recent Notes', 'Key Browse Paths', 'Search Notes', 'Explore all browse paths'];
+  assert.match(index, /<h1 class="type-index-heading" id="start-here-title">Learning Notes<\/h1>/);
+  assert.doesNotMatch(index, /notes-entry-points/, 'the introduction must lead directly into collections');
+  const sectionOrder = [
+    'id="start-here-title"',
+    'id="collections"',
+    'id="modules"',
+    'id="recent-notes"',
+    'class="section browse-section"',
+    'Search Notes',
+    'Explore all browse paths',
+  ];
   let previousIndex = -1;
   for (const marker of sectionOrder) {
     const markerIndex = index.indexOf(marker);

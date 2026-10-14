@@ -32,39 +32,11 @@ const browsePaths = [
 <Layout title="Notes" description="Public learning notes organized by collections, modules, topics, and recent updates.">
   <section class="notes-hero">
     <p class="eyebrow">Notes</p>
-    <h1 class="type-index-heading">Learning Notes</h1>
+    <h1 class="type-index-heading" id="start-here-title">Learning Notes</h1>
     <p class="lead">
       Public notes from my learning and project work, organized as a knowledge map instead of a date-only blog archive.
     </p>
-    <p>
-      Current areas include programming fundamentals, CS fundamentals, robotics, Embodied AI, VLA models,
-      mechanical design, control systems, and AI-assisted workflows. Some entries are working notes and may be incomplete.
-    </p>
-  </section>
-
-  <section class="section notes-entry-points" aria-labelledby="start-here-title">
-    <SectionHeading
-      id="start-here-title"
-      eyebrow="Start Here"
-      title="Choose a Way In"
-      description="Use the knowledge hierarchy for structured study or recent notes for current work."
-    />
-    <nav aria-label="Notes entry points">
-      <ol class="notes-entry-list">
-        <li>
-          <a href="#collections">
-            <span><strong>Collections</strong><small>Follow the primary subject hierarchy</small></span>
-            <span class="notes-entry-count">{noteModules.length}</span>
-          </a>
-        </li>
-        <li>
-          <a href="#recent-notes">
-            <span><strong>Recent notes</strong><small>Read the latest individual updates</small></span>
-            <span class="notes-entry-count">{recentNotes.length}</span>
-          </a>
-        </li>
-      </ol>
-    </nav>
+    <p>Some entries are working notes and may be incomplete.</p>
   </section>
 
   <section class="section notes-module-overview" id="collections">

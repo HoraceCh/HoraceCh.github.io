@@ -2,6 +2,8 @@
 
 This is the Website adapter for the portable L0–L5 capability framework in [MODEL_ROUTING_PORTABILITY.md](MODEL_ROUTING_PORTABILITY.md). `config/codex-workflow.json` maps capabilities to semantic lanes; `config/codex-model-registry.snapshot.json` derives concrete bindings from EO-16; `tools/codex-routing.mjs` resolves them. Capability, context tier, and reasoning effort are independent choices. The six agents are domain owners, not model tiers.
 
+This adapter is used for deliberate specialist/model routing and explicit governed workflows. Ordinary authorized root implementation uses the user-selected model without a route envelope or compulsory specialist chain. Task permissions and conditional authority lookup are in [AGENTS.md](../AGENTS.md).
+
 ## Active Website adapter
 
 | Capability | Work | Current adapter and starting effort | Gate |
@@ -33,9 +35,9 @@ For the architect/deep pilot, use native Codex CLI with root model/effort, role 
 
 Context Tier metadata is orthogonal to model capability: C0 is deterministic, C1 a compact fresh packet, C2 a focused working set, and C3 an extended cross-domain working set. C4 is long-context admission only and is never selected automatically; C5 is explicit durable multi-window continuity. Delegation defaults to a fresh packet with no history fork, depth one, a soft total child cap of six, one retained-diff writer, one automatic retry per lane, and result/delivery evidence. The configured concurrent-agent cap remains three.
 
-Keep the six owners and one retained-diff writer. L1/L2 may gather facts or perform explicit reversible edits, but may not settle architecture, design direction, schema, privacy, publication, or release ambiguity. The architect owns cross-domain decisions. The notes owner retains publication and generated-content boundaries. The design curator supplies visual direction, the content editor owns claims and IA, the frontend implementer owns scoped UI changes, and the QA reviewer alone issues the repository readiness verdict.
+The six current specialist roles remain available; their lanes describe delegated responsibility, not mandatory handoffs for root. Keep one retained-diff writer. L1/L2 may gather facts or perform explicit reversible edits, but may not settle architecture, design direction, schema, privacy, publication, or release ambiguity. The architect owns cross-domain decisions. The notes owner retains publication and generated-content boundaries. The design curator supplies visual direction, the content editor owns claims and IA, the frontend implementer owns scoped UI changes, and the QA reviewer alone issues the repository readiness verdict.
 
-For meaningful changes, mechanical Gate 1 checks scope, exact commands, exit status, diff, and acceptance evidence. Semantic Gate 2 checks the governing contracts and sufficient behavior evidence at L3 or L4 according to risk. A mechanical pass is not a release verdict. Keep fresh handoff packets compact and re-read decision-critical authority.
+For an explicit governed review, mechanical Gate 1 checks scope, command outcomes, diff and acceptance evidence; semantic Gate 2 applies at L3/L4 as risk requires. Ordinary local work uses proportional checks; authority/security/publication changes and release decisions require appropriate independent judgment. A mechanical pass grants no release permission. Keep any handoff packet compact and re-read decision-critical authority.
 
 ## Provenance and rollback
 

@@ -1,48 +1,34 @@
 # Project Instructions
 
-This repository is my personal research portfolio website.
+Horace's personal research portfolio and public knowledge garden is a static Astro site. Keep it minimal, technical, honest and appropriate for an early-stage researcher. Never fabricate achievements or outcomes. Preserve factual content unless migration is authorized.
 
-Core identity:
-Mechanical Engineering student exploring Robotics, Embodied AI, VLA models, and AI-assisted engineering workflows.
+Home introduces identity; About gives background; Projects is a scan-friendly index; Notes is the research knowledge system; Resume serves recruiters; Contact provides external links. Prefer simple reusable Astro components, Markdown/MDX and content collections.
 
-Architecture:
-- Home = personal identity entrance
-- About = background and direction
-- Projects = scan-friendly project index
-- Notes = long-term research notes / knowledge system
-- Resume = recruiter-facing summary
-- Contact = external links
+## Normal local work
 
-Style:
-- Minimal
-- Technical
-- Honest
-- Early-stage researcher appropriate
-- Avoid hype and buzzwords
+Authorized outcome + affected source/contract → one root writer → behavior-matched checks → concise evidence → separately authorized external delivery.
 
-Global UI guidance:
-- Agents must read `docs/design/UI_DESIGN.md` before planning or implementing visual UI changes; it is the canonical UI reference for visual specs, implementation, and QA review.
-- Keep UI changes aligned to that file unless the user explicitly approves a different direction.
+Root may edit necessary adjacent Astro pages/components/scripts, CSS and tests within a Website-local task. Ownership labels indicate expertise, not per-directory permission prompts. Consult relevant sections on demand through [HORACEOS.md](docs/HORACEOS.md):
+- Visual decisions/QA: [Design Authority v3](docs/design/UI_DESIGN.md).
+- Publication, identity, slugs and generated ownership: [Publication Contract](docs/CONTENT_PUBLICATION_CONTRACT.md).
+- Broad discovery/governance audits: [Scan Boundary](docs/CODEX_SCAN_BOUNDARY.md); ordinary source reads stay task-scoped.
+- Specialists/checks: [Agent Workflow](docs/AGENT_WORKFLOW.md). Read [Agent Routing](docs/CODEX_AGENT_ROUTING.md) and [Model Usage](docs/CODEX_MODEL_USAGE.md) only for deliberate specialist/model routing or explicit governed workflows. Ordinary root work needs no route command/envelope.
 
-Implementation priorities:
-1. Keep the site statically deployable.
-2. Preserve existing content unless migration is intentional.
-3. Prefer Astro, Markdown/MDX, and content collections.
-4. Keep components simple and reusable.
-5. Run build checks before finalizing.
-6. Do not fabricate personal achievements, publications, awards, or project outcomes.
+Specialists are optional according to ambiguity, risk and expertise. Preserve current compatibility: six roles, three-subagent cap, interrupt setting, depth-one delegation and one retained-diff writer. Only root delegates, with jobs bounded to 30 minutes. Read-only specialists stay read-only; root's model stays user-selected.
 
-## Codex capability and agent workflow
+## Protected boundaries and validation
 
-Before repository-wide discovery, read `docs/CODEX_SCAN_BOUNDARY.md`. Before planning or implementing, read `docs/CODEX_MODEL_USAGE.md` and `docs/CODEX_AGENT_ROUTING.md`. They are the source of truth for safe scan scope, the six agents, capability routing, the compact six-part prompt structure, permissions, and handoffs.
+Task scope does not grant cross-repository writes, private-vault access, publication membership/visibility or generated-ownership changes, auth/deployment changes, or major UI libraries/frameworks. Obtain explicit separate authorization and satisfy the relevant contract. Unapproved v3 Header, Progressive Glass, exact Homepage successor, React/Three and major-motion candidates retain their evidence/approval gates.
 
-Route useful phases by L0–L5 capability as defined in `docs/MODEL_ROUTING_PORTABILITY.md`. L0 bypasses a model for resolved deterministic mechanics. L1 and L2 handle qualified bounded work, L3 handles engineering synthesis, L4 handles high judgment, and L5 remains disabled without consequential comparative evidence. These are capability classes, not an escalation staircase. The user's root conversation model is selected at launch; repository routing must not pin it. Exact model IDs and effort defaults belong in the Website adapter, not stable governance. Preserve quality and authority gates before using cost or latency to break a tie.
+Preserve static deployment, build-time Markdown, publication/privacy safeguards and unrelated work. Never execute Markdown JavaScript, hand-edit sync-owned Notes/assets, or read secrets/caches as policy. Refactors prove relevant equivalence; approved redesigns meet new acceptance criteria and preserve unrelated behavior. Keep protected test behavior.
 
-Keep the six owner lanes, the three-subagent cap and interrupt messages in `.codex/config.toml`. Delegation is depth one, write-capable work is serial-first, and a delegated job must be scoped to finish within 30 minutes; these are workflow policies rather than unsupported configuration keys. Preserve the one-writer rule, privacy and publication boundaries, approval requirements, and behavior-matched validation.
+Run relevant tests and `npm run build` for source/build changes or required delivery gates. Governance changes run `npm run rules:validate` and affected routing/validator tests. Follow the existing [maintenance policy](.agents/rules/maintenance-logging.md), including trivial-edit skips. Report unverified checks.
+
+Authorized reads/local edits/non-destructive checks need no reapproval. Commits, external writes, push, PR, merge, publication, deployment and destructive operations require explicit authorization. Release follows protected main and PR CI.
 
 ## Third-party UI skills
 
-Third-party UI skills are advisory and subordinate to this repository's `AGENTS.md`, project-local agent rules, architecture contracts, and `docs/design/UI_DESIGN.md`.
+Skills remain advisory under these instructions, local rules and affected authorities.
 
 Approved project-local UI skills:
 
@@ -51,10 +37,6 @@ Approved project-local UI skills:
 - `fixing-metadata`
 - `fixing-motion-performance`
 
-`config/codex-skill-admission.json` is the closed admission list for project-local Skills. Only its `ADMITTED` third-party UI entries may enter the documented normal workflow, subject to the owner boundaries below. `EXPLICIT_ONLY` requires a named task-specific invocation; `DORMANT_NON_DISCOVERABLE` and `REMOVE` must stay outside `.agents/skills/`. A local `SKILL.md` or `skills-lock.json` entry does not grant admission. Validate the directory against the admission list with `npm run rules:validate`.
+[Skill admission](config/codex-skill-admission.json) is closed: `ADMITTED` may enter normal work; `EXPLICIT_ONLY` needs named invocation; `DORMANT_NON_DISCOVERABLE`/`REMOVE` stay outside `.agents/skills/`. Files/lock entries grant no admission. Validate with `npm run rules:validate`. Exclude `baseline-ui`, `ui-skills-root`, full-registry routing and unreviewed dynamically retrieved UI skills.
 
-Do not use `baseline-ui`, `ui-skills-root`, full-registry routing, or unreviewed dynamically retrieved UI skills.
-
-Third-party UI skills must not introduce dependencies, frameworks, or component systems without explicit approval; override the canonical design system; expand the authorized file scope; modify the Obsidian pipeline, content schema, publication contracts, generated content, deployment, or agent routing; or commit, push, or perform external writes.
-
-Use `improve-ui` only as a read-only, evidence-based UI audit and planning aid; hand accepted findings to `design_system_curator`. Use `fixing-accessibility` for focused accessibility audit or bounded implementation through existing owners, `fixing-metadata` for metadata review with implementation retained by the appropriate project owner, and `fixing-motion-performance` for motion/performance review whose implementation follows the existing reduced-motion and CSS constraints. These supporting references never bypass `design_system_curator` → `frontend_implementer` → `qa_build_reviewer` or create new agents.
+Skills cannot expand scope, override design, introduce dependencies/frameworks/component systems without approval, alter pipeline/schema/publication/generated content/deployment/routing, commit or perform external writes. `improve-ui` stays a read-only audit/planning aid; root may use accepted findings or consult the curator. Accessibility, metadata and motion Skills support bounded work, including reduced motion. No fixed specialist chain is required.

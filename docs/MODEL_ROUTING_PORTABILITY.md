@@ -2,6 +2,8 @@
 
 This document defines the Horace project family's portable L0–L5 capability semantics. The durable architecture is the sequence of boundaries, classification, evaluation, enforcement, and contextual overlays. Exact model IDs and Codex file formats belong to project adapters.
 
+This framework governs explicit routing, adapter qualification and runtime portability. It is not a mandatory preflight for ordinary Website root work; [AGENTS.md](../AGENTS.md) defines that local default. Existing capability/context semantics and Registry evidence remain unchanged when routing is invoked.
+
 ## 1. Close the scan boundary first
 
 Define a machine-readable allowlist of policy sources and an explicit denylist for runtime state, caches, local credentials, generated output, browser profiles, and continuation data. Enumerate tracked configuration rather than recursively reading hidden tool directories. Keep normal source discovery task-scoped and expand it only along verified dependency edges.

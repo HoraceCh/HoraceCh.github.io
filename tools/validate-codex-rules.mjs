@@ -7,14 +7,6 @@ import { fileURLToPath } from 'node:url';
 import { selectRoute } from './codex-routing.mjs';
 import { validatePinnedWebsite, parseStrictJson } from './central-registry-integrity.mjs';
 
-const REQUIRED_AGENT_SECTIONS = [
-  '## Role and goal',
-  '## Success criteria',
-  '## Context and evidence',
-  '## Constraints and permissions',
-  '## Tools and validation',
-  '## Output and stop rules',
-];
 const REQUIRED_AGENTS = [
   'content_ia_editor',
   'design_system_curator',
@@ -335,7 +327,7 @@ function validateMarkdownLinks(rootDir, policyFiles, errors) {
   }
 }
 
-function validatePolicyText(rootDir, policyFiles, packageScripts, errors) {
+export function validatePolicyText(rootDir, policyFiles, packageScripts, errors) {
   const stalePhrases = [
     'Start at Terra Medium; escalate to Sol High only',
     'Use Luna Low only for explicit',
@@ -385,6 +377,13 @@ export function validateAgentModelPin(agent, registry) {
     ? [`Variable-route agent must not pin model or reasoning: ${agent.name}`] : [];
 }
 
+export function validateAgentSandbox(agent) {
+  const expected = ['project_architect', 'design_system_curator'].includes(agent.name)
+    ? 'read-only' : 'workspace-write';
+  return agent.sandbox_mode === expected
+    ? [] : [`Agent sandbox must remain ${expected}: ${agent.name}`];
+}
+
 function validateToml(rootDir, config, registry, errors) {
   const tomlFiles = config.scanBoundary.policyFiles.filter((file) => file.endsWith('.toml'));
   const absolutePaths = tomlFiles.map((file) => resolve(rootDir, file));
@@ -426,11 +425,7 @@ function validateToml(rootDir, config, registry, errors) {
       errors.push(`Agent ${String(agent.name)} is missing required fields`);
       continue;
     }
-    for (const section of REQUIRED_AGENT_SECTIONS) {
-      if (!agent.developer_instructions.includes(section)) {
-        errors.push(`Agent ${agent.name} is missing prompt section: ${section}`);
-      }
-    }
+    errors.push(...validateAgentSandbox(agent));
     errors.push(...validateAgentModelPin(agent, registry));
   }
 }

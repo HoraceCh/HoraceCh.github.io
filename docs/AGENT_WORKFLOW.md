@@ -1,33 +1,37 @@
 # HoraceCh Agent Workflow
 
-This Astro site is a personal research portfolio and public knowledge garden. Its fixed IA is Home / About / Projects / Notes / Resume / Contact; Notes publish through the Obsidian pipeline. Keep work static-build friendly, minimal, technical, and honest.
-
-Read [CODEX_MODEL_USAGE.md](CODEX_MODEL_USAGE.md) for model selection and [CODEX_AGENT_ROUTING.md](CODEX_AGENT_ROUTING.md) for prompt structure and handoffs.
+[AGENTS.md](../AGENTS.md) defines normal local authority; [HORACEOS.md](HORACEOS.md) locates affected contracts.
 
 ## Operating flow
 
-1. Read `CODEX_SCAN_BOUNDARY.md`, then define the outcome, completion bar, evidence, authorized scope, and behavior-matched validation using the route envelope plus six-part prompt in `CODEX_AGENT_ROUTING.md`.
-2. Classify each useful phase and generate its route with `npm run route:codex -- [flags]`. Use L0 for resolved mechanics, qualified L1/L2 for bounded work, L3 for engineering synthesis, and L4 for high judgment. L5 remains disabled without consequential comparative evidence.
-3. Make the smallest authorized change or produce the required spec; hand off when another ownership lane, unauthorized file, or product decision is required.
-4. Send multi-file, pipeline, and pre-release work to `qa_build_reviewer` before any authorized release action.
+1. Identify the authorized outcome, affected source/contract, protected behavior and acceptance criteria.
+2. Let one root writer make the necessary adjacent Website implementation/test edits, reading context on demand.
+3. Run behavior-matched checks; report outcome, material evidence, risks and blockers.
+4. Obtain separate authorization for external delivery or protected-domain changes outside the task.
 
-Only the root orchestrator delegates. Delegation depth is one, write-capable work is serial-first, and delegated jobs are scoped to finish within 30 minutes. The configured concurrency cap is not a target.
+Consult specialists when ambiguity, risk or expertise warrants it. Ownership labels do not require root to hand off routine multi-file work. Delegated agents retain their assigned scope/sandbox; only root delegates. Preserve depth one, jobs within 30 minutes, the current three-agent cap and one retained-diff writer. Parallel investigation is read-only.
 
-## Ownership and risk
+## Available specialists
 
-- `project_architect`: plans cross-layer boundaries, IA, migrations, and routing.
-- `obsidian_notes_pipeline`: owns sync, notes schema, assets, generated-note safety, and private-content boundaries. Use a supplied `notes:sync:dry` result when available; the publish source—not the full vault—is the input boundary.
-- `design_system_curator`: owns visual direction and an implementable spec; it reads `docs/design/UI_DESIGN.md` before visual work.
-- `content_ia_editor`: owns honest copy and IA; it does not change styling or layout.
-- `frontend_implementer`: makes scoped Astro/UI changes from a clear handoff and preserves the documented design system.
-- `qa_build_reviewer`: validates ownership, behavior, and release readiness.
+| Role | Responsibility when consulted |
+| --- | --- |
+| `project_architect` | Read-only architecture, migration, IA and authority/routing decisions |
+| `obsidian_notes_pipeline` | Sync, schema, generated ownership, assets and publication/privacy |
+| `design_system_curator` | Read-only visual direction, candidate evidence and specs |
+| `content_ia_editor` | Factual copy, claims and IA |
+| `frontend_implementer` | Scoped Astro/UI implementation from a clear request or accepted spec |
+| `qa_build_reviewer` | Independent risk review or release-readiness assessment; read-only for source |
 
-For L1/L2, use the owning lane and validate immediately against exact acceptance. For L3/L4, prepare a compact bounded evidence packet when useful, keep one retained-diff writer, run mechanical Gate 1, and add L3 or L4 semantic Gate 2 when risk requires it. Return to L0 for deterministic checks or mechanics after the governing decision is resolved.
+These are the six current roles, not a required sequence. Deliberate specialist/model routing uses [Agent Routing](CODEX_AGENT_ROUTING.md) and [Model Usage](CODEX_MODEL_USAGE.md), including Registry/attestation gates; ordinary root work needs no classification or envelope.
 
 ## Validation and reporting
 
-QA always verifies the diff surface, whitespace, and ownership, then selects checks for the changed behavior. Website source or build changes require `npm run build`; legacy Hexo work uses a configured legacy validation command when one exists and must not invent a missing package script; pipeline work uses `npm run notes:sync:dry` when a source path is available. UI changes receive rendered light/dark, mobile, accessibility, and UI-reference review when practical. Documentation and agent-rule changes run `npm run rules:validate`, which covers TOML parsing, route cases, contradictions, scan paths, secret-like values, local links, and dynamic-rule frontmatter. It requires Node 24 and Python 3.11+ with `tomllib`; CI installs both explicitly. A required but unverified build is `BLOCKED: build not verified`.
+- Source/build changes: `npm run build` and affected tests.
+- UI: relevant v3 criteria and practical rendered responsive/theme/accessibility/reduced-motion checks.
+- Pipeline: supplied-source `npm run notes:sync:dry` when available, affected strict/publication checks and build after writes or source/schema changes. Never widen discovery to the private vault.
+- Governance: `npm run rules:validate`, affected routing/validator tests, diff/link/format checks; use repository Node/npm and Python 3.11+.
+- Material events: existing [maintenance policy](../.agents/rules/maintenance-logging.md).
 
-Reports preserve decisions, material risks, blockers, validation, and next actions while omitting routine tool narration. Ownership, privacy, release permissions, and stop rules are centralized in `CODEX_AGENT_ROUTING.md`; agent TOMLs add only lane-specific boundaries.
+Independent semantic review follows risk, not file count; authority/security/publication changes and release decisions require it. Mechanical checks cannot replace that judgment or grant release permission. For actual readiness assessment, use `qa_build_reviewer` with `website-release-gate`; [review modes](CODEX_AGENT_ROUTING.md#qa-gate) retain their verdicts. A required unverified build is `BLOCKED: build not verified`.
 
-Use repository Skills for repeatable procedures without moving domain judgment out of agents: `website-release-gate`, `notes-publication-preflight`, `publication-contract-audit`, `interrupted-run-recovery`, and `audit-update`.
+Reports are proportional: outcome, evidence, risks/blockers and next action. Existing Skills retain their bounded procedures when invoked; ordinary root work has no fixed report template.

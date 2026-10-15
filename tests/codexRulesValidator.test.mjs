@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
@@ -13,6 +15,8 @@ import {
   validateWorkflowJsonStructure,
   validateRegistrySnapshot,
   validateAgentModelPin,
+  validateAgentSandbox,
+  validatePolicyText,
 } from '../tools/validate-codex-rules.mjs';
 
 test('TOML validation selects only Python 3.11 or newer', () => {
@@ -183,4 +187,40 @@ test('registry drift and malformed evidence fail closed', () => {
   assert.deepEqual(validateAgentModelPin({ name: 'project_architect', model: 'unauthorized',
     model_reasoning_effort: 'high' }, baseline),
     ['project_architect pin must match the approved Website pilot override']);
+});
+
+test('specialist sandboxes preserve the current read-only and validation permissions', () => {
+  for (const name of ['project_architect', 'design_system_curator']) {
+    assert.deepEqual(validateAgentSandbox({ name, sandbox_mode: 'read-only' }), []);
+    assert.ok(validateAgentSandbox({ name, sandbox_mode: 'workspace-write' }).length > 0);
+  }
+  for (const name of ['frontend_implementer', 'content_ia_editor', 'obsidian_notes_pipeline', 'qa_build_reviewer']) {
+    assert.deepEqual(validateAgentSandbox({ name, sandbox_mode: 'workspace-write' }), []);
+    for (const sandbox_mode of ['danger-full-access', undefined]) {
+      assert.ok(validateAgentSandbox({ name, sandbox_mode }).length > 0);
+    }
+  }
+});
+
+test('governing text rejects secret-like values, local user paths and unknown scripts', () => {
+  const root = mkdtempSync(join(tmpdir(), 'horace-policy-text-'));
+  try {
+    const cases = [
+      ['Credential: ' + 'ghp_' + 'x'.repeat(24), 'Secret-like value'],
+      ['See ' + String.raw`C:\Users\example\private.md`, 'User-specific absolute path'],
+      ['Run npm run missing:script', 'Unknown npm script'],
+    ];
+    for (const [content, message] of cases) {
+      writeFileSync(join(root, 'policy.md'), content);
+      const errors = [];
+      validatePolicyText(root, ['policy.md'], {}, errors);
+      assert.ok(errors.some((error) => error.includes(message)), message);
+    }
+    writeFileSync(join(root, 'policy.md'), 'Run npm run rules:validate for governance changes.\n');
+    const errors = [];
+    validatePolicyText(root, ['policy.md'], { 'rules:validate': 'validator' }, errors);
+    assert.deepEqual(errors, []);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });

@@ -20,6 +20,7 @@
       "config/codex-skill-admission.json",
       "config/codex-workflow.json",
       "docs/AGENT_WORKFLOW.md",
+      "docs/HORACEOS.md",
       "docs/CODEX_AGENT_ROUTING.md",
       "docs/CODEX_MODEL_USAGE.md",
       "docs/CODEX_SCAN_BOUNDARY.md",

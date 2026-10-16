@@ -16,24 +16,21 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 const formatLabel = (value: string) => value.replace(/-/g, ' ');
+const maturityLabel = formatLabel(project.data.maturity);
+const showMaturity = maturityLabel.toLowerCase() !== formatLabel(project.data.status).toLowerCase();
 const projectTools = project.data.tools.length > 0 ? project.data.tools : project.data.stack;
 ---
 
 <Layout title={project.data.title} description={project.data.description}>
-  <article class="article" data-pagefind-body>
+  <article class="article project-detail" data-pagefind-body>
     <p class="back-link" data-pagefind-ignore><a href="/projects/">Back to Projects</a></p>
-    <p class="eyebrow" data-pagefind-ignore>{project.data.category}</p>
     <h1 class="type-project-entity-title">{project.data.title}</h1>
-    <p class="lead">{project.data.description}</p>
-    <div class="card-meta article-meta" data-pagefind-ignore>
+    <div class="card-meta article-meta project-detail-state" data-pagefind-ignore>
       <StatusBadge status={project.data.status} />
       <span>{project.data.category}</span>
-      <span>{formatLabel(project.data.maturity)}</span>
-      {project.data.role && <span>{project.data.role}</span>}
-      {project.data.timeframe && <span>{project.data.timeframe}</span>}
-      {projectTools.length > 0 && <span>Tools: {projectTools.join(', ')}</span>}
+      {showMaturity && <span>{maturityLabel}</span>}
     </div>
-    <div data-pagefind-ignore><TagList tags={project.data.tags} /></div>
+    <p class="lead">{project.data.description}</p>
     {
       (project.data.links.github || project.data.links.demo || project.data.links.notes) && (
         <div class="link-row" data-pagefind-ignore>
@@ -47,6 +44,12 @@ const projectTools = project.data.tools.length > 0 ? project.data.tools : projec
         </div>
       )
     }
+    <div class="card-meta article-meta project-detail-context" data-pagefind-ignore>
+      {project.data.role && <span>{project.data.role}</span>}
+      {project.data.timeframe && <span>{project.data.timeframe}</span>}
+      {projectTools.length > 0 && <span>Tools: {projectTools.join(', ')}</span>}
+    </div>
+    <div data-pagefind-ignore><TagList tags={project.data.tags} /></div>
     <Content />
   </article>
 </Layout>

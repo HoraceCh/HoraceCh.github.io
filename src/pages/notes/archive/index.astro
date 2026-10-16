@@ -21,16 +21,16 @@ const ordinaryNotes = publicBrowseNotes.filter(isOrdinaryNote).sort((a, b) => {
 const hierarchyIndexNotes = sortNotesForHierarchy(publicBrowseNotes.filter(isNoteIndexEntry));
 ---
 <Layout title="Notes Archive" description="Complete static index of public individual notes and hierarchy index notes.">
-  <section class="article filter-hero notes-browse-hero">
+  <section class="article filter-hero notes-browse-hero notes-archive-hero">
     <p class="back-link"><a href="/notes/">Back to Notes</a></p>
     <p class="eyebrow">Notes / Archive</p>
     <h1 class="type-index-heading">Notes Archive</h1>
     <p class="lead">A complete static index of public individual notes, separated from the main discovery path.</p>
     <p>{ordinaryNotes.length} public individual note{ordinaryNotes.length === 1 ? '' : 's'}.</p>
   </section>
-  <section class="section">
+  <section class="section notes-archive-section">
     <SectionHeading eyebrow="Archive" title="Individual Notes" description="Grouped by category, then ordered by explicit sequence and title." />
-    <NoteList notes={ordinaryNotes} emptyMessage="No public individual notes yet." />
+    <NoteList notes={ordinaryNotes} variant="archive" emptyMessage="No public individual notes yet." />
   </section>
   {hierarchyIndexNotes.length > 0 && (
     <section class="section" aria-labelledby="module-index-list-title">

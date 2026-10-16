@@ -1198,6 +1198,118 @@ li {
   opacity: 0.94;
 }
 
+.notes-archive-hero.filter-hero {
+  margin-top: -16px;
+  padding: 0 0 8px;
+}
+
+.notes-archive-hero .back-link {
+  margin-bottom: 8px;
+}
+
+.notes-archive-hero h1 {
+  margin-bottom: 4px;
+}
+
+.notes-archive-hero .lead {
+  margin-bottom: 4px;
+}
+
+.notes-archive-hero p:last-child {
+  margin-bottom: 0;
+}
+
+.notes-archive-section.section {
+  padding: 8px 0 24px;
+}
+
+.notes-archive-section .section-heading {
+  margin-bottom: 8px;
+}
+
+.notes-archive-section .section-heading .eyebrow {
+  margin-bottom: 0;
+}
+
+.notes-archive-section .section-heading h2 {
+  margin-bottom: 4px;
+}
+
+.notes-archive-section .section-heading p:last-child {
+  margin-bottom: 0;
+}
+
+.archive-note-list {
+  display: grid;
+  gap: 8px;
+}
+
+.archive-note-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+  column-gap: 20px;
+}
+
+.archive-note-group h3 {
+  grid-column: 1 / -1;
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+
+.archive-note-row {
+  border-top: 1px solid var(--line);
+  padding: 6px 0;
+  overflow-wrap: anywhere;
+}
+
+.archive-note-row h4 {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.archive-note-row h4 a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.archive-note-row h4 a:hover {
+  text-decoration: underline;
+}
+
+.archive-note-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.archive-note-row .tag-list {
+  gap: 0 12px;
+  margin: 0;
+}
+
+.archive-note-row .tag-list li {
+  min-height: 24px;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.archive-note-row .tag-list a {
+  min-height: 24px;
+  text-decoration: underline;
+}
+
 .module-tree {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
@@ -3006,6 +3118,11 @@ li {
 
   .tag-list li,
   .tag-list a {
+    min-height: 40px;
+  }
+
+  .archive-note-row .tag-list li,
+  .archive-note-row .tag-list a {
     min-height: 40px;
   }
 }

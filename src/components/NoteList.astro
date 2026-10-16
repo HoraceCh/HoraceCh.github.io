@@ -1,33 +1,63 @@
 ---
 import NoteCard from './NoteCard.astro';
+import TagList from './TagList.astro';
 import { noteHref, type EffectiveNote } from '../utils/notePublication';
 
 interface Props {
   notes: EffectiveNote[];
   emptyMessage?: string;
   prefetch?: boolean;
+  variant?: 'cards' | 'archive';
 }
 
-const { notes, emptyMessage = 'No public notes here yet.', prefetch = false } = Astro.props;
+const { notes, emptyMessage = 'No public notes here yet.', prefetch = false, variant = 'cards' } = Astro.props;
+const archiveGroups = notes.reduce<Array<{ category: string; notes: EffectiveNote[] }>>((groups, note) => {
+  const lastGroup = groups[groups.length - 1];
+  if (lastGroup?.category === note.data.category) lastGroup.notes.push(note);
+  else groups.push({ category: note.data.category, notes: [note] });
+  return groups;
+}, []);
+const formatDate = (date: Date) => new Intl.DateTimeFormat('en', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+}).format(date);
 ---
 
 {
   notes.length > 0 ? (
-    <div class="card-grid all-notes-grid" aria-label="Notes">
-      {notes.map((note) => (
-        <NoteCard
-          title={note.data.title}
-          description={note.data.publicSummary}
-          date={note.data.date}
-          category={note.data.category}
-          status={note.data.status}
-          type={note.data.type}
-          tags={note.data.tags}
-          href={noteHref(note)}
-          prefetch={prefetch}
-        />
-      ))}
-    </div>
+    variant === 'archive' ? (
+      <div class="archive-note-list" aria-label="Notes">
+        {archiveGroups.map((group, index) => (
+          <section class="archive-note-group" aria-labelledby={`archive-category-${index}`}>
+            <h3 id={`archive-category-${index}`}>{group.category}</h3>
+            {group.notes.map((note) => (
+              <article class="archive-note-row">
+                <h4><a href={noteHref(note)} data-astro-prefetch={prefetch ? 'hover' : undefined}>{note.data.title}</a></h4>
+                <p class="archive-note-meta"><span>{note.data.status}</span><span>{formatDate(note.data.date)} / {note.data.type}</span></p>
+                <TagList tags={note.data.tags} linkBase="/notes/tags" />
+              </article>
+            ))}
+          </section>
+        ))}
+      </div>
+    ) : (
+      <div class="card-grid all-notes-grid" aria-label="Notes">
+        {notes.map((note) => (
+          <NoteCard
+            title={note.data.title}
+            description={note.data.publicSummary}
+            date={note.data.date}
+            category={note.data.category}
+            status={note.data.status}
+            type={note.data.type}
+            tags={note.data.tags}
+            href={noteHref(note)}
+            prefetch={prefetch}
+          />
+        ))}
+      </div>
+    )
   ) : (
     <p class="empty-state">{emptyMessage}</p>
   )

@@ -22,6 +22,7 @@ interface Props {
 const { title, description, status, category, maturity, tags, href, links = {} } = Astro.props;
 const formatLabel = (value?: string) => value?.replace(/-/g, ' ');
 const maturityLabel = formatLabel(maturity);
+const showMaturity = maturityLabel && maturityLabel.toLowerCase() !== formatLabel(status)?.toLowerCase();
 const visibleLinks = [
   links.github && { href: links.github, label: 'GitHub', external: true },
   links.demo && { href: links.demo, label: 'Demo', external: true },
@@ -30,14 +31,13 @@ const visibleLinks = [
 ---
 
 <article class="card project-card">
+  <h3><a href={href}>{title}</a></h3>
   <div class="card-meta">
     <StatusBadge status={status} />
     <span>{category}</span>
-    {maturityLabel && <span>{maturityLabel}</span>}
+    {showMaturity && <span>{maturityLabel}</span>}
   </div>
-  <h3><a href={href}>{title}</a></h3>
   <p>{description}</p>
-  <TagList tags={tags} />
   {
     visibleLinks.length > 0 && (
       <div class="card-links" aria-label={`${title} links`}>
@@ -49,4 +49,5 @@ const visibleLinks = [
       </div>
     )
   }
+  <TagList tags={tags} />
 </article>

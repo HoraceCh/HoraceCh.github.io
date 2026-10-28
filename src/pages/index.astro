@@ -1,209 +1,43 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import LinkButton from '../components/LinkButton.astro';
-import {
-  loadProjectPublicationModel,
-  projectHref,
-  selectHomepageProjects,
-} from '../utils/projectPublication';
-import { loadNotePublicationModel, noteHref, selectHomepageNotes } from '../utils/notePublication';
+import Hero from '../components/home/EditorialHero.astro';
+import News from '../components/home/RecentNews.astro';
+import Works from '../components/home/SelectedWorks.astro';
+import Honors from '../components/home/HonorsIndex.astro';
+import Footer from '../components/home/EditorialFooter.astro';
+import content from '../data/home-v2.json';
+import { loadProjectPublicationModel } from '../utils/projectPublication';
+import '../styles/home-v2.css';
 
-const curatedProjectCards = [
-  {
-    projectId: 'ai-retrieval-tool',
-    status: 'In progress',
-    type: 'AI Workflow',
-    title: 'Academic Retrieval Query Builder',
-    actionLabel: 'View project',
-    description:
-      'AI_RETRIEVAL_X / Information-Retrieval-Tool drafts database-specific Boolean queries from a research question.',
+const model = await loadProjectPublicationModel();
+const media = {
+  "robomaster-2026-engineering-robot": {
+    "src": "/images/home/rm26-robot-1200.webp",
+    "width": 1200,
+    "height": 800,
+    "alt": "RoboMaster 2026 engineering robot photographed with its chassis and arm visible.",
+    "srcset": "/images/home/rm26-robot-480.webp 480w, /images/home/rm26-robot-768.webp 768w, /images/home/rm26-robot-1200.webp 1200w"
   },
-  {
-    projectId: 'vla-embodied-ai-learning-system',
-    status: 'Learning system',
-    type: 'Embodied AI',
-    title: 'VLA / Embodied AI Learning System',
-    actionLabel: 'View project',
-    description:
-      'A structured study system for connecting VLA papers, robotics concepts, and future implementation work.',
-  },
-];
-const curatedProjectIds = curatedProjectCards.map((project) => project.projectId);
-const projectModel = await loadProjectPublicationModel();
-const missingCuratedProjectIds = curatedProjectIds.filter((id) => !projectModel.byId.has(id));
-
-if (missingCuratedProjectIds.length > 0) {
-  throw new Error(`Homepage Project IDs do not resolve: ${missingCuratedProjectIds.join(', ')}`);
-}
-
-const selectedProjectCards = selectHomepageProjects(projectModel, curatedProjectIds).map((project) => {
-  const card = curatedProjectCards.find((item) => item.projectId === project.id);
-  if (!card) {
-    throw new Error(`Homepage Project metadata is missing for resolved ID: ${project.id}`);
+  "ai-retrieval-tool": {
+    "src": "/images/home/ai-retrieval-ui-1200.webp",
+    "width": 1200,
+    "height": 1311,
+    "alt": "AI_RETRIEVAL_X interface showing research intent input, query controls and semantic map.",
+    "srcset": "/images/home/ai-retrieval-ui-480.webp 480w, /images/home/ai-retrieval-ui-768.webp 768w, /images/home/ai-retrieval-ui-1200.webp 1200w"
   }
-  return { ...card, href: projectHref(project) };
-});
-const noteModel = await loadNotePublicationModel();
-const selectedWorkNote = selectHomepageNotes(noteModel).find((note) => note.data.homepageSlot === 'selected-work-03');
-
-if (!selectedWorkNote) {
-  console.warn('Homepage Note slot selected-work-03 did not resolve to a homepage-eligible Note.');
-}
-
-const selectedWork = [
-  ...selectedProjectCards,
-  ...(selectedWorkNote
-    ? [{
-        status: selectedWorkNote.data.status,
-        type: selectedWorkNote.data.type,
-        title: selectedWorkNote.data.title,
-        actionLabel: 'Read note',
-        description: selectedWorkNote.data.publicSummary,
-        href: noteHref(selectedWorkNote),
-      }]
-    : []),
-];
-
-const hubLinks = [
-  {
-    href: '/projects/',
-    label: 'Projects',
-    description: 'Scan active engineering work, research systems, and public tools.',
-  },
-  {
-    href: '/notes/',
-    label: 'Notes',
-    description: 'Read structured study notes, learning paths, and workflow records.',
-  },
-];
-
-const focusAreas = [
-  'Robotics',
-  'Embodied AI',
-  'Vision-Language-Action models',
-  'Mechanical design',
-  'Control systems',
-  'AI-assisted workflows',
-];
+};
 ---
-
-<Layout
-  title="Horace Chan"
-  description="Mechanical Engineering student building and documenting robotics, Embodied AI, and AI-assisted research workflows."
->
-  <div class="home-page">
-    <section class="home-entry" aria-labelledby="home-title">
-      <div class="home-intro">
-        <p class="home-kicker">Personal research portfolio</p>
-        <div class="name-lockup">
-          <div class="name-copy">
-            <h1 id="home-title">
-              <span>Horace</span>
-              <span>Chan</span>
-            </h1>
-          </div>
-        </div>
-        <p class="home-thesis">
-          Mechanical Engineering student building and documenting robotics, Embodied AI, and AI-assisted research
-          workflows.
-        </p>
-        <p class="home-summary">
-          I connect mechanical systems and robot control with practical study systems for VLA-based embodied
-          intelligence.
-        </p>
-        <nav class="link-row home-primary-links" aria-label="Primary homepage links">
-          <LinkButton href="/projects/" label="View Projects" variant="primary" />
-          <LinkButton href="/notes/" label="Read Notes" variant="secondary" />
-          <LinkButton href="/resume/" label="Resume" variant="text" />
-          <LinkButton href="https://github.com/HoraceCh" label="GitHub" variant="text" external />
-        </nav>
-        <ul class="focus-strip" aria-label="Current focus areas">
-          {focusAreas.map((area) => <li>{area}</li>)}
-        </ul>
-      </div>
-
-      <aside class="identity-plate" aria-label="Profile snapshot">
-        <p class="plate-label">Profile snapshot</p>
-        <dl>
-          <div>
-            <dt>Base</dt>
-            <dd>Mechanical Engineering</dd>
-          </div>
-          <div>
-            <dt>Focus</dt>
-            <dd>Robotics + Embodied AI</dd>
-          </div>
-          <div>
-            <dt>Current Work</dt>
-            <dd>AI-assisted research workflows</dd>
-          </div>
-        </dl>
-      </aside>
-    </section>
-
-    <section class="home-section home-selected-work" aria-labelledby="home-selected-work">
-      <div class="home-section-head">
-        <p class="eyebrow">Selected work</p>
-        <h2 id="home-selected-work">Current projects and learning systems</h2>
-      </div>
-      <div class="work-grid">
-        {selectedWork.map((item) => (
-          <a class="work-card" href={item.href} data-astro-prefetch="hover">
-            <div class="work-card-meta">
-              <span>{item.status}</span>
-              <span>{item.type}</span>
-            </div>
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-            <span class="work-row-action">{item.actionLabel} <span aria-hidden="true">→</span></span>
-          </a>
-        ))}
-      </div>
-    </section>
-
-    <section class="home-section home-approach" aria-labelledby="home-approach">
-      <div class="home-section-head">
-        <p class="eyebrow">Approach</p>
-        <h2 id="home-approach">How I approach the work</h2>
-      </div>
-      <div class="approach-grid">
-        <article>
-          <p class="proof-mark">ME</p>
-          <h3>Engineering foundation</h3>
-          <p>Mechanical systems, design practice, and control fundamentals provide the base for technical decisions.</p>
-        </article>
-        <article>
-          <p class="proof-mark">VLA</p>
-          <h3>Embodied AI research</h3>
-          <p>Structured reading connects models, robot-learning concepts, and questions for future implementation.</p>
-        </article>
-        <article>
-          <p class="proof-mark">LOG</p>
-          <h3>Public documentation</h3>
-          <p>Notes and workflow records preserve limitations, revisions, and the reasoning behind each direction.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="home-section home-hub" aria-labelledby="home-explore">
-      <div class="home-section-head">
-        <p class="eyebrow">Explore</p>
-        <h2 id="home-explore">Continue through the portfolio</h2>
-      </div>
-      <div class="hub-grid">
-        {hubLinks.map((link) => (
-          <a class="hub-link" href={link.href}>
-            <span>{link.label}</span>
-            <small>{link.description}</small>
-            <span class="hub-link-action" aria-hidden="true">Explore →</span>
-          </a>
-        ))}
-      </div>
-      <nav class="hub-secondary-links" aria-label="Additional homepage links">
-        <a href="/resume/">Resume</a>
-        <a href="https://github.com/HoraceCh" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="/contact/">Contact</a>
-      </nav>
-    </section>
-  </div>
+<Layout homeV2 title="Horace Chan" description="Mechanical Engineering student building and documenting robotics, Embodied AI, and AI-assisted research workflows.">
+  <Hero portrait={{
+    src: "/images/home/owner-approved-ink-portrait-768.webp",
+    width: 768, height: 960,
+    alt: "Horace Chan, owner-approved color ink portrait.",
+    maskSrc: "/images/home/owner-approved-alpha-mask-768.webp",
+    srcset: "/images/home/owner-approved-ink-portrait-480.webp 480w, /images/home/owner-approved-ink-portrait-768.webp 768w",
+    sizes: "(max-width: 620px) 330px, 825px"
+  }} />
+  <News entries={content.news} />
+  <Works model={model} ids={content.workIds} media={media} />
+  <Honors entries={content.honors} />
+  <Footer slot="footer" />
 </Layout>

@@ -1,0 +1,88 @@
+{
+  "news": [
+    {
+      "id": "site-browse-update-20261016",
+      "date": "2026-10-16",
+      "en": "Updated the Notes archive and Projects pages with a more compact note list and clearer project overviews, details, and resource links.",
+      "zh": "更新 Notes 归档与 Projects 页面：笔记列表更紧凑，项目概览、详情和资源入口更清晰。",
+      "links": [
+        {
+          "label": "Notes archive",
+          "href": "/notes/archive/"
+        },
+        {
+          "label": "Projects",
+          "href": "/projects/"
+        }
+      ]
+    },
+    {
+      "id": "site-search-20260913",
+      "date": "2026-09-13",
+      "en": "Added site search for finding notes and projects in Chinese and English.",
+      "zh": "网站新增站内搜索，支持在中文和英文内容中查找笔记与项目。",
+      "links": []
+    },
+    {
+      "id": "notes-update-20260910",
+      "date": "2026-09-10",
+      "en": "Updated the Notes knowledge system with clearer content discovery and improvements to long-form reading, outlines, and sidebars.",
+      "zh": "完成 Notes 知识系统的重要更新，重新梳理内容发现层级，并优化长文阅读、目录和侧栏体验。",
+      "links": [
+        {
+          "label": "Notes",
+          "href": "/notes/"
+        }
+      ]
+    },
+    {
+      "id": "website-launch-20260628",
+      "date": "2026-06-28",
+      "en": "Launched my personal website as a home for my projects and learning notes.",
+      "zh": "个人网站上线，开始集中记录和展示项目与学习内容。",
+      "links": []
+    }
+  ],
+  "honors": [
+    {
+      "id": "rm2026-national-third",
+      "date": "2026-08",
+      "title": "第二十五届全国大学生机器人大赛 RoboMaster 2026 机甲大师超级对抗赛全国赛三等奖",
+      "level": "国家级三等奖",
+      "participation": "团队（主力队员）",
+      "issuer": "全国大学生机器人大赛组织委员会",
+      "order": 0
+    },
+    {
+      "id": "rm2026-east-regional-second",
+      "date": "2026-06",
+      "title": "第二十五届全国大学生机器人大赛 RoboMaster 2026 机甲大师超级对抗赛区域赛（东部赛区）二等奖",
+      "level": "省部级二等奖",
+      "participation": "团队（主力队员）",
+      "issuer": "全国大学生机器人大赛组织委员会",
+      "order": 1
+    },
+    {
+      "id": "zhixin2026-undergraduate-second",
+      "date": "2026-06",
+      "title": "2026年“智信杯”第四届北京市大学生“AI+信息素养”大赛本科生赛道二等奖",
+      "level": "省部级二等奖",
+      "participation": "团队（队长）",
+      "issuer": "北京地区高等学校图书馆工作委员会、北京市高等教育学会图书馆工作研究分会",
+      "order": 2
+    },
+    {
+      "id": "challenge-cup2026-special-bronze",
+      "date": "2026-06",
+      "title": "“青创北京”2026年“挑战杯”首都大学生创业计划竞赛“揭榜挂帅”机制专项赛三等奖（铜奖）",
+      "level": "省级三等奖",
+      "participation": "团队（成员）",
+      "issuer": "共青团北京市委员会、北京市教育委员会等六家联合主办单位",
+      "order": 3
+    }
+  ],
+  "workIds": [
+    "robomaster-2026-engineering-robot",
+    "ai-retrieval-tool"
+  ]
+}

@@ -2,59 +2,32 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-test('mobile header reveals current and focused links without collateral document scrolling', async () => {
-  const [header, css] = await Promise.all([
-    readFile('src/components/Header.astro', 'utf8'),
-    readFile('src/styles/global.css', 'utf8'),
-  ]);
-
-  assert.match(header, /querySelector<HTMLElement>\('\[aria-current="page"\]'\)/);
-  assert.match(header, /addEventListener\('focusin'/);
-  assert.match(header, /dataset\.revealInitialized !== 'true'/, 'header setup must be idempotent');
-  assert.match(
-    header,
-    /requestAnimationFrame\(\(\) => \{\s*window\.requestAnimationFrame\(callback\);\s*\}\)/,
-    'startup overflow measurement must wait until the frame after an initial paint opportunity',
-  );
-  assert.match(header, /scheduleAfterPaint\(\(\) => revealNavLink\(currentLink\)\)/);
-  assert.doesNotMatch(
-    header,
-    /revealNavLink\(nav\?\.querySelector/,
-    'the current-link geometry path must not run synchronously during module evaluation',
-  );
-  assert.match(
-    header,
-    /addEventListener\('focusin',[\s\S]*?revealNavLink\(\(event\.target as Element\)\.closest<HTMLElement>\('a'\)\)/,
-    'keyboard focus must retain an immediate reveal path',
-  );
-  assert.match(
-    header,
-    /scrollIntoView\(\{ behavior: 'auto', block: 'nearest', inline: 'nearest' \}\)/,
-    'reveal must be immediate and use logical nearest alignment',
-  );
-  assert.match(header, /const documentScroll = \{ left: window\.scrollX, top: window\.scrollY \}/);
-  assert.match(header, /window\.scrollTo\(\{ \.\.\.documentScroll, behavior: 'auto' \}\)/);
-
-  const mobileNav = css.match(/@media \(max-width: 720px\)[\s\S]*?\.site-nav \{([\s\S]*?)\n  \}/)?.[1] ?? '';
-  assert.match(mobileNav, /flex-wrap: nowrap/);
-  assert.match(mobileNav, /overflow-x: auto/);
-  assert.match(mobileNav, /padding: 6px 6px 8px/);
-  assert.match(mobileNav, /scroll-padding-inline: 6px/);
-
-  const tabletHeader =
-    css.match(/@media \(min-width: 721px\) and \(max-width: 820px\) \{([\s\S]*?)\n\}/)?.[1] ?? '';
-  assert.match(tabletHeader, /\.site-header \{[\s\S]*?flex-direction: column/);
-  assert.match(tabletHeader, /\.header-brand-row \{[\s\S]*?display: flex[\s\S]*?width: 100%/);
-  assert.match(tabletHeader, /\.site-brand \{[\s\S]*?white-space: nowrap/);
-
-  const tabletNav = tabletHeader.match(/\.site-nav \{([\s\S]*?)\n  \}/)?.[1] ?? '';
-  assert.match(tabletNav, /width: 100%/);
-  assert.match(tabletNav, /flex-wrap: nowrap/);
-  assert.match(tabletNav, /justify-content: flex-start/);
-  assert.match(tabletNav, /overflow-x: auto/);
-  assert.match(tabletNav, /scroll-padding-inline: 6px/);
-
-  for (const forbidden of ['setTimeout(', 'setInterval(', 'requestIdleCallback(', 'IntersectionObserver(']) {
-    assert.doesNotMatch(header, new RegExp(forbidden.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+test('native disclosure exposes all accepted Home destinations and unchanged unique component targets', async () => {
+  const html = await readFile('.npm-cache/hc235-fixture-01/dist/hc235-light/index.html','utf8');
+  assert.match(html, /<details[^>]*class="hc-header__disclosure"/);
+  assert.match(html, /<summary[^>]*aria-controls="header-mobile-navigation"/);
+  for (const id of ['recent-news','selected-works','honors']) {
+    assert.equal((html.match(new RegExp('id="'+id+'"','g')) ?? []).length,1);
+    assert.equal((html.match(new RegExp('id="'+id+'-heading"','g')) ?? []).length,1);
+    assert.match(html,new RegExp('href="#'+id+'"[^>]*data-header-region'));
+  }
+  assert.match(html, /href="\/search\/"[^>]*data-search-trigger/);
+  assert.match(html,/aria-label="Horace Chan — Home"/);
+});
+test('legacy Home and internal pages never opt into Home region links or clear-top state', async () => {
+  for (const page of ['dist/index.html','dist/about/index.html','dist/notes/archive/index.html']) {
+    const html=await readFile(page,'utf8');
+    assert.doesNotMatch(html,/<header[^>]*data-home-v2="true"|<a[^>]*data-header-region/);
+  }
+  const notes=await readFile('dist/notes/archive/index.html','utf8');
+  assert.match(notes,/<a href="\/notes\/" aria-current="page"/);
+});
+test('desktop exposes four native routes and six byte-identical brand assets survive the build', async () => {
+  const html=await readFile('dist/about/index.html','utf8');
+  const desktop=html.match(/<nav class="hc-header__desktop"[\s\S]*?<\/nav>/)?.[0] ?? '';
+  assert.deepEqual([...desktop.matchAll(/href="([^"]+)"/g)].map(m=>m[1]),['/about/','/projects/','/notes/','/resume/']);
+  for (const kind of ['mark','wordmark']) for(const theme of ['light','dark','monochrome']) {
+    const file='brand/horace-refined/horace-'+kind+'-'+theme+'.svg';
+    assert.deepEqual(await readFile('astro-public/'+file),await readFile('dist/'+file));
   }
 });

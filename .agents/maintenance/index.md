@@ -9,6 +9,12 @@ This is a deterministic discovery view generated from canonical event files. It 
 
 | Event ID | Occurred | Kind | Category | Status | Risk | Summary |
 | --- | --- | --- | --- | --- | --- | --- |
+| [WEB-20261028-0001](events/WEB-20261028-0001.md) | 2026-10-28T02:03:08.264Z | change | site-structure | in-progress | low | Repair Search dialog rounded scroll boundary |
+| [WEB-20261027-0001](events/WEB-20261027-0001.md) | 2026-10-27T15:04:07.455Z | change | site-structure | in-progress | medium | Assemble accepted Home v2 components on the actual homepage |
+| [WEB-20261025-0001](events/WEB-20261025-0001.md) | 2026-10-25T06:23:52.841Z | change | site-structure | in-progress | low | Refine shared Header glass material |
+| [WEB-20261024-0002](events/WEB-20261024-0002.md) | 2026-10-24T03:25:43.996Z | change | site-structure | in-progress | low | Implement the Owner-approved left-contained Home desktop Header together with the diagnosed crown clipping correction in an isolated successor. |
+| [WEB-20261024-0001](events/WEB-20261024-0001.md) | 2026-10-24T02:50:50.767Z | change | site-structure | in-progress | low | Retained a bounded local successor restoring previously clipped crown pixels. Acceptance remains pending a composition decision. |
+| [WEB-20261023-0001](events/WEB-20261023-0001.md) | 2026-10-22T16:08:05.350Z | change | site-structure | in-progress | medium | Implement the approved Header successor in an isolated local candidate. |
 | [WEB-20261015-0001](events/WEB-20261015-0001.md) | 2026-10-15T07:20:01Z | governance | agent-governance | completed | medium | Make ordinary authorized Website work executable by one root writer with context on demand and proportional validation. |
 | [WEB-20260928-0001](events/WEB-20260928-0001.md) | 2026-09-28T05:57:07.717Z | governance | agent-governance | completed | medium | Established HC-131 L0-L5 capability routing and GPT-6-first Website adapter |
 | [WEB-20260921-0002](events/WEB-20260921-0002.md) | 2026-09-21T07:10:57.649Z | change | other | completed | low | Harden Pagefind search failure and retry lifecycle |

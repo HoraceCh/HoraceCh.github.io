@@ -35,6 +35,8 @@ export function installSearchDialog(dialog: HTMLDialogElement, openOnLoad: boole
   let trigger: HTMLElement | null = null;
   let request = 0;
   let restoreOverflow = '';
+  let restoreScrollbarGutter = '';
+  const root = document.documentElement;
 
   const setStatus = (value: string) => {
     status.textContent = value;
@@ -67,11 +69,16 @@ export function installSearchDialog(dialog: HTMLDialogElement, openOnLoad: boole
   closeButton.addEventListener('click', close);
   dialog.addEventListener('close', () => {
     document.body.style.overflow = restoreOverflow;
+    root.style.scrollbarGutter = restoreScrollbarGutter;
     trigger?.focus();
   });
   dialog.addEventListener('toggle', () => {
     if (dialog.open) {
       restoreOverflow = document.body.style.overflow;
+      restoreScrollbarGutter = root.style.scrollbarGutter;
+      if (window.innerWidth > root.clientWidth && getComputedStyle(root).scrollbarGutter === 'auto') {
+        root.style.scrollbarGutter = 'stable';
+      }
       document.body.style.overflow = 'hidden';
     }
   });

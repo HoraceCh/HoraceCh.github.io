@@ -1,0 +1,37 @@
+---
+interface Props {
+  portrait?: { src: string; width: number; height: number; alt: string; srcset?: string; sizes?: string; maskSrc?: string };
+  description?: string;
+}
+const {
+  portrait,
+  description = 'Mechanical engineering, robotic systems, intelligent control, and learning-based embodied intelligence.',
+} = Astro.props;
+---
+<section class:list={["home-v2-hero", { "home-v2-hero--portrait": Boolean(portrait) }]} aria-labelledby="home-v2-title">
+  <div class="home-v2-frame home-v2-hero__inner">
+    {portrait && (
+      <div class="home-v2-hero__portrait" role="img" aria-label={portrait.alt}>
+        <img src={portrait.src} width={portrait.width} height={portrait.height}
+          style={portrait.maskSrc ? { "mask-image": "url(" + portrait.maskSrc + ")" } : undefined}
+          data-mask-required={portrait.maskSrc ? '' : undefined}
+          alt="" aria-hidden="true" srcset={portrait.srcset} sizes={portrait.sizes} loading="eager" decoding="async" fetchpriority="high" />
+      </div>
+    )}
+    <div class="home-v2-hero__copy">
+      <p class="home-v2-hero__eyebrow">Robotics &amp; Embodied AI</p>
+      <h1 id="home-v2-title"><span>Horace</span> <span>Chan.</span></h1>
+      <p class="home-v2-hero__lead">Robotics &amp; Embodied AI</p>
+      <p class="home-v2-hero__description">{description}</p>
+      <div class="home-v2-hero__actions">
+        <a class="home-v2-action home-v2-action--primary" href="#selected-works">Explore my work <span aria-hidden="true">↗</span></a>
+        <a class="home-v2-action" href="/about/">About me <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+    <a class="home-v2-hero__down" href="#recent-news" aria-label="Scroll to Recent News"><span class="home-v2-scroll__label" aria-hidden="true">SCROLL</span><svg class="home-v2-scroll__arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v13m-5-5 5 5 5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </div>
+</section>
+
+<script>
+  import "../../scripts/homeScrollCue";
+</script>

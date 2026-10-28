@@ -76,7 +76,7 @@ html {
 
 body {
   margin: 0;
-  min-width: 320px;
+  min-width: 0;
   overflow-x: hidden;
 }
 
@@ -174,10 +174,11 @@ button:focus-visible {
 }
 
 .site-search-trigger { display: inline-flex; align-items: center; gap: 6px; color: var(--text) !important; font-weight: 600; }
+.site-search-trigger:focus-visible { border-radius: 999px; }
 .site-search-trigger kbd { border: 1px solid var(--line); border-radius: 4px; padding: 1px 4px; color: var(--muted); font-family: var(--mono); font-size: 0.68rem; font-weight: 500; }
-.site-search { width: min(680px, calc(100% - 32px)); max-height: min(680px, calc(100svh - 48px)); border: 1px solid var(--line); border-radius: 8px; padding: 0; background: var(--surface); color: var(--text); box-shadow: 0 18px 48px color-mix(in srgb, #000 16%, transparent); }
+.site-search { width: min(680px, calc(100% - 32px)); max-height: min(680px, calc(100svh - 48px)); border: 1px solid var(--line); border-radius: 8px; padding: 6px; overflow: visible; background: var(--surface); color: var(--text); box-shadow: 0 18px 48px color-mix(in srgb, #000 16%, transparent); }
 .site-search::backdrop { background: color-mix(in srgb, var(--bg) 76%, transparent); }
-.site-search__surface { display: grid; max-height: inherit; gap: 16px; overflow: auto; padding: 20px; }
+.site-search__surface { display: grid; max-height: calc(min(680px, 100svh - 48px) - 14px); gap: 16px; overflow: auto; padding: 14px; }
 .site-search__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .site-search__header h2 { margin: 2px 0 0; font-size: 1.2rem; line-height: 1.25; }
 .site-search__eyebrow { margin: 0; color: var(--muted); font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; }
@@ -3002,8 +3003,8 @@ li {
   }
 
   .site-search-trigger kbd { display: none; }
-  .site-search { width: 100%; max-width: none; height: 100dvh; max-height: none; min-height: 100dvh; border: 0; border-radius: 0; box-shadow: none; }
-  .site-search__surface { min-height: 100dvh; padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom)); }
+  .site-search { width: 100%; max-width: none; height: 100dvh; max-height: none; min-height: 100dvh; border: 0; border-radius: 0; padding: 0; box-shadow: none; }
+  .site-search__surface { min-height: 100dvh; max-height: 100dvh; padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom)); }
   .site-search__close { min-height: 44px; }
 
   .theme-toggle {

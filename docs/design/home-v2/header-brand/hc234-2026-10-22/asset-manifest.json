@@ -1,0 +1,73 @@
+{
+  "originalZipSha256": "5e7e7af5fc4e0d4f2ae4ce9d56da0c89ed5ffc6d0844df7dda2034e13a5954f9",
+  "approvedR2Identity": "edb8c191045a035ce5c7eaf8f4befeb1d5272eb96174a859a0653e467242298b",
+  "ap1": "Approved; dated Linear addendum2026-10-22",
+  "assets": [
+    {
+      "file": "horace-mark-light.svg",
+      "source": "docs/design/home-v2/header-brand/references/horace-brand-refined-svg-kit/horace-brand-refined/horace-mark-light.svg",
+      "sha256": "6d27a90e84dcf8a8202f23b15591b6e04e638037e3f0958f4e9d7e6d0cda83da",
+      "bytes": 368,
+      "repositoryDestination": "astro-public/brand/horace-refined/horace-mark-light.svg",
+      "publicUrl": "/brand/horace-refined/horace-mark-light.svg",
+      "status": "INGESTED_LOCAL_PENDING_ASSET_ACCEPTANCE",
+      "mode": "copied-create-only",
+      "viewBox": "0 0 160 160"
+    },
+    {
+      "file": "horace-mark-dark.svg",
+      "source": "docs/design/home-v2/header-brand/references/horace-brand-refined-svg-kit/horace-brand-refined/horace-mark-dark.svg",
+      "sha256": "8e60063eb61aabccf26691258784f750fa92255a7d02b469821d0c12d560bc77",
+      "bytes": 368,
+      "repositoryDestination": "astro-public/brand/horace-refined/horace-mark-dark.svg",
+      "publicUrl": "/brand/horace-refined/horace-mark-dark.svg",
+      "status": "INGESTED_LOCAL_PENDING_ASSET_ACCEPTANCE",
+      "mode": "copied-create-only",
+      "viewBox": "0 0 160 160"
+    },
+    {
+      "file": "horace-mark-monochrome.svg",
+      "source": "docs/design/home-v2/header-brand/references/horace-brand-refined-svg-kit/horace-brand-refined/horace-mark-monochrome.svg",
+      "sha256": "1e220055384e21890b0dc1c61cf61bfbd30c8815b6120519339b05db93a6b63a",
+      "bytes": 368,
+      "repositoryDestination": "astro-public/brand/horace-refined/horace-mark-monochrome.svg",
+      "publicUrl": "/brand/horace-refined/horace-mark-monochrome.svg",
+      "status": "INGESTED_LOCAL_PENDING_ASSET_ACCEPTANCE",
+      "mode": "copied-create-only",
+      "viewBox": "0 0 160 160"
+    },
+    {
+      "file": "horace-wordmark-light.svg",
+      "source": "docs/design/home-v2/header-brand/references/horace-brand-refined-svg-kit/horace-brand-refined/horace-wordmark-light.svg",
+      "sha256": "61196d7078db81bcd58fdc7f2323abf1108f47ba76744e011a0676220165de45",
+      "bytes": 3145,
+      "repositoryDestination": "astro-public/brand/horace-refined/horace-wordmark-light.svg",
+      "publicUrl": "/brand/horace-refined/horace-wordmark-light.svg",
+      "status": "INGESTED_LOCAL_PENDING_ASSET_ACCEPTANCE",
+      "mode": "copied-create-only",
+      "viewBox": "0 0 686.59 109.86"
+    },
+    {
+      "file": "horace-wordmark-dark.svg",
+      "source": "docs/design/home-v2/header-brand/references/horace-brand-refined-svg-kit/horace-brand-refined/horace-wordmark-dark.svg",
+      "sha256": "2d369c1f02573bebeba23edb4a95f362cb0b5d805f8f47cc1889209b3b8ccd04",
+      "bytes": 3145,
+      "repositoryDestination": "astro-public/brand/horace-refined/horace-wordmark-dark.svg",
+      "publicUrl": "/brand/horace-refined/horace-wordmark-dark.svg",
+      "status": "INGESTED_LOCAL_PENDING_ASSET_ACCEPTANCE",
+      "mode": "copied-create-only",
+      "viewBox": "0 0 686.59 109.86"
+    },
+    {
+      "file": "horace-wordmark-monochrome.svg",
+      "source": "docs/design/home-v2/header-brand/references/horace-brand-refined-svg-kit/horace-brand-refined/horace-wordmark-monochrome.svg",
+      "sha256": "859c4cae557e64b990c7457b59ebb887dc203ec342ae94a162a5d428f14cb27c",
+      "bytes": 3145,
+      "repositoryDestination": "astro-public/brand/horace-refined/horace-wordmark-monochrome.svg",
+      "publicUrl": "/brand/horace-refined/horace-wordmark-monochrome.svg",
+      "status": "INGESTED_LOCAL_PENDING_ASSET_ACCEPTANCE",
+      "mode": "copied-create-only",
+      "viewBox": "0 0 686.59 109.86"
+    }
+  ]
+}

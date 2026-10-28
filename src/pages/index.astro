@@ -28,12 +28,15 @@ const media = {
 };
 ---
 <Layout homeV2 title="Horace Chan" description="Mechanical Engineering student building and documenting robotics, Embodied AI, and AI-assisted research workflows.">
+  <link slot="head" rel="preload" as="image" type="image/avif" fetchpriority="high"
+    imagesrcset="/images/home/owner-approved-portrait-delivery-480.avif 480w, /images/home/owner-approved-portrait-delivery-600.avif 600w, /images/home/owner-approved-portrait-delivery-768.avif 768w"
+    imagesizes="(max-width: 620px) 330px, 825px" />
   <Hero portrait={{
-    src: "/images/home/owner-approved-ink-portrait-768.webp",
+    src: "/images/home/owner-approved-portrait-delivery-768.webp",
     width: 768, height: 960,
     alt: "Horace Chan, owner-approved color ink portrait.",
-    maskSrc: "/images/home/owner-approved-alpha-mask-768.webp",
-    srcset: "/images/home/owner-approved-ink-portrait-480.webp 480w, /images/home/owner-approved-ink-portrait-768.webp 768w",
+    srcset: "/images/home/owner-approved-portrait-delivery-480.webp 480w, /images/home/owner-approved-portrait-delivery-768.webp 768w",
+    avifSrcset: "/images/home/owner-approved-portrait-delivery-480.avif 480w, /images/home/owner-approved-portrait-delivery-600.avif 600w, /images/home/owner-approved-portrait-delivery-768.avif 768w",
     sizes: "(max-width: 620px) 330px, 825px"
   }} />
   <News entries={content.news} />

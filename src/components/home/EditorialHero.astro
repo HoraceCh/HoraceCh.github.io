@@ -1,6 +1,6 @@
 ---
 interface Props {
-  portrait?: { src: string; width: number; height: number; alt: string; srcset?: string; sizes?: string; maskSrc?: string };
+  portrait?: { src: string; width: number; height: number; alt: string; srcset?: string; sizes?: string; maskSrc?: string; avifSrcset?: string };
   description?: string;
 }
 const {
@@ -12,10 +12,13 @@ const {
   <div class="home-v2-frame home-v2-hero__inner">
     {portrait && (
       <div class="home-v2-hero__portrait" role="img" aria-label={portrait.alt}>
-        <img src={portrait.src} width={portrait.width} height={portrait.height}
-          style={portrait.maskSrc ? { "mask-image": "url(" + portrait.maskSrc + ")" } : undefined}
-          data-mask-required={portrait.maskSrc ? '' : undefined}
-          alt="" aria-hidden="true" srcset={portrait.srcset} sizes={portrait.sizes} loading="eager" decoding="async" fetchpriority="high" />
+        <picture>
+          {portrait.avifSrcset && <source type="image/avif" srcset={portrait.avifSrcset} sizes={portrait.sizes} />}
+          <img src={portrait.src} width={portrait.width} height={portrait.height}
+            style={portrait.maskSrc ? { "mask-image": "url(" + portrait.maskSrc + ")" } : undefined}
+            data-mask-required={portrait.maskSrc ? '' : undefined}
+            alt="" aria-hidden="true" srcset={portrait.srcset} sizes={portrait.sizes} loading="eager" decoding="async" fetchpriority="high" />
+        </picture>
       </div>
     )}
     <div class="home-v2-hero__copy">

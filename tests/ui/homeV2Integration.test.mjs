@@ -33,7 +33,7 @@ test('Home native local destinations and fragments resolve in the normal output'
   }
 });
 
-test('served Home images are only the ten admitted exact derivatives', () => {
+test('served Home images match every admitted exact asset, including authorized delivery derivatives', () => {
   const admission = JSON.parse(fs.readFileSync('docs/design/home-v2/integration/asset-admission.json', 'utf8'));
   assert.deepEqual(fs.readdirSync('dist/images/home').sort(), admission.map(record => path.basename(record.destination)).sort());
   for (const record of admission) {
@@ -95,4 +95,19 @@ test('cue initializes without ink DOM, caps pointer feedback and resets on lifec
     const remount = mountScrollCue(cue); cue.dispatchEvent(new Event('pointerenter')); move();
     assert.notEqual(arrow.style.transform, ''); remount(); assert.equal(arrow.style.transform, '');
   } finally { globalThis.matchMedia = previous; }
+});
+
+test('Home startup containment and AVIF preload stay scoped and select the same resource', () => {
+  assert.match(html, /class="site-shell home-v2-shell" style="display: flow-root"/);
+  const preload = html.match(/<link[^>]*rel="preload"[^>]*type="image\/avif"[^>]*>/)?.[0];
+  const source = html.match(/<source[^>]*type="image\/avif"[^>]*>/)?.[0];
+  assert.ok(preload); assert.ok(source);
+  assert.equal(preload.match(/imagesrcset="([^"]+)"/)?.[1], source.match(/srcset="([^"]+)"/)?.[1]);
+  assert.equal(preload.match(/imagesizes="([^"]+)"/)?.[1], source.match(/sizes="([^"]+)"/)?.[1]);
+  assert.match(source, /delivery-600.avif 600w/);
+  assert.doesNotMatch(html, /mask-image:url\(\/images\/home\/owner-approved-alpha-mask/);
+  for (const route of ['about', 'projects', 'notes']) {
+    const inner = fs.readFileSync('dist/' + route + '/index.html', 'utf8');
+    assert.doesNotMatch(inner, /style="display: flow-root"|rel="preload"[^>]*type="image\/avif"/);
+  }
 });

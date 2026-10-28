@@ -9,6 +9,7 @@ This is a deterministic discovery view generated from canonical event files. It 
 
 | Event ID | Occurred | Kind | Category | Status | Risk | Summary |
 | --- | --- | --- | --- | --- | --- | --- |
+| [WEB-20261028-0002](events/WEB-20261028-0002.md) | 2026-10-28T08:18:29.732Z | change | site-structure | completed | low | Contain Home Header margins during parsing and serve reviewed delivery derivatives of the same approved portrait. Preserve the original image assets and accepted composition. |
 | [WEB-20261028-0001](events/WEB-20261028-0001.md) | 2026-10-28T02:03:08.264Z | change | site-structure | in-progress | low | Repair Search dialog rounded scroll boundary |
 | [WEB-20261027-0001](events/WEB-20261027-0001.md) | 2026-10-27T15:04:07.455Z | change | site-structure | in-progress | medium | Assemble accepted Home v2 components on the actual homepage |
 | [WEB-20261025-0001](events/WEB-20261025-0001.md) | 2026-10-25T06:23:52.841Z | change | site-structure | in-progress | low | Refine shared Header glass material |

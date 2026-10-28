@@ -228,5 +228,162 @@
     "productionStatus": "candidate-review-pending",
     "destination": "astro-public/images/home/owner-approved-alpha-mask-768.webp",
     "url": "/images/home/owner-approved-alpha-mask-768.webp"
+  },
+  {
+    "id": "owner-approved-portrait-delivery",
+    "path": "delivery/owner-approved-portrait-delivery-480.webp",
+    "source": "astro-public/images/home/owner-approved-ink-portrait-480.webp",
+    "sourceSha256": "b2af48691c73498048802b1fb23bc6e3cf4dcdde4c36b34ffbbf363e2c87badb",
+    "sha256": "901f08554949ed6a850fda138d2505762ab84d2100cccc66c5f7f34f18c6f393",
+    "bytes": 154258,
+    "width": 480,
+    "height": 600,
+    "hasAlpha": true,
+    "alt": "Horace Chan in the owner-approved colored ink portrait, with glasses and an orange shirt.",
+    "crop": "entire source retained; no crop",
+    "focalPoint": [
+      0.45,
+      0.3
+    ],
+    "theme": "both; original RGB and perimeter alpha precomposed; delivery encoding",
+    "viewport": "mobile",
+    "permission": "Owner explicitly authorized HC-258 same-image delivery derivatives; originals retained",
+    "productionStatus": "candidate-review-pending",
+    "destination": "astro-public/images/home/owner-approved-portrait-delivery-480.webp",
+    "url": "/images/home/owner-approved-portrait-delivery-480.webp",
+    "derivation": {
+      "maskSource": "astro-public/images/home/owner-approved-alpha-mask-480.webp",
+      "maskSha256": "b2fdd9c44df1838e28c997de98c88757f559b88b721512dd28d64a3d2fe948de",
+      "encoder": "sharp 0.34.5 / libvips; full dimensions, no crop",
+      "format": "webp",
+      "quality": 90,
+      "alphaQuality": 100
+    }
+  },
+  {
+    "id": "owner-approved-portrait-delivery",
+    "path": "delivery/owner-approved-portrait-delivery-480.avif",
+    "source": "astro-public/images/home/owner-approved-ink-portrait-480.webp",
+    "sourceSha256": "b2af48691c73498048802b1fb23bc6e3cf4dcdde4c36b34ffbbf363e2c87badb",
+    "sha256": "4529e554a7c01dc9f68fb8acfd6f0040467f5d017fc4f04ed92f3d202008e989",
+    "bytes": 108515,
+    "width": 480,
+    "height": 600,
+    "hasAlpha": true,
+    "alt": "Horace Chan in the owner-approved colored ink portrait, with glasses and an orange shirt.",
+    "crop": "entire source retained; no crop",
+    "focalPoint": [
+      0.45,
+      0.3
+    ],
+    "theme": "both; original RGB and perimeter alpha precomposed; delivery encoding",
+    "viewport": "mobile",
+    "permission": "Owner explicitly authorized HC-258 same-image delivery derivatives; originals retained",
+    "productionStatus": "candidate-review-pending",
+    "destination": "astro-public/images/home/owner-approved-portrait-delivery-480.avif",
+    "url": "/images/home/owner-approved-portrait-delivery-480.avif",
+    "derivation": {
+      "maskSource": "astro-public/images/home/owner-approved-alpha-mask-480.webp",
+      "maskSha256": "b2fdd9c44df1838e28c997de98c88757f559b88b721512dd28d64a3d2fe948de",
+      "encoder": "sharp 0.34.5 / libvips; full dimensions, no crop",
+      "format": "avif",
+      "quality": 80,
+      "chromaSubsampling": "4:4:4"
+    }
+  },
+  {
+    "id": "owner-approved-portrait-delivery",
+    "path": "delivery/owner-approved-portrait-delivery-768.webp",
+    "source": "astro-public/images/home/owner-approved-ink-portrait-768.webp",
+    "sourceSha256": "a270cd19fd556fb8cc95ea689594773a3c620dbd0acaf8053f36ac68e1bb4ec9",
+    "sha256": "51e1713ae3b07d37690bb7209b2549d14c8410f8fbc8290242c5a4a6a30187c3",
+    "bytes": 346822,
+    "width": 768,
+    "height": 960,
+    "hasAlpha": true,
+    "alt": "Horace Chan in the owner-approved colored ink portrait, with glasses and an orange shirt.",
+    "crop": "entire source retained; no crop",
+    "focalPoint": [
+      0.45,
+      0.3
+    ],
+    "theme": "both; original RGB and perimeter alpha precomposed; delivery encoding",
+    "viewport": "desktop/tablet",
+    "permission": "Owner explicitly authorized HC-258 same-image delivery derivatives; originals retained",
+    "productionStatus": "candidate-review-pending",
+    "destination": "astro-public/images/home/owner-approved-portrait-delivery-768.webp",
+    "url": "/images/home/owner-approved-portrait-delivery-768.webp",
+    "derivation": {
+      "maskSource": "astro-public/images/home/owner-approved-alpha-mask-768.webp",
+      "maskSha256": "0a8fc3a46c27624a8d5a5e971263b61e8ada56716ccf53ed6fa6ddffef3f7d36",
+      "encoder": "sharp 0.34.5 / libvips; full dimensions, no crop",
+      "format": "webp",
+      "quality": 90,
+      "alphaQuality": 100
+    }
+  },
+  {
+    "id": "owner-approved-portrait-delivery",
+    "path": "delivery/owner-approved-portrait-delivery-768.avif",
+    "source": "astro-public/images/home/owner-approved-ink-portrait-768.webp",
+    "sourceSha256": "a270cd19fd556fb8cc95ea689594773a3c620dbd0acaf8053f36ac68e1bb4ec9",
+    "sha256": "123ff7d6020311f571496c9cdb99288a6a063ec8e0e8d5e441944e3393bad90e",
+    "bytes": 234048,
+    "width": 768,
+    "height": 960,
+    "hasAlpha": true,
+    "alt": "Horace Chan in the owner-approved colored ink portrait, with glasses and an orange shirt.",
+    "crop": "entire source retained; no crop",
+    "focalPoint": [
+      0.45,
+      0.3
+    ],
+    "theme": "both; original RGB and perimeter alpha precomposed; delivery encoding",
+    "viewport": "desktop/tablet",
+    "permission": "Owner explicitly authorized HC-258 same-image delivery derivatives; originals retained",
+    "productionStatus": "candidate-review-pending",
+    "destination": "astro-public/images/home/owner-approved-portrait-delivery-768.avif",
+    "url": "/images/home/owner-approved-portrait-delivery-768.avif",
+    "derivation": {
+      "maskSource": "astro-public/images/home/owner-approved-alpha-mask-768.webp",
+      "maskSha256": "0a8fc3a46c27624a8d5a5e971263b61e8ada56716ccf53ed6fa6ddffef3f7d36",
+      "encoder": "sharp 0.34.5 / libvips; full dimensions, no crop",
+      "format": "avif",
+      "quality": 80,
+      "chromaSubsampling": "4:4:4"
+    }
+  },
+  {
+    "id": "owner-approved-portrait-delivery",
+    "path": "delivery/owner-approved-portrait-delivery-600.avif",
+    "source": "astro-public/images/home/owner-approved-ink-portrait-768.webp",
+    "sourceSha256": "a270cd19fd556fb8cc95ea689594773a3c620dbd0acaf8053f36ac68e1bb4ec9",
+    "sha256": "bb7b018fdc62b9043ae1daef517106fd7d3882579bf49dcb9db5cc8a156ae2c5",
+    "bytes": 96512,
+    "width": 600,
+    "height": 750,
+    "hasAlpha": true,
+    "alt": "Horace Chan in the owner-approved colored ink portrait, with glasses and an orange shirt.",
+    "crop": "entire source retained; no crop",
+    "focalPoint": [
+      0.45,
+      0.3
+    ],
+    "theme": "both; original RGB and perimeter alpha precomposed; delivery encoding",
+    "viewport": "mobile at 330 CSS px; covers laboratory 577.5 physical px",
+    "permission": "Owner explicitly authorized HC-258 same-image delivery derivatives; originals retained",
+    "productionStatus": "candidate-review-pending",
+    "destination": "astro-public/images/home/owner-approved-portrait-delivery-600.avif",
+    "url": "/images/home/owner-approved-portrait-delivery-600.avif",
+    "derivation": {
+      "maskSource": "astro-public/images/home/owner-approved-alpha-mask-768.webp",
+      "maskSha256": "0a8fc3a46c27624a8d5a5e971263b61e8ada56716ccf53ed6fa6ddffef3f7d36",
+      "encoder": "sharp 0.34.5 / libvips; full dimensions, no crop",
+      "format": "avif",
+      "quality": 70,
+      "chromaSubsampling": "4:4:4",
+      "effort": 8,
+      "resize": "600x750 Lanczos3 from 768x960; no crop"
+    }
   }
 ]

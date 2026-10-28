@@ -16,6 +16,7 @@ export function installHeaderGlass(header: HTMLElement): void {
   const masks = CSS.supports('mask-image', 'linear-gradient(black,black)');
   const surfaces = [...header.querySelectorAll<HTMLElement>('[data-glass-surface]')];
   const controls = [...header.querySelectorAll<HTMLElement>('a,button,summary')];
+  const disclosure = header.querySelector('details');
   let frame = 0;
   const update = () => {
     frame = 0;
@@ -26,6 +27,8 @@ export function installHeaderGlass(header: HTMLElement): void {
     header.toggleAttribute('data-glass-refraction', available && svgBackdrop && !reduced.matches);
     if (!available) return;
     for (const surface of surfaces) {
+      // Closed details may expose positive, narrow layout geometry. Keep its last open resources.
+      if (surface.dataset.glassSurface === 'panel' && !disclosure?.open) continue;
       const { width, height } = surface.getBoundingClientRect();
       if (!width || !height) continue; // Closed native disclosure has no painted panel.
       const radius = surface.dataset.glassSurface === 'bar' ? (height < 62 ? 22 : 28) : 24;
@@ -56,10 +59,16 @@ export function installHeaderGlass(header: HTMLElement): void {
   reduced.addEventListener('change', schedule, { signal });
   transparency.addEventListener('change', schedule, { signal });
   forced.addEventListener('change', schedule, { signal });
-  header.querySelector('details')?.addEventListener('toggle', schedule, { signal });
+  // Attribute mutation is delivered before paint; the toggle event may arrive a frame later.
+  const disclosureObserver = new MutationObserver(() => {
+    cancelAnimationFrame(frame);
+    update();
+  });
+  if (disclosure) disclosureObserver.observe(disclosure, { attributes: true, attributeFilter: ['open'] });
   update();
   addEventListener('pagehide', () => {
     observer.disconnect();
+    disclosureObserver.disconnect();
     controller.abort();
     cancelAnimationFrame(frame);
     header.removeAttribute('data-glass-installed');

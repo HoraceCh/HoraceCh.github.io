@@ -46,7 +46,7 @@ test('served Home images are only the ten admitted exact derivatives', () => {
 test('inner-page Footer remains the accepted default', () => {
   for (const route of ['about', 'projects', 'notes']) {
     const actual = fs.readFileSync('dist/' + route + '/index.html', 'utf8');
-    const before = fs.readFileSync('../../../design-plans/2026-10-27-hc237-integration-02/baseline/dist/' + route + '/index.html', 'utf8');
+    const before = fs.readFileSync('tests/ui/fixtures/default-footer.html', 'utf8');
     const extract = source => source.match(/<footer[\s\S]*?<\/footer>/)?.[0].replace(/\s+/g, ' ');
     assert.equal(extract(actual), extract(before));
     assert.doesNotMatch(actual, /data-home-v2="true"|class="home-v2 home-v2-footer"/);

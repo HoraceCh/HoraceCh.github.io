@@ -30,6 +30,10 @@ export function installHeader(header: HTMLElement) {
   header.dataset.enhanced = 'true';
   summary.setAttribute('aria-expanded', String(disclosure.open));
   updateSurface();
+  // Keep repeated activation from selecting the summary word or disclosure paragraph.
+  summary.addEventListener('mousedown', event => {
+    if (event.button === 0 && event.detail > 1) event.preventDefault();
+  }, { signal });
   disclosure.addEventListener('toggle', () => {
     summary.setAttribute('aria-expanded', String(disclosure.open));
     updateSurface();

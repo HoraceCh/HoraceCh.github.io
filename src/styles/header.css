@@ -116,5 +116,7 @@ body:has([data-header]) .skip-link { position:fixed; z-index:90; }
 
 /* Keep the material fixed while short-window menu contents scroll. */
 .hc-header__panel-scroll { min-height:0; padding:12px; border-radius:inherit; }
-.hc-header[data-enhanced] .hc-header__panel-scroll { overflow-y:auto; overscroll-behavior:contain; scroll-padding-block:8px; }
+.hc-header[data-enhanced] .hc-header__panel-scroll { overflow-y:auto; overscroll-behavior:contain; scroll-padding-block:8px; scrollbar-width:thin; scrollbar-color:color-mix(in srgb,var(--header-ink) 55%,transparent) transparent; }
 .hc-header .hc-header__panel-scroll a { scroll-margin-block:8px; }
+
+@media (forced-colors:active) { .hc-header[data-enhanced] .hc-header__panel-scroll { scrollbar-width:auto; scrollbar-color:auto; } }

@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 test('native disclosure exposes all accepted Home destinations and unchanged unique component targets', async () => {
-  const html = await readFile('.npm-cache/hc235-fixture-01/dist/hc235-light/index.html','utf8');
+  const html = await readFile('dist/index.html','utf8');
   assert.match(html, /<details[^>]*class="hc-header__disclosure"/);
   assert.match(html, /<summary[^>]*aria-controls="header-mobile-navigation"/);
   for (const id of ['recent-news','selected-works','honors']) {
@@ -14,8 +14,11 @@ test('native disclosure exposes all accepted Home destinations and unchanged uni
   assert.match(html, /href="\/search\/"[^>]*data-search-trigger/);
   assert.match(html,/aria-label="Horace Chan — Home"/);
 });
-test('legacy Home and internal pages never opt into Home region links or clear-top state', async () => {
-  for (const page of ['dist/index.html','dist/about/index.html','dist/notes/archive/index.html']) {
+test('Home opts into region navigation while internal pages retain their own navigation state', async () => {
+  const home = await readFile('dist/index.html','utf8');
+  assert.match(home, /<header[^>]*data-home-v2="true"/);
+  assert.equal((home.match(/data-header-region/g) ?? []).length, 3);
+  for (const page of ['dist/about/index.html','dist/projects/index.html','dist/projects/ai-retrieval-tool/index.html','dist/notes/index.html','dist/notes/c-arrays/index.html','dist/notes/archive/index.html']) {
     const html=await readFile(page,'utf8');
     assert.doesNotMatch(html,/<header[^>]*data-home-v2="true"|<a[^>]*data-header-region/);
   }

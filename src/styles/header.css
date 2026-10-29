@@ -31,7 +31,8 @@
 .hc-header:not([data-enhanced]) .hc-header__bar { flex-wrap:wrap; }
 .hc-header:not([data-enhanced]) .hc-header__actions:has(details[open]) { flex-wrap:wrap; flex:1; }
 .hc-header:not([data-enhanced]) details[open] { flex-basis:100%; }
-body:has([data-header]) :is([id],a,button,input,summary) { scroll-margin-top:calc(105px + env(safe-area-inset-top,0px)); }
+body:has([data-header]) :is([id],a,button,input,summary),
+body:has([data-header]) .note-prose :is(h2,h3)[id] { scroll-margin-top:calc(105px + env(safe-area-inset-top,0px)); }
 body:has([data-header]) .skip-link { position:fixed; z-index:90; }
 @supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
  .hc-header[data-enhanced]:not([data-clear]):not([data-glass-ready]):not([data-glass-solid]) .hc-header__bar { background:var(--header-glass); -webkit-backdrop-filter:blur(27px) saturate(150%) contrast(1.025); backdrop-filter:blur(27px) saturate(150%) contrast(1.025); }

@@ -28,9 +28,12 @@ test('continuous rectangle remains finite and clamps corner extent at narrow siz
 });
 
 test('built SVG displacement maps have explicit nonzero extent before refraction setup',()=>{
- const html=readFileSync('.npm-cache/hc235-glass-r7-fixture/dist/hc235-light/index.html','utf8');
+ for (const page of ['dist/index.html', 'dist/about/index.html', 'dist/notes/c-arrays/index.html']) {
+ const html=readFileSync(page,'utf8');
  const images=[...html.matchAll(/<feImage\b([^>]*)>/gi)];
  assert.equal(images.length,2);
  for(const [,attrs] of images)for(const dim of ['width','height'])assert.match(attrs,new RegExp(dim+'="100%"'));
  for(const svg of html.matchAll(/<svg[^>]*class="hc-header__filter"([^>]*)>/g))assert.doesNotMatch(svg[1],/(?:width|height)="0"/);
+ assert.equal([...html.matchAll(/<svg[^>]*class="hc-header__filter"/g)].length,2);
+ }
 });

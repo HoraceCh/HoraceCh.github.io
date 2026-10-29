@@ -5,6 +5,7 @@ import test from 'node:test';
 const projects = [
   ['featured-projects', ['/projects/ai-retrieval-tool/']],
   ['learning-projects', ['/projects/ai-assisted-learning-workflow/', '/projects/vla-embodied-ai-learning-system/']],
+  ['engineering-projects', ['/projects/robomaster-2026-engineering-robot/']],
   ['secondary-projects', ['/projects/mechanical-design-portfolio/']],
 ];
 
@@ -43,7 +44,7 @@ test('Projects preserves ordered partitions and independent project actions', as
   assert.match(sections[1][2], /href="\/notes\/openvla-reading-template\/">Notes<\/a>/);
   assert.doesNotMatch(sections[0][2], /<span>in progress<\/span>/);
   assert.match(sections[1][2], /<span>learning system<\/span>/);
-  assert.doesNotMatch(sections[2][2], /<span>planned<\/span>/);
+  assert.doesNotMatch(sections[3][2], /<span>planned<\/span>/);
 });
 
 test('Project details retain actions, distinct maturity, and supporting metadata', async () => {

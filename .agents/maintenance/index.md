@@ -9,6 +9,7 @@ This is a deterministic discovery view generated from canonical event files. It 
 
 | Event ID | Occurred | Kind | Category | Status | Risk | Summary |
 | --- | --- | --- | --- | --- | --- | --- |
+| [WEB-20261029-0001](events/WEB-20261029-0001.md) | 2026-10-29T06:20:37.661Z | change | site-structure | in-progress | low | Retain the shared Header reservation for Note H2/H3 fragment targets and restore selective hover prefetch on curated Home Project actions. |
 | [WEB-20261028-0004](events/WEB-20261028-0004.md) | 2026-10-28T14:26:52.849Z | change | site-structure | completed | low | Prevent native repeated-click word or paragraph selection on the Menu trigger while preserving selectable navigation content. |
 | [WEB-20261028-0003](events/WEB-20261028-0003.md) | 2026-10-28T13:26:41.595Z | change | site-structure | completed | low | Prevent closed native disclosure geometry from replacing the valid open Menu glass mask and refraction resources. |
 | [WEB-20261028-0002](events/WEB-20261028-0002.md) | 2026-10-28T08:18:29.732Z | change | site-structure | completed | low | Contain Home Header margins during parsing and serve reviewed delivery derivatives of the same approved portrait. Preserve the original image assets and accepted composition. |

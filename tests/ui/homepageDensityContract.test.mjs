@@ -2,27 +2,31 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-test('mobile homepage removes only the redundant profile snapshot from the visual flow', async () => {
-  const [home, css] = await Promise.all([
-    readFile('src/pages/index.astro', 'utf8'),
-    readFile('src/styles/global.css', 'utf8'),
+test('current Home keeps one identity, native actions and naturally flowing lower sections', async () => {
+  const [html, hero, css] = await Promise.all([
+    readFile('dist/index.html', 'utf8'),
+    readFile('src/components/home/EditorialHero.astro', 'utf8'),
+    readFile('src/styles/home-v2.css', 'utf8'),
   ]);
-
-  assert.match(home, /<aside class="identity-plate" aria-label="Profile snapshot">/);
-  assert.match(home, /Mechanical Engineering student building and documenting robotics/);
-  assert.match(home, /I connect mechanical systems and robot control/);
-  assert.match(home, /<nav class="link-row home-primary-links"/);
-  assert.match(home, /<ul class="focus-strip"/);
-  assert.match(home, /<section class="home-section home-selected-work"/);
-
-  const mobile = css.match(/@media \(max-width: 720px\) \{([\s\S]*?)\n\}/)?.[1] ?? '';
-  assert.match(mobile, /\.home-page \.identity-plate \{\s*display: none;\s*\}/);
-
-  const desktopIdentity =
-    css
-      .slice(0, css.indexOf('@media (max-width: 980px)'))
-      .split('.home-page .identity-plate {')[1]
-      ?.split('}')[0] ?? '';
-  const desktop = '.home-page .identity-plate {' + desktopIdentity;
-  assert.doesNotMatch(desktop, /\.home-page \.identity-plate \{[\s\S]*?display: none/);
+  assert.equal((html.match(/<h1[\s>]/g) ?? []).length, 1);
+  assert.equal((html.match(/class="home-v2-hero__copy"/g) ?? []).length, 1);
+  assert.doesNotMatch(html, /identity-plate|Profile snapshot|focus-strip|home-approach|home-hub/);
+  assert.match(hero, /Mechanical engineering, robotic systems, intelligent control/);
+  assert.match(hero, /href="#selected-works">Explore my work/);
+  assert.match(hero, /href="\/about\/">About me/);
+  let previous = -1;
+  for (const id of ['home-v2-title', 'recent-news', 'selected-works', 'honors']) {
+    const current = html.indexOf('id="' + id + '"');
+    assert.ok(current > previous, id + ' preserves approved reading order');
+    previous = current;
+  }
+  assert.ok(html.indexOf('<footer') > previous);
+  assert.match(css, /\.home-v2 \.home-v2-hero \{ min-block-size:calc\(100svh - var\(--home-v2-header-reservation\)\); \}/);
+  const lowerSectionRules = [...css.matchAll(/([^{}]*\.home-v2-section[^{}]*)\{([^{}]*)\}/g)];
+  assert.ok(lowerSectionRules.length > 0);
+  for (const [, , declarations] of lowerSectionRules) {
+    assert.doesNotMatch(declarations, /(?:height|block-size):\s*(?:100|calc\(100)(?:s|d)?vh|position:\s*(?:fixed|absolute)|display:\s*none/);
+  }
+  assert.match(css, /\.home-v2 \.home-v2-hero__actions \{ display: flex; flex-wrap: wrap;/);
+  assert.match(css, /\.home-v2 \.home-v2-hero h1 span \{ display: block; overflow-wrap: anywhere;/);
 });

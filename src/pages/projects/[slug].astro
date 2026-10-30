@@ -2,7 +2,7 @@
 import { render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
-import TagList from '../../components/TagList.astro';
+import ProjectDetailTags from '../../components/projects/ProjectDetailTags.astro';
 import ProjectFigure from '../../components/projects/ProjectFigure.astro';
 import ProjectEvidence from '../../components/projects/ProjectEvidence.astro';
 import { getProjectMedia } from '../../data/projectMedia';
@@ -53,7 +53,7 @@ const media = getProjectMedia(project.data.id);
       {project.data.timeframe && <span>{project.data.timeframe}</span>}
       {projectTools.length > 0 && <span>Tools: {projectTools.join(', ')}</span>}
     </div>
-    <div data-pagefind-ignore><TagList tags={project.data.tags} /></div>
+    <ProjectDetailTags tags={project.data.tags} />
     <Content />
     {media && <ProjectFigure media={media} />}
     <ProjectEvidence evidence={project.data.evidence} />

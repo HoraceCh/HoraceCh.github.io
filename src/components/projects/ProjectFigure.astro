@@ -22,7 +22,7 @@ const { media } = Astro.props;
       style={{ 'aspect-ratio': `${media.width} / ${media.height}` }}
     />
   </figure>
-  <a href={media.src}>Open image at full size</a>
+  <a href={media.src} target="_blank" rel="noopener noreferrer">Open full-size image in new tab</a>
 </div>
 
 <style>

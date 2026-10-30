@@ -19,7 +19,7 @@ test('approved detail figures follow complete narrative and precede separately l
     assert.ok(article.indexOf('<figure') < article.indexOf('class="project-evidence"'));
     assert.match(article, new RegExp(`width="1200" height="${height}"`));
     assert.match(article, /loading="lazy" decoding="async"/);
-    assert.match(article, /Open image at full size/);
+    assert.match(article, /Open full-size image in new tab/);
     assert.ok(article.includes(label));
     assert.equal(article.split(`href="${url}"`).length - 1, 2, 'original resource and exact Evidence destination both remain');
     assert.match(article, /opens in new tab/);
@@ -27,9 +27,10 @@ test('approved detail figures follow complete narrative and precede separately l
     assert.match(article, /project-figure[^>]*data-pagefind-ignore="all"/);
     assert.match(article, /project-evidence[^>]*data-pagefind-ignore="all"/);
     assert.doesNotMatch(article, /<figcaption|<script|astro-island/);
-    const imageAnchor = [...article.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].find(([a]) => a.includes('Open image at full size'))?.[0];
+    const imageAnchor = [...article.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].find(([a]) => a.includes('Open full-size image in new tab'))?.[0];
     assert.ok(imageAnchor);
-    assert.doesNotMatch(imageAnchor, /target=|<img/);
+    assert.match(imageAnchor, /target="_blank" rel="noopener noreferrer"/);
+    assert.doesNotMatch(imageAnchor, /<img/);
   }
 });
 
@@ -43,7 +44,7 @@ test('auxiliary detail media cannot add automatic Pagefind image metadata or bod
     found++;
     assert.equal(record.meta.image, undefined);
     assert.equal(record.meta.image_alt, undefined);
-    assert.doesNotMatch(record.content, /Open image at full size|opens in new tab|Team engineering repository|Public repository/);
+    assert.doesNotMatch(record.content, /Open full-size image in new tab|opens in new tab|Team engineering repository|Public repository/);
     assert.ok(record.anchors.every(anchor => anchor.text !== 'Evidence'));
   }
   assert.equal(found, 2);

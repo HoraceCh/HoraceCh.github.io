@@ -34,7 +34,8 @@ test('Projects preserves ordered partitions and independent project actions', as
     assert.deepEqual(cards.map((card) => card.match(/<h3><a href="([^"]+)">/)?.[1]), hrefs);
     for (const card of cards) {
       assertSeparateAnchors(card);
-      assert.match(card, /^<h3><a href="\/projects\/[^"]+\/">[^<]+<\/a><\/h3><div class="card-meta">/);
+      const copy = card.match(/<div class="project-card-media-copy">([\s\S]*?)<\/div>/)?.[1] ?? card;
+      assert.match(copy, /^<h3><a href="\/projects\/[^"]+\/">[^<]+<\/a><\/h3><div class="card-meta">/);
       assert.ok(card.indexOf('class="card-links"') === -1 || card.indexOf('class="card-links"') < card.indexOf('class="tag-list"'));
     }
   }

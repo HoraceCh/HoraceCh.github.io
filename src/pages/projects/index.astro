@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
+import { getProjectMedia } from '../../data/projectMedia';
 import {
   loadProjectPublicationModel,
   projectHref,
@@ -128,6 +129,8 @@ const projectSections = [
                 tags={project.entry.data.tags}
                 href={projectHref(project)}
                 links={project.entry.data.links}
+                variant="browse-media"
+                media={getProjectMedia(project.id)}
               />
             ))}
           </div>

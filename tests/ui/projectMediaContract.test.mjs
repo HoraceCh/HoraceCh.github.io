@@ -5,12 +5,12 @@ import test from 'node:test';
 import { getProjectMedia } from '../../src/data/projectMedia.ts';
 
 const approved = [
-  ['ai-retrieval-tool', 'ai-retrieval-ui', [480, 524], [
+  ['ai-retrieval-tool', 'ai-retrieval-ui', [1200, 1311], [
     '4192ef01974376462d4891afa851f999072de211c1cb47547242f60cd51162a1',
     '013aa00c057f9c6be05ebffbe4713a77ad8c2af19f5ff9df899ccf9bdb2495cb',
     '454b4312538474d5b097ba73543d934e1d710ed398d39f413c5724766265bbe7',
   ]],
-  ['robomaster-2026-engineering-robot', 'rm26-robot', [480, 320], [
+  ['robomaster-2026-engineering-robot', 'rm26-robot', [1200, 800], [
     '87e0f6e021caf9ff60f4cac8b8d92a7eaec60fd154ffed1c0e919b9487178a47',
     '73589d304e6791968148dd18d4481d73404af531dfd3465a2d8e0b7a0dcd0c93',
     '610cb0c90a847c861668e6d34e36ac8b16cabdbe11500e4899786c2ccaf8fbae',
@@ -25,11 +25,15 @@ test('presentation media is restricted to the two approved stable Project IDs', 
   }
 });
 
+test('missing approved derivatives omit only the optional presentation', () => {
+  for (const [id] of approved) assert.equal(getProjectMedia(id, 'tests/ui/fixtures'), undefined);
+});
+
 test('M1 resolves the exact admitted derivative bytes and source dimensions', async () => {
   for (const [id, family, dimensions, hashes] of approved) {
     const media = getProjectMedia(id);
     assert.ok(media);
-    assert.equal(media.src, '/images/home/' + family + '-480.webp');
+    assert.equal(media.src, '/images/home/' + family + '-1200.webp');
     assert.deepEqual([media.width, media.height], dimensions);
     const sources = media.srcset.split(', ');
     assert.equal(sources.length, 3);

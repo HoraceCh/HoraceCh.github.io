@@ -65,9 +65,15 @@ const { media } = Astro.props;
     margin-block-end: 12px;
   }
 
+  .project-card-media-bottom .card-links a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 44px;
+  }
+
   .project-card-media-preview {
     position: relative;
-    inline-size: 100%;
+    inline-size: min(100%, 360px);
     aspect-ratio: 3 / 2;
     max-block-size: 240px;
     margin-block-end: 16px;

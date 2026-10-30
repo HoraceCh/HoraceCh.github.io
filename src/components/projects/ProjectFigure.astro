@@ -1,0 +1,57 @@
+---
+import type { ProjectMedia } from '../../data/projectMedia';
+
+interface Props {
+  readonly media: ProjectMedia;
+}
+
+const { media } = Astro.props;
+---
+
+<div class="project-figure" data-pagefind-ignore="all">
+  <figure style={{ 'aspect-ratio': `${media.width} / ${media.height}` }}>
+    <img
+      src={media.src}
+      alt={media.alt}
+      width={media.width}
+      height={media.height}
+      srcset={media.srcset}
+      sizes="(max-width: 792px) calc(100vw - 32px), 760px"
+      loading="lazy"
+      decoding="async"
+      style={{ 'aspect-ratio': `${media.width} / ${media.height}` }}
+    />
+  </figure>
+  <a href={media.src}>Open image at full size</a>
+</div>
+
+<style>
+  .project-figure {
+    margin-block-start: 40px;
+    min-inline-size: 0;
+  }
+
+  figure {
+    margin: 0 0 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--accent-soft);
+  }
+
+  img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 44px;
+    max-inline-size: 100%;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+</style>

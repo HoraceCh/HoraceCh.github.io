@@ -3,6 +3,9 @@ import { render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import TagList from '../../components/TagList.astro';
+import ProjectFigure from '../../components/projects/ProjectFigure.astro';
+import ProjectEvidence from '../../components/projects/ProjectEvidence.astro';
+import { getProjectMedia } from '../../data/projectMedia';
 import { loadProjectPublicationModel } from '../../utils/projectPublication';
 
 export async function getStaticPaths() {
@@ -19,6 +22,7 @@ const formatLabel = (value: string) => value.replace(/-/g, ' ');
 const maturityLabel = formatLabel(project.data.maturity);
 const showMaturity = maturityLabel.toLowerCase() !== formatLabel(project.data.status).toLowerCase();
 const projectTools = project.data.tools.length > 0 ? project.data.tools : project.data.stack;
+const media = getProjectMedia(project.data.id);
 ---
 
 <Layout title={project.data.title} description={project.data.description}>
@@ -51,5 +55,7 @@ const projectTools = project.data.tools.length > 0 ? project.data.tools : projec
     </div>
     <div data-pagefind-ignore><TagList tags={project.data.tags} /></div>
     <Content />
+    {media && <ProjectFigure media={media} />}
+    <ProjectEvidence evidence={project.data.evidence} />
   </article>
 </Layout>

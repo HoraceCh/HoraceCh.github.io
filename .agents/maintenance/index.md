@@ -9,6 +9,7 @@ This is a deterministic discovery view generated from canonical event files. It 
 
 | Event ID | Occurred | Kind | Category | Status | Risk | Summary |
 | --- | --- | --- | --- | --- | --- | --- |
+| [WEB-20261031-0001](events/WEB-20261031-0001.md) | 2026-10-31T10:29:33.558Z | change | site-structure | completed | low | Correct Home major metadata using approved Robotics Engineering facts; visible composition unchanged. |
 | [WEB-20261030-0003](events/WEB-20261030-0003.md) | 2026-10-30T13:59:17.087Z | change | site-structure | in-progress | low | Refine detail metadata tags and preserve the detail page when opening an image. |
 | [WEB-20261030-0002](events/WEB-20261030-0002.md) | 2026-10-30T13:11:44.721Z | change | site-structure | in-progress | low | Implement approved optional Project Detail figures and evidence. |
 | [WEB-20261030-0001](events/WEB-20261030-0001.md) | 2026-10-30T02:41:21.390Z | change | site-structure | in-progress | low | Implement approved two-project browse media presentation; rendered acceptance remains pending. |

@@ -34,6 +34,7 @@ export function installSearchDialog(dialog: HTMLDialogElement, openOnLoad: boole
   const search = createPagefindSearch(frames);
   let trigger: HTMLElement | null = null;
   let request = 0;
+  let composing = false;
   let restoreOverflow = '';
   let restoreScrollbarGutter = '';
   const root = document.documentElement;
@@ -44,7 +45,7 @@ export function installSearchDialog(dialog: HTMLDialogElement, openOnLoad: boole
   };
   const close = () => dialog.close();
   const open = (nextTrigger: HTMLElement | null) => {
-    trigger = nextTrigger;
+    if (!dialog.open || openOnLoad) trigger = nextTrigger;
     if (dialog.open && openOnLoad) dialog.close();
     if (!dialog.open) dialog.showModal();
     input.focus();
@@ -64,7 +65,7 @@ export function installSearchDialog(dialog: HTMLDialogElement, openOnLoad: boole
   });
   dialog.addEventListener('cancel', (event) => {
     event.preventDefault();
-    close();
+    if (!composing) close();
   });
   closeButton.addEventListener('click', close);
   dialog.addEventListener('close', () => {
@@ -82,7 +83,19 @@ export function installSearchDialog(dialog: HTMLDialogElement, openOnLoad: boole
       document.body.style.overflow = 'hidden';
     }
   });
+  input.addEventListener('compositionstart', () => { composing = true; });
+  input.addEventListener('compositionend', () => { composing = false; });
   dialog.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      if (composing || event.isComposing || event.keyCode === 229) return;
+      event.preventDefault();
+      ++request;
+      input.value = '';
+      results.replaceChildren();
+      setStatus('');
+      close();
+      return;
+    }
     const resultLinks = [...results.querySelectorAll<HTMLAnchorElement>('a')];
     const activeResultIndex = document.activeElement instanceof HTMLAnchorElement
       ? resultLinks.indexOf(document.activeElement)

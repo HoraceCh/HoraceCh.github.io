@@ -1,0 +1,66 @@
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH, headless: false });
+try {
+  const page = await browser.newPage();
+  const trustedEscapes = [];
+  await page.exposeFunction('recordEscape', trusted => trustedEscapes.push(trusted));
+  await page.addInitScript(() => document.addEventListener('keydown', e => { if (e.key === 'Escape') window.recordEscape(e.isTrusted); }, true));
+  await page.goto(process.env.SEARCH_ORIGIN || 'http://127.0.0.1:4321/');
+  for (const query of ['robot', '信息', '龘靐齉', '']) {
+    await page.locator('[data-search-trigger]').first().click();
+    await page.locator('[data-search-input]').fill(query);
+    if (query) await page.waitForFunction(() => !document.querySelector('[data-search-status]').textContent.includes('Searching'));
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.querySelector('[data-search-dialog]').open, null, { timeout: 1500 });
+    await page.waitForFunction(() => document.body.style.overflow !== 'hidden', null, { timeout: 1500 });
+    assert.equal(await page.locator('[data-search-input]').inputValue(), '');
+    assert.equal(await page.locator('[data-search-results] a').count(), 0);
+    assert.equal(await page.evaluate(() => document.body.style.overflow), '');
+    assert.equal(await page.locator('[data-search-trigger]').first().evaluate(e => e === document.activeElement), true);
+  }
+  assert.ok(trustedEscapes.length >= 4 && trustedEscapes.every(Boolean));
+  await page.goto(process.env.SEARCH_ORIGIN || 'http://127.0.0.1:4321/');
+  let releaseClose;
+  const closeGate = new Promise(resolve => { releaseClose = resolve; });
+  await page.route('**/pagefind/**', async route => { await closeGate; await route.continue(); });
+  await page.locator('[data-search-trigger]').first().click();
+  await page.locator('[data-search-input]').fill('robot');
+  await page.locator('[data-search-close]').click();
+  await page.waitForFunction(() => !document.querySelector('dialog').open && document.body.style.overflow !== 'hidden');
+  releaseClose();
+  await page.waitForFunction(() => document.querySelector('[data-search-results] a'));
+  await page.locator('[data-search-trigger]').first().click();
+  assert.equal(await page.locator('[data-search-input]').inputValue(), 'robot');
+  assert.ok(await page.locator('[data-search-results] a').count() > 0);
+  await page.keyboard.press('Escape');
+  await page.unroute('**/pagefind/**');
+  await page.goto(process.env.SEARCH_ORIGIN || 'http://127.0.0.1:4321/');
+  let release;
+  const gate = new Promise(resolve => { release = resolve; });
+  await page.route('**/pagefind/**', async route => { await gate; await route.continue(); });
+  await page.locator('[data-search-trigger]').first().click();
+  await page.locator('[data-search-input]').fill('robot');
+  assert.equal(await page.locator('[data-search-status]').textContent(), 'Searching…');
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !document.querySelector('dialog').open && document.body.style.overflow !== 'hidden');
+  release();
+  await page.waitForTimeout(1500);
+  assert.equal(await page.locator('[data-search-results] a').count(), 0);
+  assert.equal(await page.locator('[data-search-status]').textContent(), '');
+  await page.locator('[data-search-trigger]').first().click();
+  assert.equal(await page.locator('[data-search-input]').inputValue(), '');
+  await page.locator('[data-search-input]').fill('robot');
+  await page.waitForFunction(() => document.querySelector('[data-search-results] a'));
+  // Supplemental guard checks only; these do not certify actual IME operation.
+  await page.locator('[data-search-input]').dispatchEvent('compositionstart');
+  await page.keyboard.press('Escape');
+  await page.locator('dialog').dispatchEvent('cancel', { cancelable: true });
+  assert.equal(await page.locator('dialog').evaluate(e => e.open), true);
+  await page.locator('[data-search-input]').dispatchEvent('compositionend');
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !document.querySelector('dialog').open);
+  console.log('4 trusted state regressions, pending late-result suppression, supplemental composition guard passed.');
+} finally { await browser.close(); }

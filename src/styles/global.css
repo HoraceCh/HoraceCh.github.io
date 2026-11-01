@@ -114,6 +114,18 @@ a:hover {
   text-decoration-color: var(--accent);
 }
 
+/* A low-specificity focus shape; existing component radii keep ownership. */
+:where(
+  a[href]:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  summary:focus-visible
+) {
+  border-radius: 4px;
+}
+
 a:focus-visible,
 button:focus-visible {
   outline: 2px solid var(--focus-ring);
@@ -1873,7 +1885,7 @@ li {
   --note-pane-hover: rgba(24, 24, 23, 0.045);
   --note-pane-active-bg: rgba(24, 24, 23, 0.065);
   --note-pane-active-rail: rgba(24, 24, 23, 0.22);
-  --note-pane-focus: color-mix(in srgb, var(--accent) 42%, transparent);
+  --note-pane-focus: var(--focus-ring);
   --note-pane-scrollbar: rgba(102, 100, 94, 0.28);
   --note-empty-bg: #fafafa;
   --note-empty-text: color-mix(in srgb, var(--muted) 78%, var(--text));
@@ -1888,7 +1900,7 @@ li {
   --note-pane-hover: rgba(241, 240, 232, 0.055);
   --note-pane-active-bg: rgba(255, 255, 255, 0.075);
   --note-pane-active-rail: rgba(255, 255, 255, 0.22);
-  --note-pane-focus: color-mix(in srgb, var(--accent) 48%, transparent);
+  --note-pane-focus: var(--focus-ring);
   --note-pane-scrollbar: rgba(138, 143, 152, 0.28);
   --note-empty-bg: #161718;
   --note-empty-text: color-mix(in srgb, var(--muted) 76%, var(--text));
@@ -2213,7 +2225,7 @@ li {
 }
 
 .note-outline-item a:focus-visible {
-  outline: 2px solid var(--note-pane-focus);
+  outline: 2px solid var(--note-pane-focus, var(--focus-ring));
   outline-offset: 2px;
 }
 

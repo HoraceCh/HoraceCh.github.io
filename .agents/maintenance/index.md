@@ -9,6 +9,7 @@ This is a deterministic discovery view generated from canonical event files. It 
 
 | Event ID | Occurred | Kind | Category | Status | Risk | Summary |
 | --- | --- | --- | --- | --- | --- | --- |
+| [WEB-20261101-0002](events/WEB-20261101-0002.md) | 2026-11-01T05:51:17.859Z | change | site-structure | completed | low | Add a small rounded focus shape to ordinary native controls while preserving component-specific corners and visible outlines. |
 | [WEB-20261101-0001](events/WEB-20261101-0001.md) | 2026-11-01T00:29:18.277Z | change | site-structure | completed | low | Apply approved About identity copy and a bounded prose presentation in the existing static page shell. |
 | [WEB-20261031-0001](events/WEB-20261031-0001.md) | 2026-10-31T10:29:33.558Z | change | site-structure | completed | low | Correct Home major metadata using approved Robotics Engineering facts; visible composition unchanged. |
 | [WEB-20261030-0003](events/WEB-20261030-0003.md) | 2026-10-30T13:59:17.087Z | change | site-structure | in-progress | low | Refine detail metadata tags and preserve the detail page when opening an image. |

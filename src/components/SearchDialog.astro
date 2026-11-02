@@ -6,22 +6,26 @@ interface Props {
 const { openOnLoad = false } = Astro.props;
 ---
 
-<dialog class="site-search" aria-labelledby="site-search-title" open={openOnLoad} data-search-dialog data-search-open-on-load={openOnLoad ? 'true' : 'false'} data-pagefind-ignore>
+<dialog open={openOnLoad} data-search-dialog data-search-open-on-load={openOnLoad ? 'true' : 'false'} class="site-search" aria-labelledby="site-search-title" data-pagefind-ignore>
   <div class="site-search__surface">
     <header class="site-search__header">
-      <div>
-        <p class="site-search__eyebrow">Site search</p>
-        <h2 id="site-search-title">Find projects and notes</h2>
-      </div>
-      <button class="site-search__close" type="button" data-search-close aria-label="Close search">Close</button>
+      <h2 id="site-search-title">Search</h2>
+      <button class="site-search__close" data-search-close type="button" aria-label="Close search">Close <span aria-hidden="true">×</span></button>
+      <label class="site-search__field" for="site-search-input"><span class="visually-hidden">Search the public site</span>
+        <input id="site-search-input" data-search-input type="search" autocomplete="off" placeholder="Search projects and notes…" />
+      </label>
     </header>
-    <label class="site-search__field" for="site-search-input">
-      <span>Search the public site</span>
-      <input id="site-search-input" data-search-input type="search" autocomplete="off" placeholder="Try VLA, 信息检索, or a title" />
-    </label>
-    <p class="site-search__status" data-search-status role="status" aria-live="polite" hidden></p>
-    <ol class="site-search__results" data-search-results aria-label="Search results"></ol>
-    <p class="site-search__hint">Use ↑ ↓ to move through results. Escape closes search.</p>
+    <p class="site-search__status" data-search-status role="status" aria-live="polite" aria-atomic="true" hidden></p>
+    <div class="site-search__body">
+      <section class="site-search__message" data-search-message>
+        <h3 data-search-message-title>Find a project or a note</h3>
+        <p data-search-message-detail>Try VLA, 信息检索, or a title.</p>
+        <button class="site-search__retry" type="button" data-search-retry hidden>Retry</button>
+        <nav data-search-browse aria-label="Browse the site"><a href="/projects/">Projects</a><a href="/notes/">Notes</a><a href="/resume/">Resume</a></nav>
+      </section>
+      <ol class="site-search__results" data-search-results aria-label="Search results" hidden></ol>
+    </div>
+    <div class="site-search__footer"><span data-result-guidance hidden><kbd>↑</kbd><kbd>↓</kbd> Move <span class="site-search__enter"><kbd>Enter</kbd> Open</span></span><span data-control-guidance><kbd>Tab</kbd> Navigate</span><span><kbd>Esc</kbd> Close</span></div>
   </div>
   <iframe data-search-context data-pagefind-language="en" data-search-source="/search/pagefind-en/" title="English search index" tabindex="-1"></iframe>
   <iframe data-search-context data-pagefind-language="zh-CN" data-search-source="/search/pagefind-zh/" title="Chinese search index" tabindex="-1"></iframe>

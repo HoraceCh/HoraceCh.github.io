@@ -39,7 +39,7 @@
 .home-v2 .home-v2-hero__copy { min-width: 0; }
 @media (min-width: 851px) {
   .home-v2 .home-v2-hero__inner { padding-block: 140px 180px; }
-  .home-v2 .home-v2-hero--portrait .home-v2-hero__copy { align-self: end; }
+  .home-v2 .home-v2-hero--portrait .home-v2-hero__copy { align-self: center; }
   .home-v2 .home-v2-hero__portrait {
     inset: -72px auto auto 54%;
     width: 66%;
@@ -64,7 +64,7 @@
   margin: 0 0 48px;
 }
 .home-v2 .home-v2-hero h1 {
-  font-size: clamp(3rem, 11.25vw, 11.25rem);
+  font-size: clamp(3rem, min(11.25vw, 7.7223rem + 2.2048vw), 11.25rem);
   font-weight: 850;
   line-height: .95;
   letter-spacing: -.075em;
@@ -73,7 +73,7 @@
 }
 .home-v2 .home-v2-hero h1 span { display: inline-block; }
 .home-v2 .home-v2-hero__lead {
-  font-size: clamp(1.25rem, 2.9vw, 2.625rem);
+  font-size: clamp(1.25rem, min(2.9vw, 2.1082rem + .430686vw), 2.625rem);
   line-height: 1.25;
   font-weight: 500;
   letter-spacing: -.035em;

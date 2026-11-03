@@ -81,6 +81,7 @@
 }
 .home-v2 .home-v2-hero__description {
   color: var(--home-v2-muted);
+  background: var(--home-v2-paper);
   font-size: 1.125rem;
   line-height: 1.55;
   max-width: 450px;

@@ -1174,7 +1174,136 @@ function convertCallouts(body) {
 }
 
 function convertHighlights(body) {
-  return body.replace(/==([^=\n][\s\S]*?[^=\n])==/g, '<mark>$1</mark>');
+  const output = [];
+  let prose = [];
+  let activeFence = null;
+  let indentedCode = false;
+  let previousBlank = true;
+  let inTable = false;
+  let htmlCode = null;
+
+  const flushProse = () => {
+    if (prose.length) {
+      const scope = {};
+      output.push(convertHighlightsOutsideCode(prose.join('\n'), false, scope));
+      htmlCode = scope.htmlCode ?? null;
+    }
+    prose = [];
+  };
+  const appendHtmlLine = (line) => {
+    const closing = new RegExp('</' + htmlCode.tag + '\\s*>', 'i').exec(line);
+    if (closing) {
+      const end = closing.index + closing[0].length;
+      output.push(line.slice(0, end) + convertHighlightsOutsideCode(line.slice(end)));
+      htmlCode = null;
+    } else {
+      output.push(line);
+    }
+  };
+
+  const lines = body.split('\n');
+  for (const [lineIndex, line] of lines.entries()) {
+    if (htmlCode && blockquoteDepth(line) < htmlCode.blockquoteDepth) htmlCode = null;
+    if (htmlCode) {
+      appendHtmlLine(line);
+      continue;
+    }
+    if (activeFence?.blockquoteDepth > blockquoteDepth(line)) {
+      activeFence = null;
+    }
+    if (activeFence) {
+      output.push(line);
+      if (isClosingFence(line, activeFence)) activeFence = null;
+      continue;
+    }
+    const opening = line.match(CODE_FENCE_OPENING_PATTERN);
+    if (opening) {
+      flushProse();
+      if (htmlCode) {
+        appendHtmlLine(line);
+        continue;
+      }
+      inTable = false;
+      indentedCode = false;
+      previousBlank = false;
+      output.push(line);
+      activeFence = {
+        char: opening[2][0],
+        length: opening[2].length,
+        blockquoteDepth: blockquoteDepth(opening[1]),
+      };
+      continue;
+    }
+    const indented = /^(?: {4}|\t)/.test(line);
+    if (indented && (indentedCode || previousBlank)) {
+      indentedCode = true;
+      flushProse();
+      if (htmlCode) {
+        appendHtmlLine(line);
+        continue;
+      }
+      output.push(line);
+      continue;
+    }
+    if (line.trim()) indentedCode = false;
+    previousBlank = !line.trim();
+    const nextLine = (lines[lineIndex + 1] ?? '').replace(/^(?:[ \t]{0,3}>[ \t]?)*/, '');
+    inTable = line.includes('|') && (inTable || /^[ \t]*\|?[ \t]*:?-+:?[ \t]*(?:\|[ \t]*:?-+:?[ \t]*)+\|?[ \t]*$/.test(nextLine));
+    if (inTable) {
+      flushProse();
+      if (htmlCode) {
+        inTable = false;
+        appendHtmlLine(line);
+        continue;
+      }
+      output.push(convertHighlightsOutsideCode(line, true));
+      continue;
+    }
+    prose.push(line);
+  }
+  flushProse();
+  return output.join('\n');
+}
+
+function convertHighlightsOutsideCode(value, tableRow = false, scope = {}) {
+  const replaceHighlights = (text) => text.replace(/==([^=\n]|[^=\n][\s\S]*?[^=\n])==/g, '<mark>$1</mark>');
+  const highlight = (text) => tableRow
+    ? text.replace(/(?:\\[\s\S]|[^|\\])+/g, replaceHighlights)
+    : replaceHighlights(text);
+  const tokens = /\x60+|<(pre|code)\b[^>]*>/gi;
+  let output = '';
+  let proseStart = 0;
+  let token;
+
+  while ((token = tokens.exec(value))) {
+    let end;
+    if (token[1]) {
+      const closing = new RegExp('</' + token[1] + '\\s*>', 'gi');
+      closing.lastIndex = tokens.lastIndex;
+      const match = closing.exec(value);
+      end = match ? closing.lastIndex : value.length;
+      if (!match) {
+        scope.htmlCode = {
+          tag: token[1],
+          blockquoteDepth: blockquoteDepth(value.slice(value.lastIndexOf('\n', token.index) + 1, token.index)),
+        };
+      }
+    } else {
+      const preceding = value.slice(0, token.index).match(/\\+$/)?.[0].length ?? 0;
+      if (preceding % 2) continue;
+      const closing = /\x60+/g;
+      closing.lastIndex = tokens.lastIndex;
+      let match;
+      while ((match = closing.exec(value)) && match[0].length !== token[0].length) {}
+      if (!match) continue;
+      end = closing.lastIndex;
+    }
+    output += highlight(value.slice(proseStart, token.index));
+    output += value.slice(token.index, end);
+    proseStart = end;
+    tokens.lastIndex = end;
+  }
+  return output + highlight(value.slice(proseStart));
 }
 
 function normalizeCodeFenceInfoStrings(body) {

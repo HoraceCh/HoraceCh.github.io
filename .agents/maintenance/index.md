@@ -9,6 +9,7 @@ This is a deterministic discovery view generated from canonical event files. It 
 
 | Event ID | Occurred | Kind | Category | Status | Risk | Summary |
 | --- | --- | --- | --- | --- | --- | --- |
+| [WEB-20261103-0002](events/WEB-20261103-0002.md) | 2026-11-03T01:17:30.975Z | change | notes-pipeline | completed | medium | Preserve code literals during Notes highlight conversion |
 | [WEB-20261103-0001](events/WEB-20261103-0001.md) | 2026-11-03T00:45:36.108Z | change | site-structure | completed | low | Restore Home Hero description contrast over portrait |
 | [WEB-20261102-0002](events/WEB-20261102-0002.md) | 2026-11-02T09:17:06.311Z | change | site-structure | completed | low | Balance Home Hero copy and bound responsive display sizing |
 | [WEB-20261102-0001](events/WEB-20261102-0001.md) | 2026-11-02T00:27:40.153Z | change | site-structure | completed | low | Implement approved Compact Editorial Search R2 and coordinated Retry |

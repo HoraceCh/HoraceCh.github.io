@@ -79,7 +79,7 @@ if 语句中`条件`可以是任何有效的C语言表达式，常见的包括�
 | `<=`  | 小于或等于 | ≤  | 高   | 从左到右 |
 | `>`   | 大于    | >    | 高   | 从左到右 |
 | `>=`  | 大于或等于 | ≥  | 高   | 从左到右 |
-| `<mark>`  | 等于    | =    | 低   | 从左到右 |
+| `==`  | 等于    | =    | 低   | 从左到右 |
 | `!=`  | 不等于   | ≠  | 低   | 从左到右 |
 
 - 关系运算符的运算结果只有 0（假）或 1（真）。
@@ -155,19 +155,19 @@ default 是可选择，你可以不写。如果没有 default 分支，也没有
 >     printf("Input integer number:");
 >     scanf("%d", &a);
 > 
->     if (a </mark> 1) {
+>     if (a == 1) {
 >         printf("Monday\n");
->     }else if (a <mark> 2) {
+>     }else if (a == 2) {
 >         printf("Tuesday\n");
->     }else if (a </mark> 3) {
+>     }else if (a == 3) {
 >         printf("Wednesday\n");
->     }else if (a <mark> 4) {
+>     }else if (a == 4) {
 >         printf("Thursday\n");
->     }else if (a </mark> 5) {
+>     }else if (a == 5) {
 >         printf("Friday\n");
->     }else if (a <mark> 6) {
+>     }else if (a == 6) {
 >         printf("Saturday\n");
->     }else if (a </mark> 7) {
+>     }else if (a == 7) {
 >         printf("Sunday\n");
 >     }else {
 >         printf("error\n");
@@ -358,13 +358,13 @@ int main() {
     char *buffer = NULL;
 
     file1 = fopen("input.txt", "r");
-    if (file1 <mark> NULL) {
+    if (file1 == NULL) {
         printf("Error opening input file.\n");
         goto cleanup; // 发生错误，跳转到清理区
     }
 
     file2 = fopen("output.txt", "w");
-    if (file2 </mark> NULL) {
+    if (file2 == NULL) {
         printf("Error opening output file.\n");
         goto cleanup; // 发生错误，跳转到清理区
     }

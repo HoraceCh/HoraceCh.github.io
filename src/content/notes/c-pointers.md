@@ -226,7 +226,7 @@ pa -= 2; pb -= 2; pc -= 2;
 printf("pa=%#X, pb=%#X, pc=%#X\n", pa, pb, pc);
 
 // 比较运算
-if(pa <mark> paa){
+if(pa == paa){
     printf("%d\n", *paa);
 } else {
     printf("%d\n", *pa);
@@ -458,7 +458,7 @@ int main() {
     int a[3][4] = {1,3,5,7, 9,11,13,15, 17,19,21,23};
     int *p;
     for(p = a[0]; p < a[0]+12; p++) {
-        if((p - a[0]) % 4 </mark> 0) printf("\n");
+        if((p - a[0]) % 4 == 0) printf("\n");
         printf("%4d", *p);
     }
     printf("\n");
@@ -693,8 +693,8 @@ int main() {
     int a, b, n;
     scanf("%d,%d", &a, &b);
     scanf("%d", &n);
-    if(n <mark> 1)      p = max;
-    else if(n </mark> 2)  p = min;
+    if(n == 1)      p = max;
+    else if(n == 2)  p = min;
     else             p = add;
     printf("result = %d\n", (*p)(a, b));
     return 0;
@@ -758,7 +758,7 @@ for(int i=0; i<4; i++)
 > // 遍历所有学生
 > for(i=0; i<3; i++) {
 >     p = search(score + i);
->     if(p <mark> *(score + i)) {
+>     if(p == *(score + i)) {
 >         printf("No.%d fails: ", i+1);
 >         for(j=0; j<4; j++)
 >             printf("%5.1f ", *(p+j));
@@ -993,7 +993,7 @@ p = (int *)realloc(p, 100 * sizeof(int));  // 扩大到 100 个 int
 | `p + n` / `p - n` | 前移/后移 n 个元素（不是 n 个字节） |
 | `p++` / `p--` | 移动到下一个/上一个元素 |
 | `p1 - p2` | 两个指针之间的**元素个数**（须指向同一数组） |
-| `p1 </mark> p2` / `p1 < p2` | 比较两个指针的位置 |
+| `p1 == p2` / `p1 < p2` | 比较两个指针的位置 |
 | `p = NULL` | 空指针，不指向任何有效数据 |
 
 ### 使用指针的黄金法则

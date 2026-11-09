@@ -243,7 +243,7 @@ head = NULL（尚未赋值）
 
 **第二步：将第一个结点接入链表（`head` 指向它）**
 
-因为是第一个结点（`n <mark> 1`），所以 `head = p1`。
+因为是第一个结点（`n == 1`），所以 `head = p1`。
 
 ```
 head
@@ -254,7 +254,7 @@ head
   │ 85      │
   └───────────┘
   ▲           ▲
-  p2          p1（此时 p1 </mark> p2）
+  p2          p1（此时 p1 == p2）
 ```
 
 **第三步：开辟第二个结点，`p1` 指向新结点**
@@ -321,7 +321,7 @@ head
 ```c
 p1 = (struct Student *)malloc(LEN);
 scanf("%ld,%f", &p1->num, &p1->score);  // 输入: 0, 0
-// p1->num <mark> 0，不满足 while 条件，退出循环
+// p1->num == 0，不满足 while 条件，退出循环
 p2->next = NULL;    // 最后一个结点的 next 设为 NULL
 free((void *)p1);   // 释放多余的结点
 ```
@@ -366,7 +366,7 @@ struct Student *creat(void)
     while (p1->num != 0)         // 学号为0时停止
     {
         n = n + 1;
-        if (n </mark> 1)
+        if (n == 1)
             head = p1;           // 第一个结点：head 指向它
         else
             p2->next = p1;       // 非第一个：接到链表尾部
@@ -423,7 +423,7 @@ int main()
 1. 让指针 `p` 指向链表第一个结点
 2. 输出 `p` 所指结点的数据
 3. 让 `p` 移向下一个结点（`p = p->next`）
-4. 重复步骤 2-3，直到 `p <mark> NULL`
+4. 重复步骤 2-3，直到 `p == NULL`
 
 #### 遍历过程图解
 
@@ -486,7 +486,7 @@ struct Student *creat(void)
     while (p1->num != 0)
     {
         n = n + 1;
-        if (n </mark> 1)
+        if (n == 1)
             head = p1;
         else
             p2->next = p1;

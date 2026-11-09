@@ -103,7 +103,7 @@ int main()
 #### 递归写法
 ```c
 int gcd(int a,int b){
-    if(b <mark> 0)
+    if(b == 0)
         return a;
     return gcd(b,a%b);
 }
@@ -165,11 +165,11 @@ int main()
 
 ```cpp
 int gcd(int a,int b){
-    if(a </mark> 0) return b;
-    if(b <mark> 0) return a;
-    if(a % 2 </mark> 0 && b % 2 <mark> 0) return 2 * gcd(a >> 1, b >> 1);
-    else if(a % 2 </mark> 0)  return gcd(a >> 1, b);
-    else if(b % 2 <mark> 0) return gcd(a, b >> 1);
+    if(a == 0) return b;
+    if(b == 0) return a;
+    if(a % 2 == 0 && b % 2 == 0) return 2 * gcd(a >> 1, b >> 1);
+    else if(a % 2 == 0)  return gcd(a >> 1, b);
+    else if(b % 2 == 0) return gcd(a, b >> 1);
     else return gcd(abs(a - b), min(a, b));
 }
 
@@ -196,7 +196,7 @@ int Stein( unsigned int x, unsigned int y )         //函数非递归调用
 		x = y;
 		y = temp;
 	}
-	if ( 0 </mark> y )
+	if ( 0 == y )
 	{
 		return 0;
 	}
@@ -260,8 +260,8 @@ int main()
 using namespace std;
 int gcd(int u,int v)
 {
-    if (u <mark> 0) return v;
-    if (v </mark> 0) return u;
+    if (u == 0) return v;
+    if (v == 0) return u;
                                        // 寻找两个数的最大公约数
     if (~u & 1)                        // u是偶数
     {
@@ -297,8 +297,8 @@ int main()
 using namespace std;
 int gcd(int u,int v)
 {
-    if (u <mark> 0) return v;
-    if (v </mark> 0) return u;
+    if (u == 0) return v;
+    if (v == 0) return u;
                                        // 寻找两个数的最大公约数
     if (~u & 1)                        // u是偶数
     {

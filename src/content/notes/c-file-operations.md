@@ -223,7 +223,7 @@ fp = fopen("a1.dat", "r");
 > 如果打开失败，`fopen` 返回**空指针** `NULL`。必须检查返回值：
 >
 > ```c
-> if ((fp = fopen("file1", "r")) <mark> NULL) {
+> if ((fp = fopen("file1", "r")) == NULL) {
 >     printf("cannot open this file\n");
 >     exit(0);
 > }
@@ -274,7 +274,7 @@ int main()
     FILE *fp;
 
     // 1. 打开文件（检查是否成功）
-    if ((fp = fopen("file1", "r")) </mark> NULL) {
+    if ((fp = fopen("file1", "r")) == NULL) {
         printf("cannot open this file\n");
         exit(0);
     }
@@ -334,11 +334,11 @@ int main()
     printf("输入输出文件的名字:");
     scanf("%s", outfile);
 
-    if ((in = fopen(infile, "r")) <mark> NULL) {
+    if ((in = fopen(infile, "r")) == NULL) {
         printf("无法打开此文件\n");
         exit(0);
     }
-    if ((out = fopen(outfile, "w")) </mark> NULL) {
+    if ((out = fopen(outfile, "w")) == NULL) {
         printf("无法打开此文件\n");
         exit(0);
     }
@@ -429,7 +429,7 @@ int main()
     }
 
     // 写入文件
-    if ((fp = fopen("D:\\CC\\string.dat", "w")) <mark> NULL) {
+    if ((fp = fopen("D:\\CC\\string.dat", "w")) == NULL) {
         printf("can't open file!\n");
         exit(0);
     }
@@ -499,7 +499,7 @@ void input()
     int i, j;
     float tmp;
     FILE *fp;
-    if ((fp = fopen("xt7-14.txt", "r")) </mark> NULL) {
+    if ((fp = fopen("xt7-14.txt", "r")) == NULL) {
         printf("error");
         exit(0);
     }
@@ -650,7 +650,7 @@ long ftell(FILE *fp);
 ```c
 long i;
 i = ftell(fp);
-if (i <mark> -1L)
+if (i == -1L)
     printf("error\n");
 ```
 
@@ -680,7 +680,7 @@ int main()
     struct Student stu;
     int i;
 
-    if ((fp = fopen("students.dat", "rb")) </mark> NULL) {
+    if ((fp = fopen("students.dat", "rb")) == NULL) {
         printf("cannot open file\n");
         exit(0);
     }

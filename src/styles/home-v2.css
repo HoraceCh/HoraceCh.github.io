@@ -216,3 +216,5 @@ body:has(.home-v2-shell) { min-inline-size:0; }
 @media (prefers-reduced-motion:reduce) {
   .home-v2 .home-v2-scroll__arrow { transition:none; }
 }
+
+@media (max-width:300px) { .home-v2 { --home-v2-header-reservation:calc(166px + env(safe-area-inset-top,0px)); } }

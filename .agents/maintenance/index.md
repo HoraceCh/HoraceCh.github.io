@@ -9,6 +9,7 @@ This is a deterministic discovery view generated from canonical event files. It 
 
 | Event ID | Occurred | Kind | Category | Status | Risk | Summary |
 | --- | --- | --- | --- | --- | --- | --- |
+| [WEB-20261113-0001](events/WEB-20261113-0001.md) | 2026-11-13T11:37:02.029Z | change | site-structure | completed | low | Repair extreme-narrow navigation reachability and document overflow |
 | [WEB-20261109-0001](events/WEB-20261109-0001.md) | 2026-11-09T14:39:07.098Z | change | site-structure | in-progress | low | Adapt the Home canvas to wide screens |
 | [WEB-20261108-0001](events/WEB-20261108-0001.md) | 2026-11-08T14:27:08.004Z | recovery | notes-pipeline | completed | medium | Recover nine public Notes from verified source through isolated regeneration |
 | [WEB-20261103-0002](events/WEB-20261103-0002.md) | 2026-11-03T01:17:30.975Z | change | notes-pipeline | completed | medium | Preserve code literals during Notes highlight conversion |

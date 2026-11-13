@@ -121,3 +121,17 @@ body:has([data-header]) .skip-link { position:fixed; z-index:90; }
 .hc-header .hc-header__panel-scroll a { scroll-margin-block:8px; }
 
 @media (forced-colors:active) { .hc-header[data-enhanced] .hc-header__panel-scroll { scrollbar-width:auto; scrollbar-color:auto; } }
+
+/* Extreme-narrow stress layouts retain complete controls and fixed navigation. */
+@media (max-width:300px) {
+ .hc-header__bar { flex-wrap:wrap; }
+ .hc-header__actions { flex-wrap:wrap; max-width:100%; }
+ .header-frame,
+ .header-frame:has([data-home-v2]:is([data-enhanced],[data-scripted])) { min-height:calc(166px + env(safe-area-inset-top,0px)); }
+ .hc-header[data-enhanced] .hc-header__panel { max-height:calc(100dvh - 182px - env(safe-area-inset-top,0px)); }
+ .hc-header__panel a { overflow-wrap:anywhere; }
+ body:has([data-header]) :is([id],a,button,input,summary),
+ body:has([data-header]) .note-prose :is(h2,h3)[id] { scroll-margin-top:calc(182px + env(safe-area-inset-top,0px)); }
+ .hc-header .hc-header__panel-scroll a { scroll-margin-block:8px; }
+ body:has([data-header]) .skip-link { left:8px; max-width:calc(100% - 16px); }
+}

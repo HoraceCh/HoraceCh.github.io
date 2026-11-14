@@ -27,75 +27,89 @@ export function installHeader(header: HTMLElement) {
     if (restore) summary.focus({ preventScroll: true });
     updateSurface();
   };
-  header.dataset.enhanced = 'true';
-  summary.setAttribute('aria-expanded', String(disclosure.open));
-  updateSurface();
-  // Keep repeated activation from selecting the summary word or disclosure paragraph.
-  summary.addEventListener('mousedown', event => {
-    if (event.button === 0 && event.detail > 1) event.preventDefault();
-  }, { signal });
-  disclosure.addEventListener('toggle', () => {
+  try {
     summary.setAttribute('aria-expanded', String(disclosure.open));
     updateSurface();
-  }, { signal });
-  addEventListener('scroll', () => {
-    if (!frame) frame = requestAnimationFrame(updateSurface);
-  }, { passive: true, signal });
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && disclosure.open) {
-      event.preventDefault();
-      close(true);
-    }
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') close(disclosure.contains(document.activeElement));
-  }, { capture: true, signal });
-  document.addEventListener('pointerdown', event => {
-    if (event.target instanceof Node && !header.contains(event.target)) close(disclosure.contains(document.activeElement));
-  }, { signal });
-  header.addEventListener('focusin', event => {
-    if (event.target instanceof HTMLElement) lastFocused = event.target;
-  }, { signal });
-  document.addEventListener('focusin', event => {
-    if (event.target instanceof Node && !header.contains(event.target)) { lastFocused = null; close(); }
-  }, { signal });
-  header.addEventListener('click', event => {
-    if (!(event.target instanceof Element) || event.button !== 0 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
-    const link = event.target.closest<HTMLAnchorElement>('a');
-    if (link?.hasAttribute('data-header-region') && !link.target && !link.hasAttribute('download')) {
-      const heading = document.getElementById(link.hash.slice(1) + '-heading');
-      close();
-      if (heading) {
-        cancelAnimationFrame(focusFrame);
-        focusFrame = requestAnimationFrame(() => {
-          clearHeading();
-          if (!heading.hasAttribute('tabindex')) {
-            temporaryHeading = heading;
-            heading.setAttribute('tabindex', '-1');
-            heading.addEventListener('blur', clearHeading, { once: true, signal });
-          }
-          heading.focus({ preventScroll: true });
-        });
+    // Keep repeated activation from selecting the summary word or disclosure paragraph.
+    summary.addEventListener('mousedown', event => {
+      if (event.button === 0 && event.detail > 1) event.preventDefault();
+    }, { signal });
+    disclosure.addEventListener('toggle', () => {
+      summary.setAttribute('aria-expanded', String(disclosure.open));
+      updateSurface();
+    }, { signal });
+    if (validHome) addEventListener('scroll', () => {
+      if (!frame) frame = requestAnimationFrame(updateSurface);
+    }, { passive: true, signal });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && disclosure.open) {
+        event.preventDefault();
+        close(true);
       }
-    } else if (link || event.target.closest('[data-theme-toggle]')) close();
-  }, { signal });
-  const onResize = () => {
-    if (mobile.matches && header.querySelector('.hc-header__desktop')?.contains(lastFocused)) summary.focus({ preventScroll: true });
-    if (!mobile.matches) {
-      const active = lastFocused;
-      if (active instanceof HTMLElement && disclosure.contains(active)) {
-        const href = active.closest('a')?.getAttribute('href');
-        const desktopLink = [...header.querySelectorAll<HTMLAnchorElement>('.hc-header__desktop a')].find(link => link.getAttribute('href') === href);
-        (desktopLink ?? header.querySelector<HTMLElement>('.hc-header__brand'))?.focus({ preventScroll: true });
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') close(disclosure.contains(document.activeElement));
+    }, { capture: true, signal });
+    document.addEventListener('pointerdown', event => {
+      if (event.target instanceof Node && !header.contains(event.target)) close(disclosure.contains(document.activeElement));
+    }, { signal });
+    header.addEventListener('focusin', event => {
+      if (event.target instanceof HTMLElement) lastFocused = event.target;
+    }, { signal });
+    document.addEventListener('focusin', event => {
+      if (event.target instanceof Node && !header.contains(event.target)) { lastFocused = null; close(); }
+    }, { signal });
+    header.addEventListener('click', event => {
+      if (!(event.target instanceof Element) || event.button !== 0 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+      const link = event.target.closest<HTMLAnchorElement>('a');
+      if (link?.hasAttribute('data-header-region') && !link.target && !link.hasAttribute('download')) {
+        const heading = document.getElementById(link.hash.slice(1) + '-heading');
+        close();
+        if (heading) {
+          cancelAnimationFrame(focusFrame);
+          focusFrame = requestAnimationFrame(() => {
+            clearHeading();
+            if (!heading.hasAttribute('tabindex')) {
+              temporaryHeading = heading;
+              heading.setAttribute('tabindex', '-1');
+              heading.addEventListener('blur', clearHeading, { once: true, signal });
+            }
+            heading.focus({ preventScroll: true });
+          });
+        }
+      } else if (link || event.target.closest('[data-theme-toggle]')) close();
+    }, { signal });
+    const onResize = () => {
+      if (mobile.matches && header.querySelector('.hc-header__desktop')?.contains(lastFocused)) summary.focus({ preventScroll: true });
+      if (!mobile.matches) {
+        const active = lastFocused;
+        if (active instanceof HTMLElement && disclosure.contains(active)) {
+          const href = active.closest('a')?.getAttribute('href');
+          const desktopLink = [...header.querySelectorAll<HTMLAnchorElement>('.hc-header__desktop a')].find(link => link.getAttribute('href') === href);
+          (desktopLink ?? header.querySelector<HTMLElement>('.hc-header__brand'))?.focus({ preventScroll: true });
+        }
+        close();
       }
-      close();
-    }
-  };
-  mobile.addEventListener('change', onResize, { signal });
-  addEventListener('pagehide', () => {
+    };
+    mobile.addEventListener('change', onResize, { signal });
+    addEventListener('pagehide', () => {
+      controller.abort();
+      cancelAnimationFrame(frame);
+      cancelAnimationFrame(focusFrame);
+      clearHeading();
+      delete header.dataset.enhanced;
+      delete header.dataset.scripted;
+      addEventListener('pageshow', () => installHeader(header), { once: true });
+    }, { once: true, signal });
+    header.dataset.enhanced = 'true';
+    header.dataset.scripted = '';
+  } catch (error) {
     controller.abort();
     cancelAnimationFrame(frame);
     cancelAnimationFrame(focusFrame);
     clearHeading();
     delete header.dataset.enhanced;
-    addEventListener('pageshow', () => installHeader(header), { once: true });
-  }, { once: true });
+    header.removeAttribute('data-scripted');
+    header.removeAttribute('data-clear');
+    summary.removeAttribute('aria-expanded');
+    throw error;
+  }
 }

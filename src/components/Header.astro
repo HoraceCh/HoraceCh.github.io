@@ -47,11 +47,8 @@ const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pat
     </div>
   </header>
 </div>
-<script is:inline>
-  document.currentScript.previousElementSibling.querySelector('[data-header]').setAttribute('data-scripted', '');
-</script>
 <script>
   import { installHeader } from '../scripts/header';
   import { installHeaderGlass } from '../scripts/headerGlass';
-  document.querySelectorAll<HTMLElement>('[data-header]').forEach(header => { installHeader(header); installHeaderGlass(header); });
+  document.querySelectorAll<HTMLElement>('[data-header]').forEach(header => { installHeaderGlass(header); installHeader(header); });
 </script>

@@ -18,9 +18,20 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    outputs:
+      deployed_sha: ${{ steps.candidate.outputs.sha }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Identify deployment candidate
+        id: candidate
+        run: |
+          sha="$(git rev-parse HEAD)"
+          test "$sha" = "$GITHUB_SHA"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node
         uses: actions/setup-node@v5
@@ -54,15 +65,81 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v5
 
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
+
+  release_metadata:
+    name: Linear metadata (separate from Pages deployment)
+    if: ${{ always() && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+    needs: [build, deploy]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+
+    steps:
       - name: Checkout release history
+        if: ${{ needs.deploy.result == 'success' }}
         uses: actions/checkout@v5
         with:
+          ref: ${{ needs.build.outputs.deployed_sha }}
           fetch-depth: 0
 
+      - name: Verify deployed SHA
+        if: ${{ needs.deploy.result == 'success' }}
+        env:
+          DEPLOYED_SHA: ${{ needs.build.outputs.deployed_sha }}
+        run: |
+          test -n "$DEPLOYED_SHA"
+          test "$(git rev-parse HEAD)" = "$DEPLOYED_SHA"
+
       - name: Linear Release
+        id: linear
+        if: ${{ needs.deploy.result == 'success' }}
         uses: linear/linear-release-action@v0.18.0
         with:
           access_key: ${{ secrets.LINEAR_ACCESS_KEY }}
+          command: sync
+          cli_version: v0.18.0
+          name: Website production ${{ needs.build.outputs.deployed_sha }}
+          version: ${{ needs.build.outputs.deployed_sha }}
           links: |
-            Production=${{ steps.deployment.outputs.page_url }}
+            Production=${{ needs.deploy.outputs.page_url }}
             GitHub Actions=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Source=${{ github.server_url }}/${{ github.repository }}/commit/${{ needs.build.outputs.deployed_sha }}
+
+      - name: Verify Linear receipt
+        id: receipt
+        if: ${{ needs.deploy.result == 'success' }}
+        env:
+          DEPLOYED_SHA: ${{ needs.build.outputs.deployed_sha }}
+          RELEASE_ID: ${{ steps.linear.outputs.release-id }}
+          RELEASE_VERSION: ${{ steps.linear.outputs.release-version }}
+        run: |
+          test -n "$RELEASE_ID"
+          test "$RELEASE_VERSION" = "$DEPLOYED_SHA"
+
+      - name: Report deployment and synchronization separately
+        if: ${{ always() }}
+        env:
+          BUILD_RESULT: ${{ needs.build.result }}
+          PAGES_RESULT: ${{ needs.deploy.result }}
+          DEPLOYED_SHA: ${{ needs.build.outputs.deployed_sha }}
+          LINEAR_OUTCOME: ${{ steps.linear.outcome }}
+          RECEIPT_OUTCOME: ${{ steps.receipt.outcome }}
+        run: |
+          if [ "$BUILD_RESULT" != "success" ]; then
+            status="CI/build $BUILD_RESULT; no successful production release."
+          elif [ "$PAGES_RESULT" != "success" ]; then
+            status="Pages deployment $PAGES_RESULT; no successful production release."
+          elif [ "$LINEAR_OUTCOME" = "success" ] && [ "$RECEIPT_OUTCOME" = "success" ]; then
+            status="Pages deployment succeeded; Linear metadata synchronized."
+          else
+            status="Pages deployment succeeded; outstanding Linear synchronization debt."
+            echo "::warning::$status Retry only the release_metadata job for this original run and SHA."
+          fi
+          {
+            echo "## Production deployment accounting"
+            printf '\n- Candidate SHA: `%s`\n' "$DEPLOYED_SHA"
+            printf -- '- CI/build: %s\n- Pages deployment: %s\n' "$BUILD_RESULT" "$PAGES_RESULT"
+            printf -- '- Result: %s\n' "$status"
+          } >> "$GITHUB_STEP_SUMMARY"

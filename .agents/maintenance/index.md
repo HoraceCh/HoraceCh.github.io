@@ -9,6 +9,7 @@ This is a deterministic discovery view generated from canonical event files. It 
 
 | Event ID | Occurred | Kind | Category | Status | Risk | Summary |
 | --- | --- | --- | --- | --- | --- | --- |
+| [WEB-20261114-0001](events/WEB-20261114-0001.md) | 2026-11-14T03:22:18Z | governance | deployment-release | in-progress | medium | Add the repository release policy and bind successful Pages deployment metadata to the full deployed Git SHA using the existing Linear integration. |
 | [WEB-20261113-0002](events/WEB-20261113-0002.md) | 2026-11-13T15:29:06.086Z | change | site-structure | completed | low | Keep Search closed until enhancement and preserve native browse fallback |
 | [WEB-20261113-0001](events/WEB-20261113-0001.md) | 2026-11-13T11:37:02.029Z | change | site-structure | completed | low | Repair extreme-narrow navigation reachability and document overflow |
 | [WEB-20261109-0001](events/WEB-20261109-0001.md) | 2026-11-09T14:39:07.098Z | change | site-structure | in-progress | low | Adapt the Home canvas to wide screens |

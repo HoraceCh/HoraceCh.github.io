@@ -6,7 +6,7 @@ interface Props {
 const { openOnLoad = false } = Astro.props;
 ---
 
-<dialog open={openOnLoad} data-search-dialog data-search-open-on-load={openOnLoad ? 'true' : 'false'} class="site-search" aria-labelledby="site-search-title" data-pagefind-ignore>
+<dialog data-search-dialog data-search-open-on-load={openOnLoad ? 'true' : 'false'} class="site-search" aria-labelledby="site-search-title" data-pagefind-ignore>
   <div class="site-search__surface">
     <header class="site-search__header">
       <h2 id="site-search-title">Search</h2>

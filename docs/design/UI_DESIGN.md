@@ -384,7 +384,7 @@ For the approved Home v2 Header/brand successor only, the direction is selected 
 
 ## 16. Home v2 scoped successor — 2026-10-19
 
-Provenance: explicit owner Home v2 reconstruction authorization, HC-225/226 regional reconciliation and the Hero Ink Bleed register. This exception applies only to Home. Read the [English Home v2 handoff](home-v2/README.md) and [regional decision register](home-v2/decision-register.md). It records accepted direction; actual reference freeze, implementation and acceptance remain gated.
+Provenance: explicit owner Home v2 reconstruction authorization, HC-225/226 regional reconciliation and the Hero Ink Bleed register. This exception applies only to Home. The accepted regional direction is stated in this section: full-viewport Editorial Ink Hero, Recent News, Selected Works B, Honors A, and a minimal editorial Footer, with shared heading alignment. The earlier HC-225/226 working handoff and regional decision register are external historical evidence, not committed documents in this repository. This self-contained direction does not establish reference freeze, implementation or acceptance; those remain gated.
 
 For Home only, the successor order is **full-viewport Editorial Ink Hero → Recent News → Selected Works B → Honors A → minimal editorial Footer**. Only Hero owns a viewport and must grow with content/zoom. Lower sections use natural height, continuous flow and native scrolling. News, Works and Honors headings share one left edge; content widths may differ. This supersedes older Home order/composition choices, automatic import of HC-219/220 typography/backgrounds and a mandatory early Works peek. It does not change other pages or global typography.
 

@@ -36,17 +36,19 @@ if (args.includes('--serve')) {
   const pages = path.join(root, 'src/pages');
   fs.mkdirSync(pages, { recursive: true });
   const relative = file => path.relative(pages, path.resolve(file)).replaceAll('\\', '/');
-  const assets = JSON.parse(fs.readFileSync('docs/design/home-v2/assets/responsive-manifest.json', 'utf8'));
+  // Reuse committed admission records: id, destination, url, width, height and alt.
+  // Historical source/path fields describe provenance, not fixture inputs.
+  const assets = JSON.parse(fs.readFileSync('docs/design/home-v2/integration/asset-admission.json', 'utf8'));
   const content = JSON.parse(fs.readFileSync('src/data/home-v2.json', 'utf8'));
   const media = {};
   const imageRoot = path.join(root, 'public/images/home');
   fs.mkdirSync(imageRoot, { recursive: true });
-  for (const record of assets.records) {
+  for (const record of assets) {
     if (!['rm26-robot', 'ai-retrieval-ui'].includes(record.id) && !path.basename(record.path).startsWith('owner-approved-')) continue;
-    fs.copyFileSync(path.join('docs/design/home-v2/assets', record.path), path.join(imageRoot, path.basename(record.path)));
+    fs.copyFileSync(record.destination, path.join(imageRoot, path.basename(record.destination)));
   }
   for (const [id, assetId] of [['robomaster-2026-engineering-robot', 'rm26-robot'], ['ai-retrieval-tool', 'ai-retrieval-ui']]) {
-    const records = assets.records.filter(item => item.id === assetId);
+    const records = assets.filter(item => item.id === assetId);
     const largest = records.find(item => item.width === 1200);
     if (!largest) throw new Error(`Missing reviewed asset: ${assetId}`);
     media[id] = { src: '/images/home/' + path.basename(largest.path), width: largest.width, height: largest.height, alt: largest.alt,

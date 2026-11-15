@@ -16,8 +16,41 @@ test('actual Home composes unique regions, one H1 and one Footer with real conte
     assert.ok(current > previous); previous = current;
   }
   assert.match(html, /data-home-v2="true"/);
-  assert.doesNotMatch(html, /home-approach|home-hub|hero-ink__|data-ink-|Show older news|horaceos-governance/);
+  assert.doesNotMatch(html, /home-approach|home-hub|hero-ink__|data-ink-|horaceos-governance/);
   assert.equal((html.match(/class="honors-index"/g) ?? []).length, 1);
+});
+
+test('Home renders the approved V3 update and keeps one older launch item accessible', () => {
+  const news = html.match(/<section[^>]*id="recent-news"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(news);
+  assert.match(news, /<time datetime="2026-11-15"[^>]*>2026\.11\.15<\/time>/);
+  assert.ok(news.includes('Horace Website V3 is now live. The refreshed homepage brings together recent updates, selected projects, and honors, with an updated profile page and improved site search and navigation.'));
+  assert.deepEqual(
+    [...news.matchAll(/<time datetime="(\d{4}-\d{2}-\d{2})"/g)].map(match => match[1]),
+    ['2026-11-15', '2026-10-16', '2026-09-13', '2026-09-10', '2026-06-28'],
+  );
+  assert.match(news, /<summary[^>]*>[\s\S]*?Show older news[\s\S]*?\(1\)[\s\S]*?<\/summary>/);
+  assert.ok(news.indexOf('2026-06-28') > news.indexOf('<details'));
+  assert.match(news, /<ol start="5"[^>]*>[\s\S]*?Launched my personal website as a home for my projects and learning notes\./);
+});
+
+test('Home News data preserves four records and appends only the approved bilingual V3 update', () => {
+  const news = JSON.parse(fs.readFileSync('src/data/home-v2.json', 'utf8')).news;
+  assert.deepEqual(news.map(entry => entry.id), [
+    'site-browse-update-20261016',
+    'site-search-20260913',
+    'notes-update-20260910',
+    'website-launch-20260628',
+    'website-v3-release-20261115',
+  ]);
+  assert.equal(new Set(news.map(entry => entry.id)).size, news.length);
+  assert.deepEqual(news[4], {
+    id: 'website-v3-release-20261115',
+    date: '2026-11-15',
+    en: 'Horace Website V3 is now live. The refreshed homepage brings together recent updates, selected projects, and honors, with an updated profile page and improved site search and navigation.',
+    zh: 'Horace Website V3 正式上线。新版首页整合近期动态、精选项目与荣誉展示，并更新个人资料页面；站内搜索与导航交互也得到改进。',
+    links: [],
+  });
 });
 
 test('Home native local destinations and fragments resolve in the normal output', () => {

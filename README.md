@@ -5,6 +5,7 @@
 [![Deploy to GitHub Pages](https://github.com/HoraceCh/HoraceCh.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/HoraceCh/HoraceCh.github.io/actions/workflows/deploy.yml)
 ![Astro 7](https://img.shields.io/badge/Astro-7-BC52EE?logo=astro&logoColor=white)
 ![Node.js 24.14.1](https://img.shields.io/badge/Node.js-24.14.1-339933?logo=node.js&logoColor=white)
+[![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-6f42c1)](./LICENSE)
 
 **[Visit the live website](https://horacech.github.io/)** · [GitHub profile](https://github.com/HoraceCh) · [Projects](https://horacech.github.io/projects/) · [Notes](https://horacech.github.io/notes/)
 
@@ -154,8 +155,25 @@ Generated build output is not maintained as source content; update the source fi
 - [Obsidian Notes Sync](docs/OBSIDIAN_NOTES_SYNC.md)
 - [Obsidian Notes Feature Matrix](docs/OBSIDIAN_FEATURE_MATRIX.md)
 
-## Content License
+## Licensing
 
-The public Knowledge Garden content synchronized from Obsidian Publish is licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+This repository uses **separate licenses for different kinds of material**. No single license applies to every file.
 
-This is the website content license only. It does **not** apply to repository source code or theme code. The repository does not currently declare a separate source-code license; third-party assets remain subject to their own license terms and notices.
+| Material | License / permission |
+| --- | --- |
+| Original Horace Website software source code authored and controlled by Horace Chan | [PolyForm Noncommercial License 1.0.0](./LICENSE) |
+| Public Knowledge Garden content synchronized from Obsidian Publish | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
+| Personal profile and portfolio materials, including biography, résumé, portraits, photographs, project descriptions, awards, and personal media | All rights reserved unless a file-specific notice or separate written permission says otherwise |
+| Third-party code, components, fonts, icons, images, media, and other assets | Their respective upstream licenses and notices |
+
+### Website source code
+
+The original website source code is available for permitted **noncommercial** purposes under PolyForm Noncommercial 1.0.0. The license permits qualifying noncommercial use, modification, and distribution subject to its terms. **Commercial use is not granted.** Personal study, research, experiments, hobby projects, and qualifying educational or public-research uses are described in the license itself.
+
+This is a source-available, noncommercial license, not an OSI-approved Open Source license. Public repository access, viewing, cloning, or forking does not grant commercial rights. For the full terms and the exact source-code scope, see [LICENSE](./LICENSE) and the [license and attribution index](docs/licenses/README.md).
+
+### Content and third-party materials
+
+CC BY-NC-SA 4.0 applies to the public Knowledge Garden content identified above; it does not relicense third-party excerpts or materials embedded in that content. Personal profile and portfolio materials are not included in the source-code license. Third-party components and assets retain their own terms; see the [license and attribution index](docs/licenses/README.md).
+
+GitHub may identify PolyForm Noncommercial as **Other** rather than display its full name in repository metadata. The badge and this section identify the actual license; the full terms in [LICENSE](./LICENSE) remain authoritative.

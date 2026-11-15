@@ -1,0 +1,14 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  measure?: 'reading' | 'wide';
+}
+const { id, title, measure = 'reading' } = Astro.props;
+---
+<section class="home-v2-section home-v2-frame" id={id} aria-labelledby={id + '-heading'}>
+  <h2 class="home-v2-section__heading" id={id + '-heading'}>{title}</h2>
+  <div class:list={['home-v2-section__body', { 'home-v2-section__body--wide': measure === 'wide' }]}>
+    <slot />
+  </div>
+</section>

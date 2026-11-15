@@ -5,6 +5,7 @@ import SearchDialog from '../components/SearchDialog.astro';
 import '../styles/global.css';
 
 interface Props {
+  homeV2?: boolean;
   title?: string;
   description?: string;
   lang?: 'en' | 'zh-CN';
@@ -15,6 +16,7 @@ const {
   title = siteTitle,
   description = 'Personal research portfolio and notes system for robotics, embodied AI, VLA models, mechanical design, and AI-assisted workflows.',
   lang = 'en',
+  homeV2 = false,
 } = Astro.props;
 const pageTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
@@ -55,6 +57,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
         }
       })();
     </script>
+    <slot name="head" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
@@ -70,12 +73,13 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
-    <div class="site-shell">
-      <Header />
-      <main class="site-main" id="main-content">
+    <!-- Contain Header margins before the rest of Home is parsed. -->
+    <div class:list={["site-shell", { "home-v2-shell": homeV2 }]} style={homeV2 ? 'display: flow-root' : undefined}>
+      <Header homeV2={homeV2} />
+      <main class:list={["site-main", { "home-v2": homeV2 }]} id="main-content">
         <slot />
       </main>
-      <Footer />
+      <Footer homeV2={homeV2}><slot name="footer" /></Footer>
       <SearchDialog openOnLoad={Astro.url.pathname === '/search/'} />
     </div>
   </body>

@@ -1,0 +1,29 @@
+---
+import TagList from '../TagList.astro';
+
+interface Props {
+  readonly tags: string[];
+}
+
+const { tags } = Astro.props;
+---
+
+<div class="project-detail-tags" data-pagefind-ignore>
+  <TagList tags={tags} />
+</div>
+
+<style is:global>
+  .project-detail-tags .tag-list {
+    align-items: flex-start;
+    gap: 6px;
+    padding: 0;
+  }
+
+  .project-detail-tags .tag-list li {
+    min-block-size: 24px;
+    margin: 0;
+    padding: 2px 8px;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+</style>

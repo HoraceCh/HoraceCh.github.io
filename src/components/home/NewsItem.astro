@@ -1,0 +1,22 @@
+---
+interface Props {
+  readonly date: string;
+  readonly text: string;
+  readonly links?: readonly { readonly label: string; readonly href: string }[];
+}
+const { date, text, links = [] } = Astro.props;
+---
+<li>
+  <time datetime={date}>{date.replaceAll('-', '.')}</time>
+  <div><p>{text}</p>{links.length > 0 && <p class="destinations">{links.map(link => <a href={link.href}>{link.label}</a>)}</p>}</div>
+</li>
+<style>
+  li { display:grid; grid-template-columns:7rem minmax(0,1fr); gap:24px; padding-block:20px; border-block-end:1px solid var(--line); }
+  time { color:var(--home-news-date); font-size:.875rem; font-weight:600; font-variant-numeric:tabular-nums; line-height:1.7; }
+  p { color:var(--text); margin:0; line-height:1.7; overflow-wrap:anywhere; }
+  .destinations { display:flex; flex-wrap:wrap; gap:8px 20px; margin-block-start:8px; font-size:.875rem; }
+  a { color:inherit; text-decoration:underline; text-underline-offset:.2em; }
+  a:hover { color:var(--home-news-date); }
+  a:focus-visible { outline:2px solid var(--home-news-date); outline-offset:4px; }
+  @media(max-width:620px) { li { grid-template-columns:minmax(0,1fr); gap:6px; } }
+</style>

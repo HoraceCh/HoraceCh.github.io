@@ -1,66 +1,54 @@
 ---
+import HeaderGlass from './HeaderGlass.astro';
 import ThemeToggle from './ThemeToggle.astro';
-
+import '../styles/header.css';
+interface Props { homeV2?: boolean }
+const { homeV2 = false } = Astro.props;
 const links = [
-  { href: '/', label: 'Home' },
   { href: '/about/', label: 'About' },
   { href: '/projects/', label: 'Projects' },
   { href: '/notes/', label: 'Notes' },
-  { href: '/links/', label: 'Links' },
   { href: '/resume/', label: 'Resume' },
-  { href: '/contact/', label: 'Contact' },
 ];
-
-const currentPath = Astro.url.pathname;
-const isCurrent = (href: string) => currentPath === href || (href !== '/' && currentPath.startsWith(href));
+const regions = [
+  { href: '#recent-news', label: 'Recent News' },
+  { href: '#selected-works', label: 'Selected Works' },
+  { href: '#honors', label: 'Honors' },
+];
+const isCurrent = (href: string) => Astro.url.pathname === href || Astro.url.pathname.startsWith(href);
 ---
-
-<header class="site-header">
-  <div class="header-brand-row">
-    <a class="site-brand" href="/" data-astro-prefetch="hover">Horace Chan</a>
-    <ThemeToggle />
-  </div>
-  <nav class="site-nav" aria-label="Main navigation">
-    {
-      links.map((link) => (
-        <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined} data-astro-prefetch="hover">
-          {link.label}
+<div class="header-frame">
+  <header class="hc-header" data-header data-home-v2={homeV2 ? 'true' : undefined}>
+    <div class="hc-header__bar">
+      <HeaderGlass name="bar" />
+      <a class="hc-header__brand" href="/" aria-label="Horace Chan — Home" data-astro-prefetch="hover">
+        <img class="hc-header__mark-light" src="/brand/horace-refined/horace-mark-light.svg" width="32" height="32" alt="" />
+        <img class="hc-header__mark-dark" src="/brand/horace-refined/horace-mark-dark.svg" width="32" height="32" alt="" />
+      </a>
+      <nav class="hc-header__desktop" aria-label="Main navigation">
+        {links.map(link => <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined} data-astro-prefetch="hover">{link.label}</a>)}
+      </nav>
+      <div class="hc-header__actions">
+        <a class="hc-header__search" href="/search/" data-search-trigger aria-label="Search" title="Search (Ctrl/Cmd+K)">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 5 5" /></svg>
         </a>
-      ))
-    }
-    <a class="site-search-trigger" href="/search/" data-search-trigger>
-      Search <kbd>Ctrl K</kbd>
-    </a>
-  </nav>
-</header>
-
+        <ThemeToggle />
+        <details class="hc-header__disclosure">
+          <summary aria-controls="header-mobile-navigation">Menu <svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor"><path d="m4 7 5 5 5-5" /></svg></summary>
+          <nav id="header-mobile-navigation" class="hc-header__panel" aria-label="Mobile navigation">
+            <HeaderGlass name="panel" />
+            <div class="hc-header__panel-scroll">
+            {links.map(link => <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>{link.label}<span aria-hidden="true">↗</span></a>)}
+            {homeV2 && <div class="hc-header__regions">{regions.map(link => <a href={link.href} data-header-region>{link.label}<span aria-hidden="true">↓</span></a>)}</div>}
+            </div>
+          </nav>
+        </details>
+      </div>
+    </div>
+  </header>
+</div>
 <script>
-  const nav = document.querySelector<HTMLElement>('.site-nav');
-
-  function revealNavLink(link: HTMLElement | null) {
-    if (!link || !nav || nav.scrollWidth <= nav.clientWidth) return;
-
-    const documentScroll = { left: window.scrollX, top: window.scrollY };
-    link.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'nearest' });
-
-    if (window.scrollX !== documentScroll.left || window.scrollY !== documentScroll.top) {
-      window.scrollTo({ ...documentScroll, behavior: 'auto' });
-    }
-  }
-
-  const scheduleAfterPaint = (callback: () => void) => {
-    window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(callback);
-    });
-  };
-
-  if (nav && nav.dataset.revealInitialized !== 'true') {
-    nav.dataset.revealInitialized = 'true';
-    nav.addEventListener('focusin', (event) => {
-      revealNavLink((event.target as Element).closest<HTMLElement>('a'));
-    });
-
-    const currentLink = nav.querySelector<HTMLElement>('[aria-current="page"]');
-    scheduleAfterPaint(() => revealNavLink(currentLink));
-  }
+  import { installHeader } from '../scripts/header';
+  import { installHeaderGlass } from '../scripts/headerGlass';
+  document.querySelectorAll<HTMLElement>('[data-header]').forEach(header => { installHeaderGlass(header); installHeader(header); });
 </script>

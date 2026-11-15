@@ -1,0 +1,66 @@
+.site-main:has(> .resume-page) { padding-top: 40px; }
+.resume-page { max-width: 900px; color: var(--text); }
+.resume-page p { color: var(--text); }
+.resume-page h1 {
+  max-width: 24ch;
+  margin: 0 0 18px;
+  font-size: clamp(2rem, 3.2vw, 2.65rem);
+  line-height: 1.15;
+  letter-spacing: -.035em;
+}
+.resume-page h2 { font-size: 18px; line-height: 1.25; letter-spacing: -.015em; }
+.resume-page h3 { font-size: 1.08rem; line-height: 1.4; letter-spacing: 0; }
+.resume-page .kicker {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font: 12px/1.5 var(--mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.resume-page .intro { max-width: 64ch; margin-bottom: 10px; font-size: 16px; line-height: 1.65; }
+.resume-page .identity-line { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-bottom: 18px; }
+.resume-page section { padding: 17px 0; border-top: 1px solid var(--line); }
+.resume-page section > h2 { margin-bottom: 14px; }
+.resume-page .resume-record { min-width: 0; margin-bottom: 18px; }
+.resume-page .resume-record:last-child { margin-bottom: 0; }
+.resume-page .record-meta { margin: 3px 0 7px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.resume-page .resume-record p { margin-bottom: 8px; font-size: 15px; line-height: 1.55; }
+.resume-page .resume-record h3 { margin-bottom: 4px; overflow-wrap: anywhere; }
+.resume-page .muted { color: var(--muted); }
+.resume-page .skills-used { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.resume-page .honor-record { font-size: 14px; line-height: 1.65; }
+.resume-page .honor-record h3 { font-size: 15px; line-height: 1.7; font-weight: 600; }
+.resume-page .honor-record .record-meta { font-size: 13px; }
+.resume-page a { color: var(--text); overflow-wrap: anywhere; scroll-margin-bottom: 24px; transition: none; }
+.resume-page a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+.resume-page .print-url { display: none; }
+@media (max-width: 700px) {
+  .site-main:has(> .resume-page) { padding-top: 32px; }
+  .resume-page h1 { font-size: 32px; letter-spacing: -.025em; }
+  .resume-page section { padding: 16px 0; }
+  .resume-page .skills-used { grid-template-columns: 1fr; gap: 16px; }
+}
+@media (forced-colors: active) {
+  .resume-page a { color: LinkText; }
+  .resume-page a:focus-visible { outline-color: Highlight; }
+}
+@page { size: auto; margin: 14mm; }
+@media print {
+  html, html.dark, body { background: white !important; color: black !important; color-scheme: only light !important; }
+  .header-frame, header, footer, .skip-link, dialog { display: none !important; }
+  .site-shell, .site-main:has(> .resume-page) { width: auto; max-width: none; margin: 0; padding: 0; border: 0; }
+  .site-main:has(> .resume-page), .resume-page { background: white !important; }
+  .resume-page { max-width: none; font: 10pt/1.35 Arial, sans-serif; }
+  .resume-page, .resume-page p, .resume-page .muted, .resume-page .record-meta { color: black !important; }
+  .resume-page h1 { font-size: 22pt; }
+  .resume-page section > h2 { font-size: 13pt; break-after: avoid; }
+  .resume-page section:last-child > p { break-after: avoid; }
+  .resume-page .resume-record h3, .resume-page .skills-used h3 { font-size: 10.5pt; break-after: avoid; }
+  .resume-page section { padding: 10pt 0; border-color: #777; }
+  .resume-page .resume-record, .resume-page .skills-used > div { break-inside: avoid; margin-bottom: 12pt; }
+  .resume-page .skills-used { display: block; }
+  .resume-page .intro { font-size: 11pt; margin-bottom: 10pt; }
+  .resume-page p, .resume-page .resume-record p { font-size: 10pt; line-height: 1.35; orphans: 3; widows: 3; }
+  .resume-page a { color: black !important; text-decoration: underline; }
+  .resume-page .print-url { display: inline; font-size: 9pt; overflow-wrap: anywhere; }
+}

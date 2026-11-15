@@ -1,0 +1,24 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="home-footer home-v2-frame">
+  <div class="footer-columns">
+    <div><p class="brand">Horace Chan.</p><p class="direction">Robotics & Embodied AI</p></div>
+    <nav aria-label="Home footer explore"><h2>Explore</h2><a href="/about/">About</a><a href="/projects/">Projects</a><a href="/notes/">Notes</a><a href="/resume/">Resume</a></nav>
+    <nav aria-label="Home footer connect"><h2>Connect</h2><a href="/contact/">Contact</a><a href="/links/">Links</a><a href="https://github.com/HoraceCh" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></nav>
+  </div>
+  <div class="footer-bottom"><p>© {year} Horace Chan.</p><a href="#main-content">Back to top <span aria-hidden="true">↑</span></a></div>
+</footer>
+<style>
+  footer { margin-block-start:104px; padding-block:40px 32px; border-block-start:1px solid var(--line); }
+  .footer-columns { display:grid; grid-template-columns:2fr 1fr 1fr; gap:40px; }
+  .brand { color:var(--text); font-size:1.25rem; font-weight:700; margin:0 0 8px; }
+  .direction { color:var(--muted); margin:0; font-size:.875rem; }
+  h2 { font-size:.75rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; margin:0 0 16px; color:var(--muted); }
+  nav a { display:table; margin-block:8px; }
+  a { color:var(--text); font-size:.875rem; text-decoration:underline; text-underline-offset:.2em; }
+  a:focus-visible { outline:2px solid var(--text); outline-offset:4px; }
+  .footer-bottom { display:flex; flex-wrap:wrap; justify-content:space-between; gap:16px; padding-block-start:40px; }
+  .footer-bottom p { color:var(--muted); font-size:.8125rem; margin:0; }
+  @media(max-width:620px) { .footer-columns { grid-template-columns:1fr 1fr; gap:32px; } .footer-columns > div { grid-column:1 / -1; } footer { margin-block-start:72px; } }
+</style>

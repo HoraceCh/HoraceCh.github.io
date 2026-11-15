@@ -1,0 +1,36 @@
+.site-main:has(> .contact-page) { padding-top: 40px; }
+.contact-page { max-width: 680px; color: var(--text); overflow-wrap: anywhere; }
+.contact-page p { color: var(--text); }
+.contact-page h1 {
+  max-width: 24ch;
+  margin: 0 0 18px;
+  font-size: clamp(2rem, 3vw, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: -.035em;
+}
+.contact-page h2 { font-size: 1.25rem; line-height: 1.25; letter-spacing: -.015em; }
+.contact-page .kicker {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font: 12px/1.5 var(--mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.contact-page .intro { max-width: 64ch; margin-bottom: 24px; font-size: 18px; line-height: 1.65; }
+.contact-page .channel { display: block; min-width: 0; padding: 20px 0; border-top: 1px solid var(--line); }
+.contact-page .channel h2 { margin-bottom: 12px; }
+.contact-page .channel a { display: inline-block; max-width: 100%; min-height: 44px; padding: 8px 0; font-size: 18px; line-height: 1.4; }
+.contact-page .channel p { margin-bottom: 0; }
+.contact-page a { color: var(--text); overflow-wrap: anywhere; scroll-margin-bottom: 24px; transition: none; }
+.contact-page a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+.contact-page .closing { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px; }
+@media (max-width: 700px) {
+  .site-main:has(> .contact-page) { padding-top: 32px; }
+  .contact-page h1 { font-size: 32px; letter-spacing: -.025em; }
+  .contact-page .intro { font-size: 17px; }
+  .contact-page .channel a { font-size: 16px; }
+}
+@media (forced-colors: active) {
+  .contact-page a { color: LinkText; }
+  .contact-page a:focus-visible { outline-color: Highlight; }
+}

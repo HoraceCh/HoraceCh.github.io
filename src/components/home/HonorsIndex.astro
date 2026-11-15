@@ -1,0 +1,30 @@
+---
+import Section from './HomeSection.astro';
+interface Props {
+  readonly entries: readonly {
+    readonly id: string;
+    readonly date: string;
+    readonly title: string;
+    readonly level: string;
+    readonly participation: string;
+    readonly issuer: string;
+    readonly order: number;
+  }[];
+}
+const entries = Astro.props.entries.toSorted((a, b) => b.date.localeCompare(a.date) || a.order - b.order);
+---
+<Section id="honors" title="Honors & Recognition.">
+  <ol class="honors-index" lang="zh-CN">{entries.map(entry => <li>
+    <time datetime={entry.date}>{entry.date.replace('-', '.')}</time>
+    <div><h3>{entry.title}</h3><p>{entry.level} · {entry.participation}</p><p>{entry.issuer}</p></div>
+  </li>)}</ol>
+</Section>
+<style>
+  h3 { color:var(--text); }
+  ol { list-style:none; padding:0; margin:0; }
+  li { display:grid; grid-template-columns:7rem minmax(0,1fr); gap:24px; padding-block:24px; border-block-end:1px solid var(--line); }
+  time { color:var(--muted); font-size:.875rem; line-height:1.7; font-variant-numeric:tabular-nums; }
+  h3 { font-size:1.0625rem; line-height:1.65; font-weight:600; letter-spacing:normal; margin:0 0 8px; overflow-wrap:anywhere; }
+  p { color:var(--muted); font-size:.875rem; line-height:1.7; margin:4px 0 0; overflow-wrap:anywhere; }
+  @media(max-width:620px) { li { grid-template-columns:minmax(0,1fr); gap:8px; } }
+</style>

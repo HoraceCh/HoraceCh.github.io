@@ -1,28 +1,24 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import '../styles/contact-v3.css';
 ---
 
-<Layout title="Contact" description="Contact links and professional profiles.">
-  <article class="article">
-    <p class="eyebrow">Contact</p>
-    <h1>Contact</h1>
-    <p>
-      I am open to academic and engineering conversations related to AI-assisted workflows, Vision-Language-Action
-      models, embodied AI, robotics, robot control, and mechanical design.
-    </p>
+<Layout title="Contact" description="Email and GitHub contact links for HAO CHEN (Horace Chan).">
+  <article class="identity-page contact-page">
+    <p class="kicker">Contact</p>
+    <h1>Let’s talk.</h1>
+    <p class="intro">I’m HAO CHEN (Horace Chan). For project discussions, research-learning exchanges, or internship conversations, email is the most direct way to reach me.</p>
 
-    <h2>Profiles</h2>
-    <ul>
-      <li><a href="https://HoraceCh.github.io" rel="noopener noreferrer" target="_blank">Personal site</a></li>
-      <li><a href="https://github.com/HoraceCh" rel="noopener noreferrer" target="_blank">GitHub</a></li>
-      <li><a href="https://www.linkedin.com/in/horacech" rel="noopener noreferrer" target="_blank">LinkedIn</a></li>
-      <li><a href="mailto:horacebuddle@gmail.com">horacebuddle@gmail.com</a></li>
-    </ul>
-
-    <h2>Notes</h2>
-    <p>
-      For project discussions, research-learning exchanges, or engineering notes, email and GitHub are the most direct
-      contact channels.
-    </p>
+    <section class="channel">
+      <h2>Email</h2>
+      <a href="mailto:horacebuddle@gmail.com">horacebuddle@gmail.com</a>
+      <p>Project, research-learning, and internship conversations.</p>
+    </section>
+    <section class="channel">
+      <h2>GitHub</h2>
+      <a href="https://github.com/HoraceCh">GitHub · HoraceCh</a>
+      <p>Public code and project context.</p>
+    </section>
+    <p class="closing">A short introduction, your topic, and a relevant link are helpful.</p>
   </article>
 </Layout>

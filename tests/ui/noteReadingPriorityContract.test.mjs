@@ -106,7 +106,7 @@ test('S2 transition and prefetch contracts remain exact', async () => {
     readFile('src/styles/global.css', 'utf8'),
     readFile('astro.config.mjs', 'utf8'),
     readFile('src/components/Header.astro', 'utf8'),
-    readFile('src/pages/index.astro', 'utf8'),
+    readFile('src/components/home/SelectedWorks.astro', 'utf8'),
     readFile('src/pages/notes/index.astro', 'utf8'),
     readFile('src/components/notes/NoteProperties.astro', 'utf8'),
   ]);

@@ -1,6 +1,8 @@
 ---
 import StatusBadge from './StatusBadge.astro';
 import TagList from './TagList.astro';
+import ProjectCardMedia from './projects/ProjectCardMedia.astro';
+import type { ProjectMedia } from '../data/projectMedia';
 
 interface ProjectLinks {
   github?: string;
@@ -17,9 +19,12 @@ interface Props {
   tags: string[];
   href: string;
   links?: ProjectLinks;
+  variant?: 'text' | 'browse-media';
+  media?: ProjectMedia;
 }
 
-const { title, description, status, category, maturity, tags, href, links = {} } = Astro.props;
+const { title, description, status, category, maturity, tags, href, links = {}, variant = 'text', media } = Astro.props;
+const browseMedia = variant === 'browse-media' ? media : undefined;
 const formatLabel = (value?: string) => value?.replace(/-/g, ' ');
 const maturityLabel = formatLabel(maturity);
 const showMaturity = maturityLabel && maturityLabel.toLowerCase() !== formatLabel(status)?.toLowerCase();
@@ -31,23 +36,25 @@ const visibleLinks = [
 ---
 
 <article class="card project-card">
-  <h3><a href={href}>{title}</a></h3>
-  <div class="card-meta">
-    <StatusBadge status={status} />
-    <span>{category}</span>
-    {showMaturity && <span>{maturityLabel}</span>}
-  </div>
-  <p>{description}</p>
-  {
-    visibleLinks.length > 0 && (
-      <div class="card-links" aria-label={`${title} links`}>
-        {visibleLinks.map((link) => (
-          <a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener noreferrer' : undefined}>
-            {link.label}
-          </a>
-        ))}
-      </div>
-    )
-  }
-  <TagList tags={tags} />
+  <ProjectCardMedia media={browseMedia}>
+    <h3 slot="title"><a href={href}>{title}</a></h3>
+    <div slot="meta" class="card-meta">
+      <StatusBadge status={status} />
+      <span>{category}</span>
+      {showMaturity && <span>{maturityLabel}</span>}
+    </div>
+    <p slot="description">{description}</p>
+    {
+      visibleLinks.length > 0 && (
+        <div slot="links" class="card-links" aria-label={`${title} links`}>
+          {visibleLinks.map((link) => (
+            <a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener noreferrer' : undefined}>
+              {link.label}
+            </a>
+          ))}
+        </div>
+      )
+    }
+    <TagList slot="tags" tags={tags} />
+  </ProjectCardMedia>
 </article>

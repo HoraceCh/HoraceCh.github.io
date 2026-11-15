@@ -1,0 +1,36 @@
+---
+import Section from './HomeSection.astro';
+import Item from './NewsItem.astro';
+interface Props {
+  readonly entries: readonly {
+    readonly id: string;
+    readonly date: string;
+    readonly en: string;
+    readonly zh: string;
+    readonly links: readonly { readonly label: string; readonly href: string }[];
+  }[];
+  readonly locale?: 'en' | 'zh';
+}
+const { entries, locale = 'en' } = Astro.props;
+const sorted = entries.toSorted((a, b) => b.date.localeCompare(a.date));
+const latest = sorted.slice(0, 4);
+const older = sorted.slice(4);
+---
+<Section id="recent-news" title="Recent News.">
+  <div class="home-news">
+    {latest.length > 0 && <ol>{latest.map(entry => <Item date={entry.date} text={entry[locale]} links={entry.links} />)}</ol>}
+    {older.length > 0 && <details>
+      <summary><span class="closed-label">{locale === 'zh' ? '展开更早动态' : 'Show older news'} ({older.length})</span><span class="open-label">{locale === 'zh' ? '收起动态' : 'Show less'}</span></summary>
+      <ol start="5">{older.map(entry => <Item date={entry.date} text={entry[locale]} links={entry.links} />)}</ol>
+    </details>}
+  </div>
+</Section>
+<style>
+  .home-news { --home-news-date:#47765a; color:var(--text); }
+  :global(:root.dark) .home-news { --home-news-date:#91b99e; }
+  ol { list-style:none; padding:0; margin:0; }
+  summary { cursor:pointer; width:fit-content; padding-block:20px; color:var(--home-news-date); font-size:.875rem; font-weight:600; }
+  summary:focus-visible { border-radius:999px; outline:2px solid var(--home-news-date); outline-offset:4px; }
+  .open-label, details[open] .closed-label { display:none; }
+  details[open] .open-label { display:inline; }
+</style>

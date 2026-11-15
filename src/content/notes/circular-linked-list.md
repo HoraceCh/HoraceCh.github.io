@@ -76,7 +76,7 @@ typedef struct Node {
 ```c
 Node* initCircularList() {
     Node* head = (Node*)malloc(sizeof(Node));
-    if (head <mark> NULL) {
+    if (head == NULL) {
         printf("内存分配失败\n");
         exit(1);
     }
@@ -91,7 +91,7 @@ Node* initCircularList() {
 
 ```c
 void printList(Node* head) {
-    if (head </mark> NULL || head->next <mark> head) {
+    if (head == NULL || head->next == head) {
         printf("链表为空\n");
         return;
     }
@@ -114,7 +114,7 @@ void printList(Node* head) {
 |**对比维度**|**普通单链表**|**单向循环链表**|
 |---|---|---|
 |**尾节点指针**|指向 `NULL`|指向头节点 `head`|
-|**遍历结束条件**|`curr </mark> NULL` 或 `curr->next <mark> NULL`|`curr </mark> head` 或 `curr->next == head`|
+|**遍历结束条件**|`curr == NULL` 或 `curr->next == NULL`|`curr == head` 或 `curr->next == head`|
 |**遍历起始限制**|只能从头节点开始遍历|可以从 **任意节点** 出发遍历整个链表|
 |**查找前驱节点**|时间复杂度为 O(n) ，且极度不便|时间复杂度仍为 O(n) ，但顺着环总能找到|
 

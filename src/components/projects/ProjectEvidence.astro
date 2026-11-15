@@ -1,0 +1,95 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  readonly evidence: CollectionEntry<'projects'>['data']['evidence'];
+}
+
+const { evidence } = Astro.props;
+const site = Astro.site ?? new URL('https://horacech.github.io');
+const links = evidence.flatMap((item) => {
+  const destination = item.url;
+  if (/[\s\\\u0000-\u001f\u007f]/u.test(destination)
+    || !/^(?:https?:\/\/|\/(?!\/))/i.test(destination)) return [];
+  try {
+    const url = new URL(destination, site);
+    if (!['http:', 'https:'].includes(url.protocol)) return [];
+    return [{ ...item, external: url.origin !== site.origin }];
+  } catch (error) {
+    if (error instanceof TypeError) return [];
+    throw error;
+  }
+});
+if (links.length !== evidence.length) {
+  console.warn(`[ProjectEvidence] Omitted ${evidence.length - links.length} unsafe evidence destination(s).`);
+}
+---
+
+{links.length > 0 && (
+  <section class="project-evidence" aria-label="Evidence" data-pagefind-ignore="all">
+    <h2>Evidence</h2>
+    <ul>
+      {links.map((item) => (
+        <li>
+          <a href={item.url} target={item.external ? '_blank' : undefined} rel={item.external ? 'noopener noreferrer' : undefined}>
+            {item.label}{item.external && <span class="new-tab"> ↗ — opens in new tab</span>}
+          </a>
+          <span class="evidence-type">{item.type}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .project-evidence {
+    margin-block-start: 32px;
+    padding-block-start: 24px;
+    border-block-start: 1px solid var(--line);
+    min-inline-size: 0;
+  }
+
+  .project-evidence h2 {
+    margin-block: 0 16px;
+  }
+
+  .project-evidence ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 16px;
+    padding-block: 12px;
+    border-block-end: 1px solid var(--line);
+  }
+
+  .project-evidence li + li { margin-block-start: 0; }
+
+  a {
+    display: block;
+    min-block-size: 44px;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    align-content: center;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .new-tab,
+  .evidence-type {
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 400;
+  }
+
+  @media (max-width: 640px) {
+    li { display: block; }
+    .evidence-type { display: block; }
+  }
+</style>

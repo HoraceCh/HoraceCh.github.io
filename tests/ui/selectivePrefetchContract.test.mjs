@@ -6,7 +6,7 @@ import test from 'node:test';
 const approvedSourceCounts = new Map([
   ['src/components/Header.astro', 2],
   ['src/components/notes/NoteProperties.astro', 1],
-  ['src/pages/index.astro', 1],
+  ['src/components/home/SelectedWorks.astro', 1],
   ['src/pages/notes/index.astro', 1],
 ]);
 
@@ -51,14 +51,14 @@ test('selective prefetch stays explicit, intent-based, and limited to approved s
   assert.deepEqual(actualSourceCounts, approvedSourceCounts);
 
   const header = sourceByPath.get('src/components/Header.astro');
-  const home = sourceByPath.get('src/pages/index.astro');
+  const home = sourceByPath.get('src/components/home/SelectedWorks.astro');
   const noteCard = sourceByPath.get('src/components/NoteCard.astro');
   const noteList = sourceByPath.get('src/components/NoteList.astro');
   const notesIndex = sourceByPath.get('src/pages/notes/index.astro');
   const noteProperties = sourceByPath.get('src/components/notes/NoteProperties.astro');
-  assert.match(header, /class="site-brand"[^>]*data-astro-prefetch="hover"/);
+  assert.match(header, /class="hc-header__brand"[^>]*data-astro-prefetch="hover"/);
   assert.match(header, /links\.map[\s\S]*?<a href=\{link\.href\}[^>]*data-astro-prefetch="hover"/);
-  assert.match(home, /class="work-card"[^>]*data-astro-prefetch="hover"/);
+  assert.match(home, /<a href=\{projectHref\(project\)\} data-astro-prefetch="hover">View project/);
   assert.match(noteCard, /prefetch\?: boolean/);
   assert.match(noteCard, /prefetch = false/);
   assert.match(noteCard, /data-astro-prefetch=\{prefetch \? ['"]hover['"] : undefined\}/);
@@ -147,8 +147,10 @@ test('built HTML exposes hover prefetch only on eligible page-navigation anchors
     assert.doesNotMatch(skipLink, /data-astro-prefetch/);
   }
 
-  const homeWorkLinks = anchorTags(home).filter((tag) => /class="work-card"/.test(tag));
-  assert.ok(homeWorkLinks.length > 0);
+  const workActions = [...home.matchAll(/<div class="project-actions"[^>]*>([\s\S]*?)<\/div>/g)].map(match => match[1]);
+  assert.equal(workActions.length, 2);
+  const homeWorkLinks = workActions.flatMap(anchorTags).filter(tag => /href="\/projects\//.test(tag));
+  assert.equal(homeWorkLinks.length, 2);
   assert.ok(homeWorkLinks.every((tag) => /data-astro-prefetch="hover"/.test(tag)));
 
   const noteEntryLinks = anchorTags(notes).filter((tag) =>

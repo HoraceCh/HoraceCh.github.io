@@ -58,3 +58,20 @@ test('Note fragments receive bounded meaningful-block feedback without replacing
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.is-note-fragment-target[\s\S]*?transition: none/);
   assert.match(css, /@media \(forced-colors: active\)[\s\S]*?outline: 2px solid CanvasText/);
 });
+
+
+// The mobile Note rule appears later than header.css. Its specificity must
+// never lower the fixed Header reservation for native H2/H3 destinations.
+test('Note H2/H3 fragments retain the shared Header reservation over later mobile rhythm rules', async () => {
+  const [header, global] = await Promise.all([
+    readFile('src/styles/header.css', 'utf8'),
+    readFile('src/styles/global.css', 'utf8'),
+  ]);
+  const reservation = header.match(/body:has\(\[data-header\]\) :is\(\[id\],a,button,input,summary\),\s*body:has\(\[data-header\]\) \.note-prose :is\(h2,h3\)\[id\]\s*\{([^}]+)\}/)?.[1];
+  assert.ok(reservation, 'Note headings need their own stronger selector in the existing shared reservation rule');
+  assert.match(reservation, /scroll-margin-top:\s*calc\(105px \+ env\(safe-area-inset-top,0px\)\)/);
+  assert.doesNotMatch(reservation, /!important/);
+  assert.match(global, /@media \(max-width: 420px\)[\s\S]*?\.note-prose :is\(h2, h3\)\[id\]/);
+  // Header Note selector specificity (0,3,2) outranks the late mobile
+  // .note-prose :is(h2, h3)[id] rule (0,2,1), regardless of stylesheet order.
+});

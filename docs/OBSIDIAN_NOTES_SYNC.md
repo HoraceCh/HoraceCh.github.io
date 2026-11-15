@@ -61,6 +61,17 @@ npm.cmd run notes:sync:strict -- --source "D:\Path\To\Obsidian Publish" --vault 
 
 `--source <path>`：Obsidian Publish 文件夹。只有这个目录里的 Markdown 文件会被发布。也可以用环境变量 `OBSIDIAN_PUBLISH_DIR` 提供。
 
+`--target <publish-relative-path>`：只更新一个精确的 Publish 相对 Markdown 路径，例如 `Programming Languages/Python/python-print.md`。路径相对于 `--source`，不是 Vault；支持 Windows 和 POSIX 分隔符，不接受短标题、basename 猜测、绝对/驱动器路径、`..`、隐藏/私有/草稿/模板/控制文件或逃逸 source 的符号链接。目标必须存在且可发布；只允许一个 `--target`，禁止与 `--clean` 同用。
+
+```powershell
+npm.cmd run notes:publish:dry -- --target "Programming Languages/Python/python-print.md"
+npm.cmd run notes:publish -- --target "Programming Languages/Python/python-print.md"
+```
+
+单篇模式仍读取完整 Publish 索引，以保留跨笔记链接、标题片段和 slug 唯一性判断，但只转换和写入目标。它使用独立的协调路径，按现有 manifest 中精确的 sourcePath 识别旧输出，不把单篇计划当成完整集合；保留其他 Notes、资产、manifest 条目和额外元数据。已有数组若遵循规范排序则继续使用同一排序；若为其他有效顺序，只在原位置替换目标条目，保留无关条目的相对顺序。slug 变化时，只移除 manifest 和frontmatter 之后第一行的生成标记共同确认归属的旧目标（没有 frontmatter 的独立标记不能建立归属），以及 manifest 登记在该旧 slug 下且不再使用的资产，不递归删除未登记文件。
+
+目标模式在写入前拒绝损坏/冲突的 manifest、非目标所有的输出或资产、未标记的手写笔记和符号链接输出路径。若 manifest 缺失而已有生成 Notes 或资产，必须停止，不猜测或重建部分归属。全新空输出目录可由目标模式初始化。目标内容变化但 metadata、slug 和资产成员未变时，manifest 保持原字节；再次执行应无内容差异。dry-run 不写入或删除任何文件。所有目标归属判断通过后才开始写入；它不提供并发写入锁，运行时必须维持单写者。
+
 `--vault <path>`：可选的 Obsidian vault 根目录。只用于辅助查找被引用的附件；不要把它当作发布来源。
 
 `--out <path>`：转换后 notes 的输出目录。默认是 `src/content/notes`。

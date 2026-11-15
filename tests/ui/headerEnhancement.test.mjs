@@ -85,7 +85,7 @@ test('Python width examples describe the single fill character', () => {
   const note = fs.readFileSync('src/content/notes/python-print.md', 'utf8');
   for (const spec of ['{:=>10}', '{:=<20}']) {
     const line = note.split('\n').find(line => line.includes(spec));
-    assert.ok(line.includes('不够时=填充'));
+    assert.ok(line.includes('不够时以 = 字符重复填充'));
     assert.ok(!line.includes('不够时===填充'));
   }
 });

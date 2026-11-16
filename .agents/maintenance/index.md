@@ -7,6 +7,7 @@ This is a deterministic discovery view generated from canonical event files. It 
 
 ## Records
 
+| [WEB-20261116-0001](events/WEB-20261116-0001.md) | 2026-11-16T01:16:29Z | change | content-publication | in-progress | low | Refresh the public AI Retrieval Tool project profile from current source documentation. |
 | Event ID | Occurred | Kind | Category | Status | Risk | Summary |
 | --- | --- | --- | --- | --- | --- | --- |
 | [WEB-20261114-0004](events/WEB-20261114-0004.md) | 2026-11-14T17:01:24.670Z | change | notes-pipeline | completed | medium | Add ownership-checked single-note synchronization with manifest preservation. |

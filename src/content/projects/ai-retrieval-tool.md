@@ -34,7 +34,7 @@ evidence:
   - label: Live application
     url: https://horacech.github.io/Information-Retrieval-Tool/
     type: demo
-  - label: Source code and README
+  - label: Public repository
     url: https://github.com/HoraceCh/Information-Retrieval-Tool
     type: repository
   - label: User guide

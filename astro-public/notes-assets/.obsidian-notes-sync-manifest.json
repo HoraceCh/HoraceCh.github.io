@@ -1,9 +1,5 @@
 {
   "assets": [
-    "astro-public/notes-assets/004/sciencedirect-elsevier-eur7ls.png",
-    "astro-public/notes-assets/004/sciencedirect-elsevier.png",
-    "astro-public/notes-assets/004/springer-nature-link-193xmr.png",
-    "astro-public/notes-assets/004/springer-nature-link.png",
     "astro-public/notes-assets/c-arrays/asset-12r131.png",
     "astro-public/notes-assets/c-constants-variables-storage/asset-avrsw3.png",
     "astro-public/notes-assets/c-constants-variables-storage/asset-ekliwx.png",
@@ -24,7 +20,7 @@
     "astro-public/notes-assets/tree-binary-tree/asset-1tycfh.png",
     "astro-public/notes-assets/tree-binary-tree/asset-cjdx96.png"
   ],
-  "generatedAt": "2026-07-11T14:16:11.780Z",
+  "generatedAt": "2026-11-16T12:03:13.160Z",
   "noteRecords": [
     {
       "output": "src/content/notes/000.md",
@@ -102,6 +98,18 @@
       "output": "src/content/notes/006.md",
       "slug": "006",
       "sourcePath": "Information Retrieval/006 知识产权文献检索与利用.md",
+      "collection": "Information Retrieval",
+      "modulePath": [
+        "Information Retrieval"
+      ],
+      "module": "Information Retrieval",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/007.md",
+      "slug": "007",
+      "sourcePath": "Information Retrieval/007 大语言模型的提示词工程.md",
       "collection": "Information Retrieval",
       "modulePath": [
         "Information Retrieval"
@@ -332,6 +340,61 @@
       "noteRole": "learning-note"
     },
     {
+      "output": "src/content/notes/codex-bundled-plugin-recovery.md",
+      "slug": "codex-bundled-plugin-recovery",
+      "sourcePath": "Tools/Agent/Codex/Codex Desktop bundled 插件故障排查与修复.md",
+      "collection": "Tools",
+      "modulePath": [
+        "Tools",
+        "Agent",
+        "Codex"
+      ],
+      "module": "Codex",
+      "isIndex": false,
+      "noteRole": "workflow-note"
+    },
+    {
+      "output": "src/content/notes/codex-desktop-cli-path.md",
+      "slug": "codex-desktop-cli-path",
+      "sourcePath": "Tools/Agent/Codex/Codex.md",
+      "collection": "Tools",
+      "modulePath": [
+        "Tools",
+        "Agent",
+        "Codex"
+      ],
+      "module": "Codex",
+      "isIndex": false,
+      "noteRole": "workflow-note"
+    },
+    {
+      "output": "src/content/notes/codex-window-runtime-recovery.md",
+      "slug": "codex-window-runtime-recovery",
+      "sourcePath": "Tools/Agent/Codex/Codex Desktop 无法打开（后台有进程但窗口不显示）排查与修复.md",
+      "collection": "Tools",
+      "modulePath": [
+        "Tools",
+        "Agent",
+        "Codex"
+      ],
+      "module": "Codex",
+      "isIndex": false,
+      "noteRole": "workflow-note"
+    },
+    {
+      "output": "src/content/notes/constraints-reactions.md",
+      "slug": "constraints-reactions",
+      "sourcePath": "Engineering Mechanics/Statics/约束与约束反力.md",
+      "collection": "Engineering Mechanics",
+      "modulePath": [
+        "Engineering Mechanics",
+        "Statics"
+      ],
+      "module": "Statics",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
       "output": "src/content/notes/cs-fundamentals.md",
       "slug": "cs-fundamentals",
       "sourcePath": "CS Fundamentals/index.md",
@@ -357,6 +420,45 @@
       "noteRole": "module-index"
     },
     {
+      "output": "src/content/notes/dual-boot-ntfs-workspace.md",
+      "slug": "dual-boot-ntfs-workspace",
+      "sourcePath": "Tools/Ubuntu/Ubuntu_Windows_NTFS_双系统磁盘隔离与Workspace共享实践.md",
+      "collection": "Tools",
+      "modulePath": [
+        "Tools",
+        "Ubuntu"
+      ],
+      "module": "Ubuntu",
+      "isIndex": false,
+      "noteRole": "workflow-note"
+    },
+    {
+      "output": "src/content/notes/force-systems.md",
+      "slug": "force-systems",
+      "sourcePath": "Engineering Mechanics/Statics/力与力系.md",
+      "collection": "Engineering Mechanics",
+      "modulePath": [
+        "Engineering Mechanics",
+        "Statics"
+      ],
+      "module": "Statics",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/free-body-diagrams.md",
+      "slug": "free-body-diagrams",
+      "sourcePath": "Engineering Mechanics/Statics/自由体图 FBD.md",
+      "collection": "Engineering Mechanics",
+      "modulePath": [
+        "Engineering Mechanics",
+        "Statics"
+      ],
+      "module": "Statics",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
       "output": "src/content/notes/gcd-lcm.md",
       "slug": "gcd-lcm",
       "sourcePath": "CS Fundamentals/Algorithms/gcd-lcm.md",
@@ -370,11 +472,62 @@
       "noteRole": "learning-note"
     },
     {
+      "output": "src/content/notes/git-lfs-practice.md",
+      "slug": "git-lfs-practice",
+      "sourcePath": "Tools/Git/Git LFS：Git 大文件存储、迁移与协作实践.md",
+      "collection": "Tools",
+      "modulePath": [
+        "Tools",
+        "Git"
+      ],
+      "module": "Git",
+      "isIndex": false,
+      "noteRole": "workflow-note"
+    },
+    {
       "output": "src/content/notes/index.md",
       "slug": "index",
       "sourcePath": "index.md",
       "modulePath": [],
       "isIndex": true,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/minimum-viable-product.md",
+      "slug": "minimum-viable-product",
+      "sourcePath": "Project Management/MVP.md",
+      "collection": "Project Management",
+      "modulePath": [
+        "Project Management"
+      ],
+      "module": "Project Management",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/particle-rigid-body.md",
+      "slug": "particle-rigid-body",
+      "sourcePath": "Engineering Mechanics/Statics/质点与刚体.md",
+      "collection": "Engineering Mechanics",
+      "modulePath": [
+        "Engineering Mechanics",
+        "Statics"
+      ],
+      "module": "Statics",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/planar-support-reactions.md",
+      "slug": "planar-support-reactions",
+      "sourcePath": "Engineering Mechanics/Statics/平面约束反力模型.md",
+      "collection": "Engineering Mechanics",
+      "modulePath": [
+        "Engineering Mechanics",
+        "Statics"
+      ],
+      "module": "Statics",
+      "isIndex": false,
       "noteRole": "learning-note"
     },
     {
@@ -442,6 +595,70 @@
       "noteRole": "module-index"
     },
     {
+      "output": "src/content/notes/rea-evaluation.md",
+      "slug": "rea-evaluation",
+      "sourcePath": "Tools/REA_Evaluation_2026-10-13_ZH.md",
+      "collection": "Tools",
+      "modulePath": [
+        "Tools"
+      ],
+      "module": "Tools",
+      "isIndex": false,
+      "noteRole": "workflow-note"
+    },
+    {
+      "output": "src/content/notes/statics-fundamentals.md",
+      "slug": "statics-fundamentals",
+      "sourcePath": "Engineering Mechanics/Statics/静力学基本概念.md",
+      "collection": "Engineering Mechanics",
+      "modulePath": [
+        "Engineering Mechanics",
+        "Statics"
+      ],
+      "module": "Statics",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/statics-knowledge-map.md",
+      "slug": "statics-knowledge-map",
+      "sourcePath": "Engineering Mechanics/Statics/静力学知识图谱.md",
+      "collection": "Engineering Mechanics",
+      "modulePath": [
+        "Engineering Mechanics",
+        "Statics"
+      ],
+      "module": "Statics",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/statics-principles.md",
+      "slug": "statics-principles",
+      "sourcePath": "Engineering Mechanics/Statics/静力学公理.md",
+      "collection": "Engineering Mechanics",
+      "modulePath": [
+        "Engineering Mechanics",
+        "Statics"
+      ],
+      "module": "Statics",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/statics.md",
+      "slug": "statics",
+      "sourcePath": "Engineering Mechanics/Statics/静力学.md",
+      "collection": "Engineering Mechanics",
+      "modulePath": [
+        "Engineering Mechanics",
+        "Statics"
+      ],
+      "module": "Statics",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
       "output": "src/content/notes/tree-binary-tree.md",
       "slug": "tree-binary-tree",
       "sourcePath": "CS Fundamentals/Data Structures/tree-binary-tree.md",
@@ -453,6 +670,70 @@
       "module": "Data Structures",
       "isIndex": false,
       "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/two-three-force-members.md",
+      "slug": "two-three-force-members",
+      "sourcePath": "Engineering Mechanics/Statics/二力构件与三力构件.md",
+      "collection": "Engineering Mechanics",
+      "modulePath": [
+        "Engineering Mechanics",
+        "Statics"
+      ],
+      "module": "Statics",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/vla-information-flow.md",
+      "slug": "vla-information-flow",
+      "sourcePath": "Learning Methods/信息流.md",
+      "collection": "Learning Methods",
+      "modulePath": [
+        "Learning Methods"
+      ],
+      "module": "Learning Methods",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/vla-paper-reading.md",
+      "slug": "vla-paper-reading",
+      "sourcePath": "Learning Methods/分类阅读 SOP.md",
+      "collection": "Learning Methods",
+      "modulePath": [
+        "Learning Methods"
+      ],
+      "module": "Learning Methods",
+      "isIndex": false,
+      "noteRole": "learning-note"
+    },
+    {
+      "output": "src/content/notes/wsl-mirrored-network-troubleshooting.md",
+      "slug": "wsl-mirrored-network-troubleshooting",
+      "sourcePath": "Tools/Ubuntu/WSL2 Mirrored 模式下外网不通的排查与修复.md",
+      "collection": "Tools",
+      "modulePath": [
+        "Tools",
+        "Ubuntu"
+      ],
+      "module": "Ubuntu",
+      "isIndex": false,
+      "noteRole": "workflow-note"
+    },
+    {
+      "output": "src/content/notes/zotero-pdf2zh-guide.md",
+      "slug": "zotero-pdf2zh-guide",
+      "sourcePath": "Tools/Zotero/pdf2zh/简易使用指南.md",
+      "collection": "Tools",
+      "modulePath": [
+        "Tools",
+        "Zotero",
+        "pdf2zh"
+      ],
+      "module": "pdf2zh",
+      "isIndex": false,
+      "noteRole": "workflow-note"
     }
   ],
   "notes": [
@@ -463,6 +744,7 @@
     "src/content/notes/004.md",
     "src/content/notes/005.md",
     "src/content/notes/006.md",
+    "src/content/notes/007.md",
     "src/content/notes/algorithms.md",
     "src/content/notes/array.md",
     "src/content/notes/c-arrays.md",
@@ -480,15 +762,36 @@
     "src/content/notes/c-pointers.md",
     "src/content/notes/c-program-structure.md",
     "src/content/notes/circular-linked-list.md",
+    "src/content/notes/codex-bundled-plugin-recovery.md",
+    "src/content/notes/codex-desktop-cli-path.md",
+    "src/content/notes/codex-window-runtime-recovery.md",
+    "src/content/notes/constraints-reactions.md",
     "src/content/notes/cs-fundamentals.md",
     "src/content/notes/data-structures.md",
+    "src/content/notes/dual-boot-ntfs-workspace.md",
+    "src/content/notes/force-systems.md",
+    "src/content/notes/free-body-diagrams.md",
     "src/content/notes/gcd-lcm.md",
+    "src/content/notes/git-lfs-practice.md",
     "src/content/notes/index.md",
+    "src/content/notes/minimum-viable-product.md",
+    "src/content/notes/particle-rigid-body.md",
+    "src/content/notes/planar-support-reactions.md",
     "src/content/notes/programming-languages.md",
     "src/content/notes/python-basics.md",
     "src/content/notes/python-print.md",
     "src/content/notes/python-stdlib.md",
     "src/content/notes/python.md",
-    "src/content/notes/tree-binary-tree.md"
+    "src/content/notes/rea-evaluation.md",
+    "src/content/notes/statics-fundamentals.md",
+    "src/content/notes/statics-knowledge-map.md",
+    "src/content/notes/statics-principles.md",
+    "src/content/notes/statics.md",
+    "src/content/notes/tree-binary-tree.md",
+    "src/content/notes/two-three-force-members.md",
+    "src/content/notes/vla-information-flow.md",
+    "src/content/notes/vla-paper-reading.md",
+    "src/content/notes/wsl-mirrored-network-troubleshooting.md",
+    "src/content/notes/zotero-pdf2zh-guide.md"
   ]
 }

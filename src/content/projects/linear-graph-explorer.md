@@ -60,8 +60,20 @@ tags:
 featured: true
 links:
   github: https://github.com/HoraceCh/Linear-Gragh-Explorer
-  demo: https://linegraph.vercel.app/
 ---
+
+## Open the application · Website entrances
+
+The four public entrances are grouped here. The first two are independent deployment destinations; the other two are redirects to the primary Vercel application.
+
+<nav class="link-row" aria-label="Linear Graph Explorer public website entrances">
+  <a href="https://linegraph.vercel.app/" target="_blank" rel="noopener noreferrer">Vercel · Primary site</a>
+  <a href="https://horacech.github.io/Linear-Gragh-Explorer/" target="_blank" rel="noopener noreferrer">GitHub Pages · Fallback</a>
+  <a href="https://lgraph.vercel.app/" target="_blank" rel="noopener noreferrer">lgraph · Redirect alias</a>
+  <a href="https://linear-graph-explorer.vercel.app/" target="_blank" rel="noopener noreferrer">project-name · Redirect alias</a>
+</nav>
+
+The repository is named `Linear-Gragh-Explorer` (with the original `Gragh` spelling), so the GitHub Pages URL uses that exact path. The two aliases redirect with HTTP 308 and do not represent additional application deployments. The owner-private development preview is not a public entrance.
 
 ## Purpose
 
@@ -76,18 +88,7 @@ Linear Graph Explorer makes task relationships easier to inspect in a team works
 - **Review intelligence:** summarize explicitly marked review comments for the confirmed current review round, using browser-local role and reviewer rules. The review queue can show pending or indeterminate decisions, including *Unable to assess*; it cannot confer approval or write to Linear.
 - **Portable local preferences:** import and export team-specific display and review configurations. These are not automatically shared among users or website origins.
 
-## All public website entrances
-
-There are **two distinct public deployment destinations** and **two redirect aliases**:
-
-1. **Primary Vercel application:** [linegraph.vercel.app](https://linegraph.vercel.app/).
-2. **GitHub Pages fallback:** [horacech.github.io/Linear-Gragh-Explorer/](https://horacech.github.io/Linear-Gragh-Explorer/).
-3. **Short Vercel alias:** [lgraph.vercel.app](https://lgraph.vercel.app/) — HTTP 308 redirect to the primary Vercel address.
-4. **Vercel project-name alias:** [linear-graph-explorer.vercel.app](https://linear-graph-explorer.vercel.app/) — HTTP 308 redirect to the same primary address.
-
-The actual source repository is named **`Linear-Gragh-Explorer`** (including this spelling), so the GitHub Pages path uses `Gragh`, not `Graph`. All four links above are deliberate public website entrances; the alias URLs are not separate builds.
-
-For source and release evidence, see the [GitHub repository](https://github.com/HoraceCh/Linear-Gragh-Explorer), the [v0.3.3 release](https://github.com/HoraceCh/Linear-Gragh-Explorer/releases/tag/v0.3.3), and the [dual-deployment documentation](https://github.com/HoraceCh/Linear-Gragh-Explorer/blob/main/docs/DUAL-DEPLOYMENT.md). The existing owner-private development preview is intentionally not published as a public entry point.
+For source and release evidence, see the [GitHub repository](https://github.com/HoraceCh/Linear-Gragh-Explorer), the [v0.3.3 release](https://github.com/HoraceCh/Linear-Gragh-Explorer/releases/tag/v0.3.3), and the [dual-deployment documentation](https://github.com/HoraceCh/Linear-Gragh-Explorer/blob/main/docs/DUAL-DEPLOYMENT.md).
 
 ## Security and permissions
 

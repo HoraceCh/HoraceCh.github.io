@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const projects = [
-  ['featured-projects', ['/projects/ai-retrieval-tool/']],
+  ['featured-projects', ['/projects/ai-retrieval-tool/', '/projects/linear-graph-explorer/']],
   ['learning-projects', ['/projects/ai-assisted-learning-workflow/', '/projects/vla-embodied-ai-learning-system/']],
   ['engineering-projects', ['/projects/robomaster-2026-engineering-robot/']],
   ['secondary-projects', ['/projects/mechanical-design-portfolio/']],

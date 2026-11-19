@@ -48,7 +48,7 @@ test('M1 resolves the exact admitted derivative bytes and source dimensions', as
 test('built browse opts in only approved images after copy and before independent resources', async () => {
   const html = await readFile('dist/projects/index.html', 'utf8');
   const cards = [...html.matchAll(/<article class="card project-card">([\s\S]*?)<\/article>/g)].map(m => m[1]);
-  assert.equal(cards.length, 5);
+  assert.equal(cards.length, 6);
   assert.equal(cards.filter(card => card.includes('<img ')).length, 2);
   for (const card of cards) {
     const href = card.match(/<h3><a href="([^"]+)">/)?.[1];

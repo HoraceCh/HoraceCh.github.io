@@ -69,4 +69,17 @@ test('Project details retain actions, distinct maturity, and supporting metadata
   const learning = await readFile('dist/projects/vla-embodied-ai-learning-system/index.html', 'utf8');
   assert.match(learning, /<span>learning system<\/span>/);
   assert.match(learning, /href="\/notes\/openvla-reading-template\/">Related Notes<\/a>/);
+
+  const linear = await readFile('dist/projects/linear-graph-explorer/index.html', 'utf8');
+  const entranceGroup = linear.match(/<nav class="link-row" aria-label="Linear Graph Explorer public website entrances">([\s\S]*?)<\/nav>/)?.[1];
+  assert.ok(entranceGroup, 'all public app entrances are grouped near the start of the project detail');
+  for (const url of [
+    'https://linegraph.vercel.app/',
+    'https://horacech.github.io/Linear-Gragh-Explorer/',
+    'https://lgraph.vercel.app/',
+    'https://linear-graph-explorer.vercel.app/',
+  ]) {
+    assert.equal(entranceGroup.split('href="' + url + '"').length - 1, 1, url);
+  }
+  assert.ok(linear.indexOf('aria-label="Linear Graph Explorer public website entrances"') < linear.indexOf('>Purpose</h2>'));
 });

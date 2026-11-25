@@ -1,0 +1,462 @@
+[
+  {
+    "name": "fenced code",
+    "markdown": "```math\n$x$\n```"
+  },
+  {
+    "name": "inline code",
+    "markdown": "Code `$x$ \\mathbf{F}` remains literal."
+  },
+  {
+    "name": "unmatched",
+    "markdown": "Before $x+y after."
+  },
+  {
+    "name": "escaped dollars",
+    "markdown": "Literal \\$5 and \\$10."
+  },
+  {
+    "name": "long display",
+    "markdown": "$$x_{0}^{2}+x_{1}^{2}+x_{2}^{2}+x_{3}^{2}+x_{4}^{2}+x_{5}^{2}+x_{6}^{2}+x_{7}^{2}+x_{8}^{2}+x_{9}^{2}+x_{10}^{2}+x_{11}^{2}+x_{12}^{2}+x_{13}^{2}+x_{14}^{2}+x_{15}^{2}+x_{16}^{2}+x_{17}^{2}+x_{18}^{2}+x_{19}^{2}+x_{20}^{2}+x_{21}^{2}+x_{22}^{2}+x_{23}^{2}+x_{24}^{2}=0$$"
+  },
+  {
+    "name": "Greek",
+    "markdown": "$\\alpha+\\beta=\\gamma$"
+  },
+  {
+    "name": "nested scripts",
+    "markdown": "$x^{n+1}_{i_{j}}$"
+  },
+  {
+    "name": "aligned",
+    "markdown": "$$\\begin{aligned}a&=b+c\\\\d&=e-f\\end{aligned}$$"
+  },
+  {
+    "name": "matrix",
+    "markdown": "$$\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}$$"
+  },
+  {
+    "name": "integral",
+    "markdown": "$$\\int_0^1 x^2\\,dx=\\frac13$$"
+  },
+  {
+    "name": "square root",
+    "markdown": "$\\sqrt{x^2+y^2}$"
+  },
+  {
+    "name": "fraction",
+    "markdown": "$\\frac{a+b}{c+d}$"
+  },
+  {
+    "name": "action reaction",
+    "markdown": "$$\\mathbf{F}_{A\\to B}=-\\mathbf{F}_{B\\to A}$$"
+  },
+  {
+    "name": "inline vector",
+    "markdown": "中文 English $\\mathbf{F}_{A\\to B}$"
+  },
+  {
+    "name": "index isolation probe",
+    "markdown": "$\\mathrm{quartzsentinel}$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:37",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:37",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:38",
+    "markdown": "$O(n)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:38",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:38",
+    "markdown": "$O(\\log n)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:39",
+    "markdown": "$O(n)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:39",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:39",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:40",
+    "markdown": "$O(n)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:40",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:40",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:46",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:66",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:66",
+    "markdown": "$O(n)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:67",
+    "markdown": "$O(n)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/array.md:67",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/circular-linked-list.md:117",
+    "markdown": "$O(n)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/circular-linked-list.md:117",
+    "markdown": "$O(n)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/circular-linked-list.md:123",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/circular-linked-list.md:123",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:33",
+    "markdown": "$n>0$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:34",
+    "markdown": "$m>0$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:50",
+    "markdown": "$m \\geq 0$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:59",
+    "markdown": "$m$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:59",
+    "markdown": "$i$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:59",
+    "markdown": "$m^{i-1}$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:59",
+    "markdown": "$i \\geq 1$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:60",
+    "markdown": "$h$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:60",
+    "markdown": "$m$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:60",
+    "markdown": "$(m^h - 1)/(m - 1)$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:61",
+    "markdown": "$n$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:61",
+    "markdown": "$m$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:61",
+    "markdown": "$\\lceil \\log_m(n(m - 1) + 1) \\rceil$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:74",
+    "markdown": "$h$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:74",
+    "markdown": "$2^h-1$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:74",
+    "markdown": "$i/2$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:74",
+    "markdown": "$2i$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:74",
+    "markdown": "$2i+1$"
+  },
+  {
+    "name": "CS Fundamentals/Data Structures/tree-binary-tree.md:81",
+    "markdown": "$i(1\\leq i \\leq n)$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/二力构件与三力构件.md:93",
+    "markdown": "$O$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/二力构件与三力构件.md:94",
+    "markdown": "$O$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/二力构件与三力构件.md:95",
+    "markdown": "$O$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/二力构件与三力构件.md:95",
+    "markdown": "$O$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/二力构件与三力构件.md:104",
+    "markdown": "$$A_x,\\quad A_y$$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:26",
+    "markdown": "$x$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:26",
+    "markdown": "$y$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:39",
+    "markdown": "$$N$$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:54",
+    "markdown": "$$T$$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:82",
+    "markdown": "$$A_x,\\quad A_y$$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:87",
+    "markdown": "$A_x,A_y$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:93",
+    "markdown": "$x$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:94",
+    "markdown": "$y$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:100",
+    "markdown": "$$A_x,\\quad A_y,\\quad M_A$$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:108",
+    "markdown": "$N$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:109",
+    "markdown": "$T$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:111",
+    "markdown": "$N$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:112",
+    "markdown": "$x,y$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:112",
+    "markdown": "$A_x,A_y$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:113",
+    "markdown": "$x,y$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/平面约束反力模型.md:113",
+    "markdown": "$A_x,A_y,M_A$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/自由体图 FBD.md:107",
+    "markdown": "$\\mathbf{F}_{B\\to A}$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/自由体图 FBD.md:108",
+    "markdown": "$\\mathbf{F}_{A\\to B}$"
+  },
+  {
+    "name": "Engineering Mechanics/Statics/自由体图 FBD.md:111",
+    "markdown": "$$\\mathbf{F}_{A\\to B}=-\\mathbf{F}_{B\\to A}$$"
+  },
+  {
+    "name": "Information Retrieval/004 外文全文数据库检索与利用.md:219",
+    "markdown": "$n$"
+  },
+  {
+    "name": "Information Retrieval/004 外文全文数据库检索与利用.md:221",
+    "markdown": "$n$"
+  },
+  {
+    "name": "Information Retrieval/004 外文全文数据库检索与利用.md:239",
+    "markdown": "$N/n$"
+  },
+  {
+    "name": "Information Retrieval/004 外文全文数据库检索与利用.md:239",
+    "markdown": "$n$"
+  },
+  {
+    "name": "Information Retrieval/004 外文全文数据库检索与利用.md:241",
+    "markdown": "$P/n$"
+  },
+  {
+    "name": "Information Retrieval/004 外文全文数据库检索与利用.md:241",
+    "markdown": "$n$"
+  },
+  {
+    "name": "Information Retrieval/007 大语言模型的提示词工程.md:59",
+    "markdown": "$\\rightarrow$"
+  },
+  {
+    "name": "Information Retrieval/007 大语言模型的提示词工程.md:59",
+    "markdown": "$\\rightarrow$"
+  },
+  {
+    "name": "Information Retrieval/007 大语言模型的提示词工程.md:59",
+    "markdown": "$\\rightarrow$"
+  },
+  {
+    "name": "Information Retrieval/007 大语言模型的提示词工程.md:59",
+    "markdown": "$\\rightarrow$"
+  },
+  {
+    "name": "Programming Languages/C/c-arrays.md:50",
+    "markdown": "$0 \\leq index \\textless length$"
+  },
+  {
+    "name": "Programming Languages/C/c-control-flow.md:66",
+    "markdown": "$<$"
+  },
+  {
+    "name": "Programming Languages/C/c-control-flow.md:67",
+    "markdown": "$\\le$"
+  },
+  {
+    "name": "Programming Languages/C/c-control-flow.md:68",
+    "markdown": "$>$"
+  },
+  {
+    "name": "Programming Languages/C/c-control-flow.md:69",
+    "markdown": "$\\ge$"
+  },
+  {
+    "name": "Programming Languages/C/c-control-flow.md:70",
+    "markdown": "$=$"
+  },
+  {
+    "name": "Programming Languages/C/c-control-flow.md:71",
+    "markdown": "$\\ne$"
+  },
+  {
+    "name": "Programming Languages/C/c-data-types.md:65",
+    "markdown": "$-2147483648 \\sim 2147483647$"
+  },
+  {
+    "name": "Programming Languages/C/c-data-types.md:66",
+    "markdown": "$-32768 \\sim 32767$"
+  },
+  {
+    "name": "Programming Languages/C/c-data-types.md:67",
+    "markdown": "$-2147483648 \\sim 2147483647$"
+  },
+  {
+    "name": "Programming Languages/C/c-data-types.md:68",
+    "markdown": "$0 \\sim 4294967295$"
+  },
+  {
+    "name": "Programming Languages/C/c-data-types.md:69",
+    "markdown": "$0 \\sim 65535$"
+  },
+  {
+    "name": "Programming Languages/C/c-data-types.md:70",
+    "markdown": "$0 \\sim 4294967295$"
+  },
+  {
+    "name": "Programming Languages/C/c-data-types.md:75",
+    "markdown": "$-2^{31} \\sim 2^{31}-1$"
+  },
+  {
+    "name": "Programming Languages/C/c-data-types.md:76",
+    "markdown": "$0 \\sim 2^{32}-1$"
+  },
+  {
+    "name": "Programming Languages/C/c-linked-list.md:531",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "Programming Languages/C/c-linked-list.md:531",
+    "markdown": "$O(n)$"
+  },
+  {
+    "name": "Programming Languages/C/c-linked-list.md:532",
+    "markdown": "$O(n)$"
+  },
+  {
+    "name": "Programming Languages/C/c-linked-list.md:532",
+    "markdown": "$O(1)$"
+  },
+  {
+    "name": "Programming Languages/C/c-pointers.md:460",
+    "markdown": "$$k = i \\times N + j, \\quad i = k / N, \\quad j = k \\% N$$"
+  },
+  {
+    "name": "Programming Languages/Python/python-stdlib.md:27",
+    "markdown": "$[0,1)$"
+  },
+  {
+    "name": "Programming Languages/Python/python-stdlib.md:28",
+    "markdown": "$[a, b)$"
+  },
+  {
+    "name": "Programming Languages/Python/python-stdlib.md:29",
+    "markdown": "$[a,b]$"
+  },
+  {
+    "name": "Programming Languages/Python/python-stdlib.md:35",
+    "markdown": "$[0, 1)$"
+  },
+  {
+    "name": "Programming Languages/Python/python-stdlib.md:39",
+    "markdown": "$[a, b)$"
+  },
+  {
+    "name": "literal Programming Languages/C/c-data-types.md",
+    "markdown": "| 4       | 04      | EOT      | 36      | 24      | $        | 68      | 44      | D        | 100     | 64      | d        |"
+  },
+  {
+    "name": "literal Programming Languages/C/c-program-structure.md",
+    "markdown": "C 标识符内不允许出现标点字符，比如 @、$ 和 %。C 是**区分大小写**的编程语言。因此，在 C 中，_Manpower_ 和 _manpower_ 是两个不同的标识符。下面列出几个有效的标识符："
+  }
+]

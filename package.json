@@ -35,8 +35,15 @@
     "test:maintenance": "node --test tests/maintenance/*.test.mjs"
   },
   "devDependencies": {
-    "astro": "^7.0.3",
-    "cross-env": "^10.1.0",
+    "astro": "7.0.3",
+    "cross-env": "10.1.0",
     "pagefind": "1.5.2"
+  },
+  "dependencies": {
+    "@astrojs/markdown-satteri": "0.3.2",
+    "github-slugger": "2.0.0",
+    "hast-util-from-html": "2.0.3",
+    "katex": "0.19.1",
+    "satteri": "0.9.3"
   }
 }

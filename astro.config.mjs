@@ -1,3 +1,5 @@
+import { satteri } from '@astrojs/markdown-satteri';
+import { mathMdast, mathHast } from './tools/satteri-katex.mjs';
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -235,6 +237,7 @@ function slash(value) {
 }
 
 export default defineConfig({
+  markdown: { processor: satteri({ features: { math: { singleDollarTextMath: true } }, mdastPlugins: [mathMdast], hastPlugins: [mathHast] }) },
   site: 'https://horacech.github.io',
   output: 'static',
   prefetch: {

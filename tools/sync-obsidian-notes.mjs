@@ -770,7 +770,7 @@ function buildHeadingContracts(records) {
     body = convertCallouts(body);
     body = convertHighlights(body);
     body = normalizeCodeFenceInfoStrings(body);
-    body = normalizeReadableMath(body, record.relativePath, []);
+    // Keep body TeX intact when deriving heading contracts.
     body = normalizeBodyHeadingDepth(body, record.relativePath, []);
 
     const slugger = new GithubSlugger();
@@ -1066,7 +1066,7 @@ async function convertBody({
   nextBody = convertCallouts(nextBody);
   nextBody = convertHighlights(nextBody);
   nextBody = normalizeCodeFenceInfoStrings(nextBody);
-  nextBody = normalizeReadableMath(nextBody, record.relativePath, warnings);
+  // Body math remains source TeX; descriptions have a separate plain-text path.
   nextBody = normalizeBodyHeadingDepth(nextBody, record.relativePath, warnings);
 
   nextBody = await replaceAsync(nextBody, /!\[\[([^\]]+)\]\]/g, async (_match, rawTarget) => {
@@ -1479,6 +1479,7 @@ function readableMathExpression(value, file, warnings) {
     ['rceil', '⌉'],
     ['rfloor', '⌋'],
     ['rightarrow', '→'],
+    ['to', '→'],
     ['leftarrow', '←'],
     ['sim', '∼'],
     ['textless', '<'],
@@ -2686,7 +2687,9 @@ function plainTextDescription(value) {
       .replace(/^\s*(?:>\s*)+/gm, '')
       .replace(/^\s*\|?(?:\s*:?-{3,}:?\s*\|)+\s*$/gm, ' ')
       .replace(/\s*\|\s*/g, ' ')
-      .replace(/[`*_~]/g, ''),
+      .replace(/[`*_~]/g, '')
+      .replace(/\\([A-Za-z]+)/g, '$1')
+      .replace(/\$/g, ''),
   );
 }
 

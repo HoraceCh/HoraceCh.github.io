@@ -42,8 +42,8 @@ test('every published Note category has one canonical generated category route',
 
   assert.equal(
     publishedNotes.filter((note) => note.category === 'Information Retrieval').length,
-    7,
-    'Information Retrieval should contain its seven approved public Notes',
+    8,
+    'Information Retrieval should contain its eight approved public Notes',
   );
 });
 

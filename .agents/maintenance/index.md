@@ -9,6 +9,10 @@ This is a deterministic discovery view generated from canonical event files. It 
 
 | Event ID | Occurred | Kind | Category | Status | Risk | Summary |
 | --- | --- | --- | --- | --- | --- | --- |
+| [WEB-20261125-0001](events/WEB-20261125-0001.md) | 2026-11-25T01:26:39.234Z | change | content-publication | completed | low | Regenerate the FBD and VLA Notes from the approved Publish snapshot. |
+| [WEB-20261119-0001](events/WEB-20261119-0001.md) | 2026-11-19T02:30:34.060Z | change | content-publication | in-progress | low | Add the Linear Graph Explorer project to the Website Projects collection with its public deployment entrances and verifiable release evidence. |
+| [WEB-20261116-0002](events/WEB-20261116-0002.md) | 2026-11-16T11:59:01.045Z | change | content-publication | completed | low | Generate the approved public Notes batch through the existing synchronization workflow for the shared Draft content PR. |
+| [WEB-20261116-0001](events/WEB-20261116-0001.md) | 2026-11-16T01:16:29Z | change | content-publication | in-progress | low | Refresh the Website Project profile from the current public Information-Retrieval-Tool repository documentation. |
 | [WEB-20261114-0004](events/WEB-20261114-0004.md) | 2026-11-14T17:01:24.670Z | change | notes-pipeline | completed | medium | Add ownership-checked single-note synchronization with manifest preservation. |
 | [WEB-20261114-0003](events/WEB-20261114-0003.md) | 2026-11-14T14:24:05.588Z | change | site-structure | completed | low | Repair Header progressive enhancement and Home-only scroll work; correct Python fill explanation. |
 | [WEB-20261114-0002](events/WEB-20261114-0002.md) | 2026-11-14T12:04:09.148Z | change | content-publication | completed | low | Resolve PR 39 review findings F01, F02 and F03 together without changing product behavior. |

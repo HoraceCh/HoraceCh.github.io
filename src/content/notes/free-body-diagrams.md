@@ -116,9 +116,11 @@ FBD 上应该画的是**反力模型**，而不是实际支座图形。
 
 拆开两个相连构件后：
 
-- 在构件 A 的 FBD 上画 mathbf F_B→ A；
-- 在构件 B 的 FBD 上画 mathbf F_A→ B；
+- 在构件 A 的 FBD 上画 $\mathbf{F}_{B\to A}$；
+- 在构件 B 的 FBD 上画 $\mathbf{F}_{A\to B}$；
 - 两者等大、反向、共线。
+
+$$\mathbf{F}_{A\to B}=-\mathbf{F}_{B\to A}$$
 
 它们分别属于不同自由体，不能因为“互相抵消”就从局部 FBD 中删掉。
 

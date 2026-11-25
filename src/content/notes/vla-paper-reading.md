@@ -550,7 +550,14 @@ success 怎么定义？
 先弄清作者把领域分成哪几类。例如：
 
 ```
-Embodied AI├── Vision-language navigation├── Robotic manipulation├── Imitation learning├── Reinforcement learning├── VLA / robot foundation models├── Sim-to-real transfer└── Evaluation and safety
+Embodied AI
+├── Vision-language navigation
+├── Robotic manipulation
+├── Imitation learning
+├── Reinforcement learning
+├── VLA / robot foundation models
+├── Sim-to-real transfer
+└── Evaluation and safety
 ```
 
 #### 第二步：看每一节开头和结尾
@@ -699,7 +706,12 @@ load model → load one batch data → forward → output action → visualize a
 很多 VLA / robot learning 代码真正的坑不在模型，而在：
 
 ```
-camera conventioncoordinate frameaction normalizationgripper conventiondelta pose vs absolute posecontrol frequency
+camera convention
+coordinate frame
+action normalization
+gripper convention
+delta pose vs absolute pose
+control frequency
 ```
 
 这些如果没对齐，模型再强也会在真机上乱动。
